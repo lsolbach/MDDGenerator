@@ -1,0 +1,63 @@
+schema {
+	display: block;
+	font-family: monospace;
+	color: rgb(0, 0, 0);
+	//background-color: rgb(255, 192, 192);
+	//whitespace: pre;
+}
+
+schema:before {
+	display: block;
+	content: "class XMIBuilder {"
+}
+
+schema:after {
+	display: block;
+	content: "}";
+}
+
+element {
+	display: block;
+}
+
+element[name]:before {
+	display: block;
+	content: "\A\A0\A0 void register"attr(name)"(String namespace, "attr(name)" element) {";
+	whitespace: pre;
+}
+
+element[name]:after {
+  display: block;
+  whitespace: pre;
+  content: "\A\A0\A0}";
+}
+
+element>complexType>attribute[ref="xmi.id"]:before {
+	display: block;
+	whitespace: pre;
+	content: "\A0\A0\A0\A0 registerXMI(element.getXmi_id(), element);";
+}
+
+element[name]>complexType>choice[maxOccurs="unbounded"]:before {
+	display: block;
+	whitespace: pre;
+	content: "\A0\A0\A0\A0 Enumeration e = element.enumerate"attr(name)"Items();\A\A0\A0\A0\A0 while(e.hasMoreElements()) {\A\A0\A0\A0\A0\A0\A0 [Type] item = ([Type]) e.nextElement();";
+}
+
+element[name]>complexType>choice[maxOccurs="unbounded"]:after {
+	display: block;
+	whitespace: pre;
+	content: "\A0\A0\A0\A0}";
+}
+
+element>complexType>choice[maxOccurs="unbounded"]>element[ref]:before {
+	display: block;
+	whitespace: pre;
+	content: "\A\A0\A0\A0\A0\A0\A0 if(item.get"attr(ref)"() != null) {\A\A0\A0\A0\A0\A0\A0\A0\A0register"attr(ref)"(namespace, item.get"attr(ref)"());";
+}
+
+element>complexType>choice[maxOccurs="unbounded"]>element[ref]:after {
+	display: block;
+	whitespace: pre;
+	content: "\A0\A0\A0\A0\A0\A0}";
+}

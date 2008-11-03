@@ -1,0 +1,22 @@
+<dependencies>
+	<dependency type="dev">
+		<package name="fitnesse" version="20070619" type="lib">
+			<module name="fitnesse"/>
+			<module name="fitlibrary"/>
+		</package>
+		<package name="junit" version="3.8.1" type="lib">
+			<module name="junit"/>
+		</package>
+	</dependency>
+	<dependency type="runtime">
+		<package name="castor" version="0.9.5.3" type="lib">
+			<module name="castor-xml"/>
+		</package>
+		<package name="xerces" version="2.9.0" type="lib">
+			<module name="xercesImpl"/>
+		</package>
+		<package name="commons-logging" version="1.1" type="lib">
+			<module name="commons-logging"/>
+		</package>
+	</dependency>
+</dependencies>

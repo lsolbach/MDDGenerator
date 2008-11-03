@@ -1,0 +1,86 @@
+<project name="XmiRepository2" default="distribute">
+
+	<property environment="env"/>
+	<property file="build.properties"/>
+	<property name="common.build.dir" value="${env.COMMON_BUILD_HOME}"/>
+	
+	<!-- import common build files -->
+	<import file="${common.build.dir}/ant/common.properties.xml"/>
+	<import file="${common.build.dir}/ant/common.build.xml"/>
+
+	<path id="source.path">
+		<path refid="common.source.path"/>
+		<pathelement location="${generate.dir}/src"/>
+	</path>
+	
+	<!--
+	  - project specific targets
+	  -->
+	<target name="generate-local" depends="check-generate-required,generate-binding,generate-builders"/>
+
+	<target name="test-local" depends="test-xmiloader"/>
+	
+	<!-- generate classes from schema -->
+	<target name="check-generate-required">
+		<uptodate property="generateModel.notRequired" targetfile="${generate.dir}/src/org/soulspace/xmi/marshal/XMI.java" >
+		    <srcfiles dir="${basedir}/schema" includes="uml2.xsd"/>
+		</uptodate>
+	</target>	
+		
+	<target name="generate-binding" depends="initialize" unless="generateModel.notRequired">
+		<delete quiet="true">
+			<fileset dir="${generate.dir}/src/org/soulspace/xmi/marshal" includes="*.java"/>
+			<fileset dir="${generate.dir}/src/org/soulspace/xmi/marshal/types" includes="*.java" />
+		</delete>
+
+		<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" failonerror="yes"  >
+			<classpath>
+				<pathelement location="./cfg"/>
+		        <pathelement location="./bin"/>
+				<fileset dir="./lib/runtime">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+			<arg value="-f"/>
+			<!--arg value="-nodesc"/-->
+			<!--arg value="-generateImportedSchemas"/-->
+			<arg value="-i"/>
+			<arg value="${basedir}/schema/uml2.xsd"/>
+			<arg value="-package"/>
+			<arg value="org.soulspace.xmi.marshal"/>
+			<arg value="-dest"/>
+			<arg value="${generate.dir}/src"/>
+			<arg value="-types"/>
+			<arg value="j2"/>
+		</java>
+	
+	<!--antcall target="refresh"/-->
+	</target>
+
+	<target name="generate-builders">
+		<xslt
+			style="templates/gen.xsl"
+			in="schema/uml2.xsd"
+			out="${generate.dir}/src/org/soulspace/xmi/repository/XMIBuilder.java" />
+		<xslt
+			style="templates/repository.xsl"
+			in="schema/uml2.xsd"
+			out="${generate.dir}/src/org/soulspace/xmi/repository/XMIRepository.java" />
+	</target>
+	
+	<target name="test-xmiloader">
+		<java
+			classname="org.soulspace.xmi.util.XMILoader"
+			classpathref="unittest.classpath">
+			<arg value="data/refModels/argouml/state.xmi"/>
+			<arg value="data/refModels/argouml/usecase.xmi"/>
+			<arg value="data/refModels/poseidon/state.xmi"/>
+			<arg value="data/refModels/poseidon/activity.xmi"/>
+			<arg value="data/refModels/poseidon/usecase.xmi"/>
+			<arg value="data/refModels/poseidon/interface.xmi"/>
+			<arg value="data/refModels/poseidon/generalization.xmi"/>
+			<arg value="data/refModels/poseidon/generalization2.xmi"/>
+		</java>
+	</target>
+	
+</project>
