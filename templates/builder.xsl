@@ -71,6 +71,8 @@ public class XMIBuilder {
 									or ./@name='Method'
 									or ./@name='TagDefinition'
 									or ./@name='Stereotype'
+									or ./@name='Association'
+									or ./@name='AssociationClass'
 									or ./@name='UseCase'
 									or ./@name='Actor'
 									or ./@name='StateMachine'
@@ -94,6 +96,7 @@ public class XMIBuilder {
 									or ./@name='TagDefinition'
 									or ./@name='Stereotype'
 									or ./@name='Association'
+									or ./@name='AssociationClass'
 									or ./@name='UseCase'
 									or ./@name='Actor'
 									or ./@name='StateMachine'
@@ -116,12 +119,13 @@ public class XMIBuilder {
 									or ./@name='Class'
 									or ./@name='Interface'
 									or ./@name='DataType'
+									or ./@name='AssociationClass'
 		">
 		childNamespace = qualifiedName;
 		</xsl:if>
 	</xsl:template>
 
-	<xsl:template match="xs:attribute[@ref='xmi.id']" mode="register">
+	<xsl:template match="xs:attribute[@name='xmi.id']" mode="register">
 		xmi.register<xsl:value-of select="translate(../../@name, '.', '_')"/>(element.getXmi_id(), element);
 	</xsl:template>
 

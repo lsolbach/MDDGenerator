@@ -86,9 +86,8 @@ public class XMIRepository {
 				XMI_contentItem cI = (XMI_contentItem) e.nextElement();
 				if(cI.getModel() != null) {
 					builder.traverseModel("", cI.getModel());          
-				} else if(cI.getA_context_raisedSignal() != null) {
-					// poseidon specific exception mechanism
-					System.out.println("context raised signal");
+				} else {
+					System.err.println("unknown xmi content!");
 				}
 			}
 		}
@@ -114,19 +113,19 @@ public class XMIRepository {
 	</xsl:template>
 
 	<xsl:template
-		match="xs:element[@name and not(starts-with(@name, 'XMI'))]/xs:complexType/xs:attribute[@ref='xmi.id']"
+		match="xs:element[@name and not(starts-with(@name, 'XMI'))]/xs:complexType/xs:attribute[@name='xmi.id']"
 		mode="imports">
 import org.soulspace.xmi.marshal.<xsl:value-of select="translate(../../@name, '.', '_')"/>;
 	</xsl:template>
 
 	<xsl:template
-		match="xs:element[@name and not(starts-with(@name, 'XMI'))]/xs:complexType/xs:attribute[@ref='xmi.id']"
+		match="xs:element[@name and not(starts-with(@name, 'XMI'))]/xs:complexType/xs:attribute[@name='xmi.id']"
 		mode="collections">
 	private List&lt;<xsl:value-of select="translate(../../@name, '.', '_')"/>&gt; xmi<xsl:value-of select="translate(../../@name, '.', '_')"/>List = new ArrayList&lt;<xsl:value-of select="translate(../../@name, '.', '_')"/>&gt;();
 	</xsl:template>
 
 	<xsl:template
-		match="xs:element[@name and not(starts-with(@name, 'XMI'))]/xs:complexType/xs:attribute[@ref='xmi.id']"
+		match="xs:element[@name and not(starts-with(@name, 'XMI'))]/xs:complexType/xs:attribute[@name='xmi.id']"
 		mode="registry">
 	void register<xsl:value-of select="translate(../../@name, '.', '_')"/>(
 	               String xmiId, <xsl:value-of select="translate(../../@name, '.', '_')"/> element) {
@@ -146,7 +145,7 @@ import org.soulspace.xmi.marshal.<xsl:value-of select="translate(../../@name, '.
 	</xsl:template>
 
 	<xsl:template
-		match="xs:element[@name and not(starts-with(@name, 'XMI'))]/xs:complexType/xs:attribute[@ref='xmi.id']"
+		match="xs:element[@name and not(starts-with(@name, 'XMI'))]/xs:complexType/xs:attribute[@name='xmi.id']"
 		mode="access">
 	public List&lt;<xsl:value-of select="translate(../../@name, '.', '_')"/>&gt; get<xsl:value-of select="translate(../../@name, '.', '_')"/>List() {
 		return xmi<xsl:value-of select="translate(../../@name, '.', '_')"/>List;

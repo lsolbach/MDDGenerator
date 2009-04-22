@@ -16,14 +16,14 @@
 	<!--
 	  - project specific targets
 	  -->
-	<target name="generate-local" depends="check-generate-required,generate-binding,generate-builders"/>
+	<target name="generate-local" depends="generate-schema,check-generate-required,generate-binding,generate-builders"/>
 
 	<target name="test-local" depends="test-xmiloader"/>
 	
 	<!-- generate classes from schema -->
 	<target name="check-generate-required">
 		<uptodate property="generateModel.notRequired" targetfile="${generate.dir}/src/org/soulspace/xmi/marshal/XMI.java" >
-		    <srcfiles dir="${basedir}/schema" includes="uml2.xsd"/>
+		    <srcfiles dir="${generate.dir}/uml" includes="uml1.4.xsd"/>
 		</uptodate>
 	</target>	
 		
@@ -45,7 +45,7 @@
 			<!--arg value="-nodesc"/-->
 			<!--arg value="-generateImportedSchemas"/-->
 			<arg value="-i"/>
-			<arg value="${basedir}/schema/uml2.xsd"/>
+			<arg value="${generate.dir}/uml/uml1.4.xsd"/>
 			<arg value="-package"/>
 			<arg value="org.soulspace.xmi.marshal"/>
 			<arg value="-dest"/>
@@ -59,12 +59,12 @@
 
 	<target name="generate-builders">
 		<xslt
-			style="templates/gen.xsl"
-			in="schema/uml2.xsd"
+			style="templates/builder.xsl"
+			in="${generate.dir}/uml/uml1.4.xsd"
 			out="${generate.dir}/src/org/soulspace/xmi/repository/XMIBuilder.java" />
 		<xslt
 			style="templates/repository.xsl"
-			in="schema/uml2.xsd"
+			in="${generate.dir}/uml/uml1.4.xsd"
 			out="${generate.dir}/src/org/soulspace/xmi/repository/XMIRepository.java" />
 	</target>
 	
@@ -74,13 +74,35 @@
 			classpathref="unittest.classpath">
 			<arg value="data/refModels/argouml/state.xmi"/>
 			<arg value="data/refModels/argouml/usecase.xmi"/>
-			<arg value="data/refModels/poseidon/state.xmi"/>
-			<arg value="data/refModels/poseidon/activity.xmi"/>
-			<arg value="data/refModels/poseidon/usecase.xmi"/>
-			<arg value="data/refModels/poseidon/interface.xmi"/>
-			<arg value="data/refModels/poseidon/generalization.xmi"/>
-			<arg value="data/refModels/poseidon/generalization2.xmi"/>
 		</java>
+	</target>
+	
+	<target name="generate-schema">
+		<!--delete>
+			<fileset dir="${backup.dir}"/>
+		</delete>
+		<copy todir="${backup.dir}" overwrite="true">
+			<fileset dir="${generate.dir}"/>
+		</copy>
+		<delete>
+			<fileset dir="${generate.dir}"/>
+		</delete-->
+		
+		<!--
+		  - UML Schema
+		  -->
+		<soulmda destdir="${generate.dir}"
+                    backupdir="${backup.dir}"
+                    templateDir="templates/"
+                    modelFile="model/uml1.4.xmi"
+			>
+			<modelGenerator 	name="xmischema"
+                                imports=""
+								subdir="uml"
+								basename="uml1.4"
+								extension="xsd"
+			/>
+		</soulmda>
 	</target>
 	
 </project>
