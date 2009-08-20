@@ -1,0 +1,23 @@
+<?numeric isMany(map element) {
+	if(element:Multiplicity:High eq '1') {
+		0
+	} else {
+		1
+	}
+}
+
+numeric isOptional(map element) {
+	if(element:Multiplicity:Low eq '0') {
+		0
+	} else {
+		1
+	}
+}
+
+numeric isDerived(map element) {
+	if(element:Derived == 1) {
+		1
+	} else {
+		0
+	}
+}?>

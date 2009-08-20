@@ -82,8 +82,13 @@ public class XMIBuilder {
 									or ./@name='Pseudostate'
 									or ./@name='FinalState'
 									or ./@name='DataType'">
-		if(element.getXmi_idref() != null) {
-			// just a reference
+		if(element.getXmi_idref() != null || element.getHref() != null) {
+			// just a reference, set fields in XmiObject and return
+			if(element.getXmi_idref() != null) {
+				element.setXmiIdRef(element.getXmi_idref());
+			} else if(element.getHref() != null) {
+				element.setHRef(element.getHref());			
+			}
 			return;
 		}
 		</xsl:if>

@@ -1,0 +1,18 @@
+package org.soulspace.xmi.uml14.classes;
+
+public enum <?Name?> {
+
+<?
+	renderEnumValues()
+?>
+
+}
+
+<?
+string renderEnumValues() {
+	foreach attr | (attr:OwnerScope eq 'classifier') <- Attributes {?>
+	<?attr:Name?>,	
+<?	}
+}
+?>
+

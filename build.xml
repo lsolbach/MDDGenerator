@@ -96,11 +96,25 @@
                     templateDir="templates/"
                     modelFile="model/uml1.4.xmi"
 			>
-			<modelGenerator 	name="xmischema"
-                                imports=""
+			<modelGenerator 	name="xmi/schema"
+				                imports="xmi/base"
 								subdir="uml"
 								basename="uml1.4"
 								extension="xsd"
+			/>
+			<classGenerator 	name="xmi/element"
+                                imports="xmi/base"
+								subdir="src"
+								extension="java"
+								namespaceReplacement="org.soulspace.xmi.uml14.classes"
+								excludeStereotypes ="enumeration"
+			/>
+			<classGenerator 	name="xmi/enum"
+                                imports="xmi/base"
+								subdir="src"
+								extension="java"
+								namespaceReplacement="org.soulspace.xmi.uml14.classes"
+								stereotype="enumeration"
 			/>
 		</soulmda>
 	</target>

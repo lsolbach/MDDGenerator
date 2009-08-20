@@ -13,7 +13,10 @@ public class XmiObject {
   private String namespace = "";
   private String qualifiedName = "";
   private XmiObject parent = null;
-
+  private String xmiId;
+  private String xmiIdRef;
+  private String hRef;
+  
   /**
    * Constructor
    */
@@ -32,18 +35,18 @@ public class XmiObject {
     this.parent = parent;
   }
 
-  /**
-   * @return Returns the namespace.
-   */
-  public String getNamespace() {
-    return namespace;
-  }
-  /**
-   * @param namespace The namespace to set.
-   */
-  public void setNamespace(String namespace) {
-    this.namespace = namespace;
-  }
+//  /**
+//   * @return Returns the namespace.
+//   */
+//  public String getNamespace() {
+//    return namespace;
+//  }
+//  /**
+//   * @param namespace The namespace to set.
+//   */
+//  public void setNamespace(String namespace) {
+//    this.namespace = namespace;
+//  }
   /**
    * @return Returns the parent.
    */
@@ -68,4 +71,61 @@ public class XmiObject {
   public void setQualifiedName(String qualifiedName) {
     this.qualifiedName = qualifiedName;
   }
+
+  /**
+   * @return the xmiId
+   */
+  public String getXmiId() {
+    return xmiId;
+  }
+
+  /**
+   * @param xmiId the xmiId to set
+   */
+  public void setXmiId(String xmiId) {
+    this.xmiId = xmiId;
+  }
+
+  /**
+   * @return the xmiIdRef
+   */
+  public String getXmiIdRef() {
+    return xmiIdRef;
+  }
+
+  /**
+   * @param xmiIdRef the xmiIdRef to set
+   */
+  public void setXmiIdRef(String xmiIdRef) {
+    this.xmiIdRef = xmiIdRef;
+  }
+  
+  /**
+   * @return the xmiIdRef
+   */
+  public String getHRef() {
+    return hRef;
+  }
+
+  /**
+   * @param xmiIdRef the xmiIdRef to set
+   */
+  public void setHRef(String hRef) {
+    this.hRef = hRef;
+  }
+  
+  public String getRefId() {
+	  if(getXmiIdRef() != null) {
+		  return getXmiIdRef();
+	  } else if(getHRef() != null) {
+		  String[] parts = getHRef().split("#");
+		  if(parts.length == 2) {
+			  String xmiIdRef = parts[1];
+			  return xmiIdRef;	  
+		  }
+	  }
+	  return null;
+  }
+
+  
 }

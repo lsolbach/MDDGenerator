@@ -77,11 +77,14 @@
 
 string renderElements() {
   foreach package <- Packages {
-    foreach class  <- package:Classes {
-      renderAssociationElement(class)
+    foreach class | class:StereotypeMap['primitive'] <- package:Classes {
+      renderPrimitiveElement(class)
     }
     foreach class  <- package:Classes {
       renderConcreteElement(class)
+    }
+    foreach class  <- package:Classes {
+      renderAssociationElement(class)
     }
   }
 }
@@ -107,7 +110,7 @@ string renderAssociationElement(map element) {
 	</xs:element>
 <?	
 	}
-	foreach attr | (asElement(attr:Type) && !attr:Derived) <- element:Attributes {
+	foreach attr | (isMany(attr) || (!attr:Derived && asElement(attr:Type)) ) <- element:Attributes {
 	map renderedMap
 	?>
 	<xs:element name="<?element:Name?>.<?attr:Name?>">
@@ -165,7 +168,7 @@ string renderParentElementRefs(map element, map renderedMap) {
 	foreach asso | (asso:Name ne '' && asElement(asso:Type) && !asso:Derived) <- element:Associations {?>
 			<xs:element ref="<?element:Name?>.<?asso:Name?>"/><?
 	}
-	foreach attr | (asElement(attr:Type) && !attr:Derived) <- element:Attributes {?>
+	foreach attr | (isMany(attr) || (asElement(attr:Type) && !attr:Derived)) <- element:Attributes {?>
 			<xs:element ref="<?element:Name?>.<?attr:Name?>"/><?
 	}
 }
@@ -198,24 +201,6 @@ string renderAttributes(map element) {
 	}
 }
 
-numeric asElement(map type) {
-	if(type:StereotypeMap['enumeration']
-		|| type:StereotypeMap['primitive']) {
-		0
-	} else {
-		1
-	}
-}
-
-numeric asAttribute(map attr) {
-	if(type:StereotypeMap['enumeration']
-		|| type:StereotypeMap['primitive']) {
-		1
-	} else {
-		0
-	}
-}
-
 string renderEnumType(map enum) {?>
 	<xs:simpleType name="<?enum:Name.firstLower()?>">
 		<xs:restriction base="xs:NMTOKEN"><?
@@ -227,4 +212,37 @@ string renderEnumType(map enum) {?>
 <?
 }
 
+string renderPrimitiveElement(map primitive) {
+	if(primitive:StereotypeMap['primitive']) {?>
+	
+	<xs:element name="<?primitive:Name?>" type="xs:string"/>
+<?
+	}
+}
+
+string renderType(map type) {
+		if(type:Name eq 'String' || type:Name eq 'Name') {?>xs:string<?
+		} else if(type:Name eq 'boolean' || ype:Name eq 'Boolean') {?>xs:boolean<?
+		} else if(type:StereotypeMap['enumeration']) {?><?attr:Type:Name.firstLower()?><?
+		} else {?><!-- <?type:Name?> --><?
+		}
+}
+
+numeric asElement(map type) {
+	if(type:StereotypeMap['enumeration']
+		|| type:StereotypeMap['primitive']) {
+		0
+	} else {
+		1
+	}
+}
+
+numeric asAttribute(map attr) {
+	if(!isMany(attr) && (attr:StereotypeMap['enumeration']
+		|| attr:StereotypeMap['primitive'])) {
+		1
+	} else {
+		0
+	}
+}
 ?>

@@ -1,5 +1,5 @@
 <?xml version = '1.0' encoding = 'UTF-8' ?>
-<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Sat Apr 04 14:45:26 CEST 2009'>
+<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Wed May 13 15:00:10 CEST 2009'>
   <XMI.header>    <XMI.documentation>
       <XMI.exporter>ArgoUML (using Netbeans XMI Writer version 1.0)</XMI.exporter>
       <XMI.exporterVersion>0.28(6) revised on $Date$ </XMI.exporterVersion>
@@ -5516,7 +5516,7 @@
                           </UML:AssociationEnd.participant>
                         </UML:AssociationEnd>
                         <UML:AssociationEnd xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:00000000000013D9'
-                          name = 'connection' visibility = 'public' isSpecification = 'false' isNavigable = 'true'
+                          name = '/connection' visibility = 'public' isSpecification = 'false' isNavigable = 'true'
                           ordering = 'unordered' aggregation = 'none' targetScope = 'instance' changeability = 'changeable'>
                           <UML:AssociationEnd.multiplicity>
                             <UML:Multiplicity xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:00000000000013DD'>
@@ -5702,7 +5702,7 @@
                           </UML:AssociationEnd.participant>
                         </UML:AssociationEnd>
                         <UML:AssociationEnd xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:0000000000001411'
-                          name = 'type' visibility = 'public' isSpecification = 'false' isNavigable = 'true'
+                          name = '/type' visibility = 'public' isSpecification = 'false' isNavigable = 'true'
                           ordering = 'unordered' aggregation = 'none' targetScope = 'instance' changeability = 'changeable'>
                           <UML:AssociationEnd.multiplicity>
                             <UML:Multiplicity xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:0000000000001412'>
@@ -7354,7 +7354,7 @@
                       name = '' isSpecification = 'false' isRoot = 'false' isLeaf = 'false' isAbstract = 'false'>
                       <UML:Association.connection>
                         <UML:AssociationEnd xmi.id = '127-0-0-1--1df8199:12058f1773f:-8000:0000000000001448'
-                          name = 'container' visibility = 'public' isSpecification = 'false' isNavigable = 'true'
+                          name = '/container' visibility = 'public' isSpecification = 'false' isNavigable = 'true'
                           ordering = 'unordered' aggregation = 'composite' targetScope = 'instance'
                           changeability = 'changeable'>
                           <UML:AssociationEnd.multiplicity>
