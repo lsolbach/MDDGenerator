@@ -1,4 +1,12 @@
-<?numeric isMany(map element) {
+<?
+string getGenerationInfo() {?>
+ * Generated with soulMDA generator
+ * Template: <?GenContext:Name?>
+ * Imports: <?GenContext:Imports?>
+ * Time: <?GenContext:Timestamp?><?
+}
+
+numeric isMany(map element) {
 	if(element:Multiplicity:High eq '1') {
 		0
 	} else {
@@ -20,4 +28,5 @@ numeric isDerived(map element) {
 	} else {
 		0
 	}
-}?>
+}
+?>

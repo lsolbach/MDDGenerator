@@ -97,7 +97,7 @@
                     modelFile="model/uml1.4.xmi"
 			>
 			<modelGenerator 	name="xmi/schema"
-				                imports="xmi/base"
+				                imports="base,xmi/base"
 								subdir="uml"
 								basename="uml1.4"
 								extension="xsd"

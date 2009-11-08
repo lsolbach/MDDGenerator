@@ -1,0 +1,156 @@
+<?
+string getGenerationInfo() {
+?>
+Template: <?GenContext:Name?>
+Imports: <?GenContext:Imports?>
+Time: <?GenContext:Timestamp?>
+<?
+}
+
+string getNamespace() {
+	if(GenContext:NamespacePrefix) {	
+?><?GenContext:NamespacePrefix?>.<?
+	}
+?><?Namespace?><?
+	if(GenContext:NamespaceSuffix) {
+?>.<?GenContext:NamespaceSuffix?><?
+	}
+}
+
+string getClassifierNamespace(map classifier) {
+	if(GenContext:NamespacePrefix) {	
+?><?GenContext:NamespacePrefix?>.<?
+	}
+?><?classifier:Namespace?><?
+	if(GenContext:NamespaceSuffix) {
+?>.<?GenContext:NamespaceSuffix?><?
+	}
+}
+
+string getName() {
+?><?GenContext:Prefix?><?Name?><?GenContext:Suffix?><?
+}
+
+string getClassifierName(map classifier) {
+?><?GenContext:Prefix?><?classifier:Name?><?GenContext:Suffix?><?
+}
+
+string renderList(list elements, string separator) {
+  numeric first = 1
+  foreach element <- elements {
+    if(!first) {
+      separator
+    } else {
+      first = 0
+    }
+    element
+  }
+}
+
+numeric isOptional(map element) {
+  element:Multiplicity:Low == 0
+}
+
+numeric isMany(map element) {
+  element:Multiplicity:High == -1
+}
+
+numeric isZeroToOne(map element) {
+  element:Multiplicity:Low == 0 && element:Multiplicity:High == 1
+}
+
+numeric isOneToOne(map element) {
+  element:Multiplicity:Low == 1 && element:Multiplicity:High == 1
+}
+
+numeric isZeroToMany(map element) {
+  element:Multiplicity:Low == 0 && element:Multiplicity:High == -1
+}
+
+numeric isOneToMany(map element) {
+  element:Multiplicity:Low == 1 && element:Multiplicity:High == -1
+}
+
+numeric isPersistent(map type) {
+  numeric result = 0
+  if(type:StereotypeMap['entity'] || type:StereotypeMap['value']) {
+    result = 1
+  }
+  result
+}
+
+numeric isQualified(map asso) {
+  numeric result = 0
+  if(asso:SourceEnd:Qualifiers) {
+    result = 1
+  }
+  result
+}
+
+numeric isOrdered(map asso) {
+  numeric result = 0
+  if(asso:Ordering eq 'ordered') {
+    result = 1
+  }
+  result
+}
+
+numeric isAggregateOrComposite(map asso) {
+  numeric result = 0
+  if(!(asso:Aggregation eq 'none')) {
+    result = 1
+  }
+  result
+}
+
+numeric isDerived(map element) {
+  numeric result = 0;
+  if(element:Derived) {
+    result = 1
+  }
+  result
+}
+
+numeric isComposite(map asso) {
+  numeric result = 0
+  if((asso:Aggregation eq 'composite')) {
+    result = 1
+  }
+  result
+}
+
+numeric isEager(map asso) {
+  numeric result = 0
+  if(asso:SourceEnd:Aggregation eq 'composite' || (
+       asso:TaggedValueMap['lazy'] && 
+       asso:TaggedValueMap['lazy']:Value eq 'false')) {
+    result = 1
+  }
+  result
+}
+
+numeric isUnique(map attr) {
+  numeric result = 0
+  if(attr:TaggedValueMap['unique'] && attr:TaggedValueMap['unique']:Value eq 'true') {
+    result = 1
+  }
+  result
+}
+
+numeric isSetCollectionType(map asso) {
+  numeric result = 0
+  if(asso:TaggedValueMap['collectionType'] && 
+     asso:TaggedValueMap['collectionType']:Value eq 'Set') {
+    result = 1
+  }
+  result
+}
+
+numeric isQuery(map op) {
+	numeric result = 0
+	if(op:Query) {
+		result = 1
+	}
+	result
+}
+?>
