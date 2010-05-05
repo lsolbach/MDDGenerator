@@ -215,7 +215,12 @@ string renderEnumType(map enum) {?>
 string renderPrimitiveElement(map primitive) {
 	if(primitive:StereotypeMap['primitive']) {?>
 	
-	<xs:element name="<?primitive:Name?>" type="xs:string"/>
+	<xs:element name="<?primitive:Name?>">
+		<xs:complexType>
+			<xs:attribute name="blubb" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	
 <?
 	}
 }

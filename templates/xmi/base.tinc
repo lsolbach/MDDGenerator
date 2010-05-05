@@ -1,32 +1,48 @@
 <?
-string getGenerationInfo() {?>
- * Generated with soulMDA generator
- * Template: <?GenContext:Name?>
- * Imports: <?GenContext:Imports?>
- * Time: <?GenContext:Timestamp?><?
-}
-
-numeric isMany(map element) {
-	if(element:Multiplicity:High eq '1') {
-		0
-	} else {
-		1
+string importJavaOverrides(map element) {
+	if(element:Name eq 'Class') {
+		'import org.soulspace.xmi.uml14.elements.Class;'
+	} else if(element:Name eq 'Object') {
+		'import org.soulspace.xmi.uml14.elements.Object;' 
+	} else if(element:Name eq 'Package') {
+		'import org.soulspace.xmi.uml14.elements.Package;' 
+	} else if(element:Name eq 'Exception') {
+		'import org.soulspace.xmi.uml14.elements.Exception;' 
+	} else if(element:Name eq 'Enumeration') {
+		'import org.soulspace.xmi.uml14.elements.Enumeration;' 
 	}
 }
 
-numeric isOptional(map element) {
-	if(element:Multiplicity:Low eq '0') {
-		0
+string importJavaOverrides() {
+	importJavaOverrides(This)
+}
+
+string javaTypeForType(map type, string generic) {
+	if(type:Namespace eq 'uml.Foundations.Data Types') {
+		javaTypeForUmlType(type)
+	} else if(generic) {
+		type:Name + '<' + generic + '>'
 	} else {
-		1
+		type:Name
 	}
 }
 
-numeric isDerived(map element) {
-	if(element:Derived == 1) {
-		1
+numeric isPrimitive(map type) {
+	string typename
+	if(type:Namespace eq 'uml.Foundations.Data Types') {
+		typename = javaTypeForUmlType(type)
 	} else {
-		0
+		typename = type:Name
 	}
+	
+	typename eq 'int'
+      || typename eq 'long'
+      || typename eq 'short'
+      || typename eq 'char'
+      || typename eq 'byte'
+      || typename eq 'boolean'
+      || typename eq 'float'
+      || typename eq 'double'
 }
+
 ?>

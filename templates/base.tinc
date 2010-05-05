@@ -35,18 +35,6 @@ string getClassifierName(map classifier) {
 ?><?GenContext:Prefix?><?classifier:Name?><?GenContext:Suffix?><?
 }
 
-string renderList(list elements, string separator) {
-  numeric first = 1
-  foreach element <- elements {
-    if(!first) {
-      separator
-    } else {
-      first = 0
-    }
-    element
-  }
-}
-
 numeric isOptional(map element) {
   element:Multiplicity:Low == 0
 }
@@ -69,14 +57,6 @@ numeric isZeroToMany(map element) {
 
 numeric isOneToMany(map element) {
   element:Multiplicity:Low == 1 && element:Multiplicity:High == -1
-}
-
-numeric isPersistent(map type) {
-  numeric result = 0
-  if(type:StereotypeMap['entity'] || type:StereotypeMap['value']) {
-    result = 1
-  }
-  result
 }
 
 numeric isQualified(map asso) {
@@ -118,34 +98,6 @@ numeric isComposite(map asso) {
   }
   result
 }
-
-numeric isEager(map asso) {
-  numeric result = 0
-  if(asso:SourceEnd:Aggregation eq 'composite' || (
-       asso:TaggedValueMap['lazy'] && 
-       asso:TaggedValueMap['lazy']:Value eq 'false')) {
-    result = 1
-  }
-  result
-}
-
-numeric isUnique(map attr) {
-  numeric result = 0
-  if(attr:TaggedValueMap['unique'] && attr:TaggedValueMap['unique']:Value eq 'true') {
-    result = 1
-  }
-  result
-}
-
-numeric isSetCollectionType(map asso) {
-  numeric result = 0
-  if(asso:TaggedValueMap['collectionType'] && 
-     asso:TaggedValueMap['collectionType']:Value eq 'Set') {
-    result = 1
-  }
-  result
-}
-
 numeric isQuery(map op) {
 	numeric result = 0
 	if(op:Query) {

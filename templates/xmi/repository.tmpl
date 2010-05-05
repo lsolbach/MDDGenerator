@@ -1,0 +1,171 @@
+<?
+list elementList = elementList()
+?>package <?namespace()?>;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
+import org.soulspace.xmi.base.*;
+import org.soulspace.xmi.uml14.elements.*;
+import org.soulspace.xmi.uml14.elements.Class;
+import org.soulspace.xmi.uml14.elements.Exception;
+import org.soulspace.xmi.uml14.elements.Object;
+import org.soulspace.xmi.uml14.elements.Package;
+import org.soulspace.xmi.uml14.elements.impl.*;
+import org.soulspace.xmi.uml14.types.*;
+
+/**
+ * XmiRepository
+ */
+public class XmiRepositoryImpl {
+
+	private boolean profile = false;
+	private File file;
+	private File[] files;
+	private Map<String, XmiObject> xmiIdMap = new HashMap<String, XmiObject>();
+	private Map<String, XmiObject> nameMap = new HashMap<String, XmiObject>();
+
+	<?lists(elementList)?>
+
+	/**
+	 * Constructor
+	 */
+	public XmiRepositoryImpl() {
+		super();
+	}
+
+	public XmiRepositoryImpl(String filename) {
+		super();
+		// this.file = new File(filename);
+		files = new File[] { new File(filename) };
+	}
+
+	public XmiRepositoryImpl(File file) {
+		super();
+		files = new File[] { file };
+	}
+
+	public XmiRepositoryImpl(String[] filenames) {
+		super();
+		files = new File[filenames.length];
+		for (int i = 0; i < filenames.length; i++) {
+			files[i] = new File(filenames[i]);
+		}
+	}
+
+	public XmiRepositoryImpl(File[] files) {
+		super();
+		this.files = files;
+	}
+
+	public void initRepository() {
+		for (File file : files) {
+			parseXmi(file);
+		}
+	}
+
+	public void initRepository(File file) {
+		parseXmi(file);
+	}
+
+	public void loadModel(File modelFile) {
+		profile = false;
+		parseXmi(file);
+	}
+
+	public void loadProfile(File profileFile) {
+		profile = true;
+		parseXmi(profileFile);
+	}
+
+	public void parseXmi(File file) {
+		// TODO use sax parser to parse file and build repository
+	}
+
+/*
+	public XMI readXmi(File file) {
+		XMI xmi = null;
+		FileReader reader;
+
+		try {
+			reader = new FileReader(file);
+			xmi = (XMI) XMI.unmarshal(reader);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (MarshalException e) {
+			e.printStackTrace();
+		} catch (ValidationException e) {
+			e.printStackTrace();
+		}
+
+		return xmi;
+	}
+
+	public void buildXmiRepository(XMI xmi) {
+		if (xmi != null) {
+			XMIBuilder builder;
+			if (profile) {
+				builder = new XMIBuilder(this, true);
+			} else {
+				builder = new XMIBuilder(this);
+			}
+			XMI_content content = xmi.getXMI_content();
+			Enumeration e = content.enumerateXMI_contentItem();
+			while (e.hasMoreElements()) {
+				XMI_contentItem cI = (XMI_contentItem) e.nextElement();
+				if (cI.getModel() != null) {
+					builder.traverseModel("", cI.getModel());
+				} else {
+					System.err.println("unknown xmi content!");
+				}
+			}
+		}
+	}
+*/
+
+<?
+	registration(elementList)
+	access(elementList)
+?>
+}
+
+<?
+string lists(list elementList) {
+	foreach element <- elementList {?>
+	private List<<?element:Name?>> <?element:Name.firstLower()?>List = new ArrayList<<?element:Name?>>();<?
+	}
+}
+
+string registration(list elementList) {
+	foreach element <- elementList {?>
+	void register<?element:Name?>(String xmiId, <?element:Name?> element) {
+		<?element:Name.firstLower()?>List.add(element);
+		xmiIdMap.put(element.getXmiId(), element);
+	}<?
+	}
+}
+
+string access(list elementList) {
+	foreach element <- elementList {?>
+	public List<<?element:Name?>> get<?element:Name?>List() {
+		return <?element:Name.firstLower()?>List;
+	}<?
+	}
+}
+
+list elementList() {
+	list elementList
+	foreach package <- Packages {
+		foreach element | !isAbstract(element) && !element:Stereotypes <- package:Classes {
+			elementList.add(element)
+		}	
+	}
+	elementList
+}
+?>

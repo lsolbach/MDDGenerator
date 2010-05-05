@@ -32,7 +32,7 @@
 			<fileset dir="${generate.dir}/src/org/soulspace/xmi/marshal" includes="*.java"/>
 			<fileset dir="${generate.dir}/src/org/soulspace/xmi/marshal/types" includes="*.java" />
 		</delete>
-
+<!--
 		<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" failonerror="yes"  >
 			<classpath>
 				<pathelement location="./cfg"/>
@@ -42,8 +42,8 @@
 				</fileset>
 			</classpath>
 			<arg value="-f"/>
-			<!--arg value="-nodesc"/-->
-			<!--arg value="-generateImportedSchemas"/-->
+			<!##arg value="-nodesc"/##>
+			<!##arg value="-generateImportedSchemas"/##>
 			<arg value="-i"/>
 			<arg value="${generate.dir}/uml/uml1.4.xsd"/>
 			<arg value="-package"/>
@@ -53,11 +53,11 @@
 			<arg value="-types"/>
 			<arg value="j2"/>
 		</java>
-	
-	<!--antcall target="refresh"/-->
+-->
 	</target>
 
 	<target name="generate-builders">
+<!--
 		<xslt
 			style="templates/builder.xsl"
 			in="${generate.dir}/uml/uml1.4.xsd"
@@ -66,6 +66,7 @@
 			style="templates/repository.xsl"
 			in="${generate.dir}/uml/uml1.4.xsd"
 			out="${generate.dir}/src/org/soulspace/xmi/repository/XMIRepository.java" />
+-->
 	</target>
 	
 	<target name="test-xmiloader">
@@ -78,7 +79,7 @@
 	</target>
 	
 	<target name="generate-schema">
-		<!--delete>
+		<delete>
 			<fileset dir="${backup.dir}"/>
 		</delete>
 		<copy todir="${backup.dir}" overwrite="true">
@@ -86,35 +87,79 @@
 		</copy>
 		<delete>
 			<fileset dir="${generate.dir}"/>
-		</delete-->
+		</delete>
 		
 		<!--
-		  - UML Schema
+		  - Generator
 		  -->
 		<soulmda destdir="${generate.dir}"
                     backupdir="${backup.dir}"
-                    templateDir="templates/"
+                    templateDirs="templates,../MdaTemplates/std-templates"
                     modelFile="model/uml1.4.xmi"
 			>
 			<modelGenerator 	name="xmi/schema"
-				                imports="base,xmi/base"
+				                imports="lib,model/lib"
 								subdir="uml"
 								basename="uml1.4"
 								extension="xsd"
 			/>
-			<classGenerator 	name="xmi/element"
-                                imports="xmi/base"
+			<classGenerator 	name="xmi/element-interface"
+                                imports="lib,model/lib,java/lib,java/interface,xmi/base"
 								subdir="src"
 								extension="java"
-								namespaceReplacement="org.soulspace.xmi.uml14.classes"
-								excludeStereotypes ="enumeration"
+								namespaceReplacement="org.soulspace.xmi.uml14.elements"
+								stereotype="NONE"
+			/>
+			<classGenerator 	name="xmi/element-class"
+                                imports="lib,model/lib,java/lib,java/class,xmi/base"
+								subdir="src"
+								prefix="Abstract"
+								extension="java"
+								namespaceReplacement="org.soulspace.xmi.uml14.elements.impl"
+								stereotype ="NONE"
+			/>
+			<classGenerator 	name="xmi/element-concrete-class"
+                                imports="lib,model/lib,java/lib,java/class,xmi/base"
+								subdir="src"
+								suffix="Impl"
+								extension="java"
+								namespaceReplacement="org.soulspace.xmi.uml14.elements.impl"
+								stereotype ="NONE"
 			/>
 			<classGenerator 	name="xmi/enum"
-                                imports="xmi/base"
+                                imports="lib,model/lib,java/lib,java/class,xmi/base"
 								subdir="src"
 								extension="java"
-								namespaceReplacement="org.soulspace.xmi.uml14.classes"
+								namespaceReplacement="org.soulspace.xmi.uml14.types"
 								stereotype="enumeration"
+			/>
+			<classGenerator 	name="xmi/primitive"
+                                imports="lib,model/lib,java/lib,java/class,xmi/base"
+								subdir="src"
+								extension="java"
+								namespaceReplacement="org.soulspace.xmi.uml14.primitives"
+								stereotype="primitive"
+			/>
+			<modelGenerator 	name="xmi/repository"
+                                imports="lib,model/lib,java/lib,java/class,xmi/base"
+								subdir="src"
+								baseName="XmiRepositoryImpl"
+								extension="java"
+								namespaceReplacement="org.soulspace.xmi.uml14.repository"
+			/>
+			<modelGenerator 	name="xmi/parser"
+                                imports="lib,model/lib,java/lib,java/class,xmi/base"
+								subdir="src"
+								baseName="XmiParserImpl"
+								extension="java"
+								namespaceReplacement="org.soulspace.xmi.uml14.repository"
+			/>
+			<modelGenerator 	name="xmi/writer"
+                                imports="lib,model/lib,java/lib,java/class,xmi/base"
+								subdir="src"
+								baseName="XmiWriterImpl"
+								extension="java"
+								namespaceReplacement="org.soulspace.xmi.uml14.repository"
 			/>
 		</soulmda>
 	</target>

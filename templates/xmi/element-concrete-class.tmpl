@@ -1,0 +1,83 @@
+/*
+ * Java bean <?name()?>
+ * Implementation of interface <?Name?>.
+<? generationInfo(' * ')?>
+ */
+
+package <?namespace()?>;
+
+import java.util.*;
+
+import org.soulspace.xmi.base.*;
+import org.soulspace.xmi.uml14.elements.*;
+import org.soulspace.xmi.uml14.types.*;
+<?importJavaOverrides()?>
+<?
+javaDoc()
+annotations()?>
+<?visibility()?> class <?name()?> extends Abstract<?Name?> {
+
+	// Constructors<?
+constructors()
+?>
+
+	// Accessors<?
+propertyAccessors()
+associationAccessors()
+?>
+
+	// Operations<?
+operations()
+?>
+
+	// Object methods<?
+equals()
+hashcode()
+?>
+}
+<?
+
+string constructors() {
+	ctorDefault()
+}
+
+string propertyAccessors() {
+	foreach attr | isDerived(attr) <- AllAttributes {?>
+	<?visibility(attr)?> synchronized <?javaType(attr)?> get<?attr:Name.firstUpper()?>() {
+		// implement
+		return <?attr:Name?>;
+	}
+<?
+	}
+}
+
+string associationAccessors() {
+	foreach asso | isDerived(asso) <- AllAssociations {
+	
+	}
+}
+
+string operations() {
+	foreach op <- AllOperations {
+	
+	}
+}
+
+string operation(map op) {
+
+}
+
+string equals() {?>
+	public boolean equals(java.lang.Object o) {
+		return super.equals(o);
+	}
+<?
+}
+
+string hashcode() {?>
+	public int hashCode() {
+		return super.hashCode();
+	}
+<?
+}
+?>

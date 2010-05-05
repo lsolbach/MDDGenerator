@@ -23,7 +23,7 @@ import java.util.Iterator;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.ValidationException;
 
-import org.soulspace.xmi.base.XmiObject;
+import org.soulspace.xmi.base.AbstractXmiObject;
 import org.soulspace.xmi.marshal.XMI;
 import org.soulspace.xmi.marshal.XMI_content;
 import org.soulspace.xmi.marshal.XMI_contentItem;

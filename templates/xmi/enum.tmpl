@@ -1,18 +1,31 @@
-package org.soulspace.xmi.uml14.classes;
+package <?namespace()?>;
 
-public enum <?Name?> {
+public enum <?name()?> {
 
-<?
-	renderEnumValues()
-?>
+	<?enumValues()?>
+	
+	private final String name;
 
+	private <?name()?>(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String toString() {
+		return name;
+	}
 }
 
 <?
-string renderEnumValues() {
-	foreach attr | (attr:OwnerScope eq 'classifier') <- Attributes {?>
-	<?attr:Name?>,	
-<?	}
+string enumValues() {
+	list valueList
+	foreach attr <- Attributes {
+		valueList = valueList.add(attr:Name.toUpper() + ' ("' + attr:Name + '")')	
+	}
+	formatListWithLineBreaksAndTabs(valueList, ',', 1) + ';'
 }
 ?>
 

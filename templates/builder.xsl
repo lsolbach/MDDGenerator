@@ -39,9 +39,9 @@ public class XMIBuilder {
    * Traverse <xsl:value-of select="translate(./@name, '.', '_')"/> element.
    */
   void traverse<xsl:value-of select="translate(./@name, '.', '_')"/>(
-	               String namespace,
+	               java.lang.String namespace,
 								 org.soulspace.xmi.marshal.<xsl:value-of select="translate(./@name, '.', '_')"/> element) {
-		String childNamespace = namespace;
+		java.lang.String childNamespace = namespace;
 		<xsl:apply-templates select="." mode="namespace"/>
 		<xsl:apply-templates mode="register"/><xsl:apply-templates mode="descend"/>
   }
@@ -115,7 +115,7 @@ public class XMIBuilder {
 		if(element.getName() == null) {
 			System.out.println("INFO: Name of <xsl:value-of select="translate(./@name, '.', '_')"/> with XmiId " + element.getXmi_id() + " is not set");
 		}
-		String qualifiedName = XmiHelper.appendNamespace(namespace, element.getName());
+		java.lang.String qualifiedName = XmiHelper.appendNamespace(namespace, element.getName());
 		element.setNamespace(namespace);
 		element.setQualifiedName(qualifiedName);
 		element.setParent(xmi.lookupByQualifiedName(namespace));

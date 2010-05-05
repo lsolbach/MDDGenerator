@@ -1,0 +1,150 @@
+<?
+list elementList = elementList()
+?>package <?namespace()?>;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import org.soulspace.xmi.base.*;
+import org.soulspace.xmi.uml14.elements.*;
+import org.soulspace.xmi.uml14.elements.Class;
+import org.soulspace.xmi.uml14.elements.Exception;
+import org.soulspace.xmi.uml14.elements.Object;
+import org.soulspace.xmi.uml14.elements.Package;
+import org.soulspace.xmi.uml14.elements.impl.*;
+import org.soulspace.xmi.uml14.types.*;
+
+public class XmiWriterImpl {
+
+	private FileWriter writer = null;
+
+	public XmiWriterImpl(String filename) {
+		try {
+			writer = new FileWriter(new File(filename));
+		} catch(IOException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		} 
+	}
+	
+	public void write(XmiRepositoryImpl repository) {
+
+	}
+	
+	private String xmlEncode(String input) {
+		return input;
+	}
+	
+	<?elementWriters(elementList)?>
+}
+
+<?
+list elementList() {
+	list elementList
+	foreach package <- Packages {
+		foreach class <- package:Classes {
+			elementList.add(class)
+			foreach asso | asso:Name && !isDerived(asso) <- class:Associations {
+				elementList.add(asso)
+			}
+		}
+	}
+	elementList
+}
+
+string elementWriters(list elementList) {
+	foreach element | !element:StereotypeMap <- elementList {
+		if(element:ElementType eq 'Class') {
+			if(!isAbstract(element)) {
+				classWriter(element)
+			} else {
+				abstractClassWriter(element)			
+			}
+		} else if (element:ElementType eq 'AssociationEnd') {
+		}
+	}
+}
+
+string abstractClassWriter(map element) {?>
+	// Abstract Class 
+	protected void write<?element:Name.firstUpper()?>(<?element:Name?> <?argumentName(element)?>) {<?
+		foreach subclass <- element:SubClasses {?>
+		if(<?argumentName(element)?> instanceof <?subclass:Name?>) {
+			write<?subclass:Name?>(<?argumentName(element)?>);
+		}<?
+		}?>
+	}
+<?
+}
+
+string classWriter(map element) {?>
+	// Class 
+	protected void write<?element:Name.firstUpper()?>(<?element:Name?> <?argumentName(element)?>) {
+		writer.append(xmlEncode("<<?element:Name?>"));
+		<?writeAttributes(element)?>
+		writer.append(xmlEncode(">"));		
+		<?writeAssociations(element)?>
+		writer.append(xmlEncode("</<?element:Name?>"));
+	}
+<?
+}
+
+string writeAttributes(map element) {?>
+		if(<?argumentName(element)?>.getXmiId() != null) {
+			writer.append("\"xmi.id=\"" + <?argumentName(element)?>.getXmiId() + "\"");
+		}
+		if(<?argumentName(element)?>.getXmiIdRef() != null) {
+			writer.append("\"xmi.idref=\"" + <?argumentName(element)?>.getXmiIdRef() + "\"");
+		}
+		if(<?argumentName(element)?>.getHRef() != null) {
+			writer.append("\"href=\"" + <?argumentName(element)?>.getHRef() + "\"");
+		}<?
+	foreach attr | !isDerived(attr) <- element:AllAttributes {
+		if(attr:Type:Name eq 'Boolean') {?>
+		if(<?argumentName(element)?>.get<?attr:Name.firstUpper()?>()) {
+			writer.append("\"<?attr:Name?>=\"" + <?argumentName(element)?>.get<?attr:Name.firstUpper()?>() + "\"");
+		}
+<?
+		} else {?>
+		if(<?argumentName(element)?>.get<?attr:Name.firstUpper()?>() != null) {
+			writer.append("\"<?attr:Name?>=\"" + <?argumentName(element)?>.get<?attr:Name.firstUpper()?>() + "\"");
+		}
+<?
+		}
+	}
+}
+
+string writeAssociations(map element) {
+	foreach asso | asso:Name && !isDerived(asso) <- element:AllAssociations {?>
+		writer.append(xmlEncode("<<?asso:SourceEnd:Type:Name?>.<?asso:Name?>>"));<?		
+		if(isMany(asso)) {?>
+		for(<?asso:Type:Name?> child : <?argumentName(element)?>.get<?asso:Name.firstUpper()?>Set()) {
+			write<?asso:Type:Name.firstUpper()?>(child);
+		}<?
+		} else {?>
+		write<?asso:Type:Name.firstUpper()?>(<?argumentName(element)?>.get<?asso:Name.firstUpper()?>());<?
+		}?>
+		writer.append(xmlEncode("</<?asso:SourceEnd:Type:Name?>.<?asso:Name?>>"));
+<?
+	}
+}
+
+string argumentName(map element) {
+	if(element:Name eq 'Class') {
+		'aClass'
+	} else if(element:Name eq 'Interface') {
+		'aInterface'
+	} else if(element:Name eq 'Package') {
+		'aPackage'
+	} else if(element:Name eq 'Integer') {
+		'aInteger'
+	} else if(element:Name eq 'Boolean') {
+		'aBoolean'
+	} else if(element:Name eq 'String') {
+		'aString'
+	} else {
+		element:Name.firstLower()		
+	}
+}
+?>

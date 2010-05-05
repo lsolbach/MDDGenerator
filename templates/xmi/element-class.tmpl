@@ -1,0 +1,47 @@
+/*
+ * Java bean <?name()?>
+ * Implementation of interface <?Name?>.
+<? generationInfo(' * ')?>
+ */
+
+package <?namespace()?>;
+
+import java.util.*;
+
+import org.soulspace.xmi.base.*;
+import org.soulspace.xmi.uml14.elements.*;
+import org.soulspace.xmi.uml14.types.*;
+<?importJavaOverrides()?>
+<?
+javaDoc()
+annotations()?>
+<?visibility()?> abstract class <?name()?> extends AbstractXmiObject <?implementations()?> {
+
+	// Fields<?
+propertyFields()
+associationFields()
+?>
+
+	// Constructors<?
+constructors()
+?>
+
+	// Accessors<?
+propertyAccessors()
+associationAccessors()
+?>
+
+	// Operations<?
+operations()
+?>
+
+	// Object methods<?
+equals()
+hashcode()
+?>
+}
+<?
+numeric isAccessibleAssociation(map asso) {
+	super() && !isDerived(asso)
+}
+?>

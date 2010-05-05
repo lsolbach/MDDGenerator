@@ -1,0 +1,37 @@
+/*
+ * Interface <?name()?>
+<?generationInfo(' * ')?>
+ */
+
+package <?namespace()?>;
+
+import java.util.*;
+
+import org.soulspace.xmi.base.*;
+import org.soulspace.xmi.uml14.types.*;
+<?imports()?>
+<?
+javaDoc()
+annotations()?>
+<?visibility()?> interface <?name()?> <?extensions()?> {
+	// Accessors
+<?properties()?>
+<?associations()?>
+	// Operations
+<?operations()?>
+}
+
+<?
+string extensions() {
+	string extensions = super()
+	if(extensions) {
+		extensions + ', XmiObject'
+	} else {
+		'extends XmiObject'
+	}
+}
+
+numeric isAccessibleAssociation(map asso) {
+	super() && !isDerived(asso)
+}
+?>

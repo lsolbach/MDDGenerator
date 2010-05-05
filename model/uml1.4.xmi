@@ -1,8 +1,8 @@
 <?xml version = '1.0' encoding = 'UTF-8' ?>
-<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Wed May 13 15:00:10 CEST 2009'>
+<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Tue May 04 18:45:09 CEST 2010'>
   <XMI.header>    <XMI.documentation>
       <XMI.exporter>ArgoUML (using Netbeans XMI Writer version 1.0)</XMI.exporter>
-      <XMI.exporterVersion>0.28(6) revised on $Date$ </XMI.exporterVersion>
+      <XMI.exporterVersion>0.28.1(6) revised on $Date$ </XMI.exporterVersion>
     </XMI.documentation>
     <XMI.metamodel xmi.name="UML" xmi.version="1.4"/></XMI.header>
   <XMI.content>
@@ -4340,7 +4340,7 @@
                         <UML:AssociationEnd xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:0000000000001291'
                           name = 'owner' visibility = 'public' isSpecification = 'false' isNavigable = 'true'
                           ordering = 'unordered' aggregation = 'composite' targetScope = 'instance'
-                          changeability = 'changeable'>
+                          changeability = 'frozen'>
                           <UML:AssociationEnd.multiplicity>
                             <UML:Multiplicity xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:000000000000129A'>
                               <UML:Multiplicity.range>
@@ -4652,19 +4652,10 @@
                       name = 'LinkObject' visibility = 'public' isSpecification = 'false' isRoot = 'false'
                       isLeaf = 'false' isAbstract = 'false' isActive = 'false'>
                       <UML:GeneralizableElement.generalization>
-                        <UML:Generalization xmi.idref = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:00000000000012FE'/>
                         <UML:Generalization xmi.idref = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:00000000000012FF'/>
+                        <UML:Generalization xmi.idref = '127-0-0-1-6e128686:1286284b87e:-8000:0000000000001695'/>
                       </UML:GeneralizableElement.generalization>
                     </UML:Class>
-                    <UML:Generalization xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:00000000000012FE'
-                      isSpecification = 'false'>
-                      <UML:Generalization.child>
-                        <UML:Class xmi.idref = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:00000000000012FC'/>
-                      </UML:Generalization.child>
-                      <UML:Generalization.parent>
-                        <UML:Class xmi.idref = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:000000000000128A'/>
-                      </UML:Generalization.parent>
-                    </UML:Generalization>
                     <UML:Generalization xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:00000000000012FF'
                       isSpecification = 'false'>
                       <UML:Generalization.child>
@@ -5030,6 +5021,15 @@
                         </UML:AssociationEnd>
                       </UML:Association.connection>
                     </UML:Association>
+                    <UML:Generalization xmi.id = '127-0-0-1-6e128686:1286284b87e:-8000:0000000000001695'
+                      isSpecification = 'false'>
+                      <UML:Generalization.child>
+                        <UML:Class xmi.idref = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:00000000000012FC'/>
+                      </UML:Generalization.child>
+                      <UML:Generalization.parent>
+                        <UML:Class xmi.idref = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:000000000000128A'/>
+                      </UML:Generalization.parent>
+                    </UML:Generalization>
                   </UML:Namespace.ownedElement>
                 </UML:Package>
                 <UML:Package xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:0000000000001024'
