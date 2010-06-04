@@ -41,7 +41,47 @@ hashcode()
 ?>
 }
 <?
-numeric isAccessibleAssociation(map asso) {
-	super() && !isDerived(asso)
+string propertyFields() {
+	map attrMap = additionalPropertyMap()
+	foreach attr | !isDerived(attr) <- AllAttributes {
+		attrMap.put(attr:Name, attr)
+	}
+	list keyList = attrMap.keyList()
+	foreach attrKey <- keyList {	
+		propertyField(attrMap[attrKey])
+	}
+}
+
+string propertyAccessors() {
+	map attrMap = additionalPropertyMap()
+	foreach attr | isAccessibleProperty(attr) <- AllAttributes {
+		attrMap.put(attr:Name, attr)
+	}
+	list keyList = attrMap.keyList()
+	foreach attrKey <- keyList {	
+		propertyAccessor(attrMap[attrKey])
+	}
+}
+
+string associationFields() {
+	map assoMap
+	foreach asso | isAccessibleAssociation(asso) && !isDerived(asso) <- AllAssociations {
+		assoMap.put(asso:Name, asso)
+	}
+	list keyList = assoMap.keyList()
+	foreach assoKey <- keyList {	
+		associationField(assoMap[assoKey])
+	}
+}
+
+string associationAccessors() {
+	map assoMap
+	foreach asso | isAccessibleAssociation(asso) && !isDerived(asso) <- AllAssociations {
+		assoMap.put(asso:Name, asso)
+	}
+	list keyList = assoMap.keyList()
+	foreach assoKey <- keyList {	
+		associationAccessor(assoMap[assoKey])
+	}
 }
 ?>

@@ -16,59 +16,17 @@
 	<!--
 	  - project specific targets
 	  -->
-	<target name="generate-local" depends="generate-schema,check-generate-required,generate-binding,generate-builders"/>
+	<target name="generate-local" depends="check-generate-required,generate-model"/>
 
 	<target name="test-local" depends="test-xmiloader"/>
 	
 	<!-- generate classes from schema -->
 	<target name="check-generate-required">
-		<uptodate property="generateModel.notRequired" targetfile="${generate.dir}/src/org/soulspace/xmi/marshal/XMI.java" >
-		    <srcfiles dir="${generate.dir}/uml" includes="uml1.4.xsd"/>
+		<uptodate property="generateModel.notRequired" targetfile="${generate.dir}/src/org/soulspace/xmi/uml14/XmiRepositoryImpl.java" >
+		    <srcfiles dir="${basedir}/model" includes="uml1.4.xmi"/>
 		</uptodate>
 	</target>	
 		
-	<target name="generate-binding" depends="initialize" unless="generateModel.notRequired">
-		<delete quiet="true">
-			<fileset dir="${generate.dir}/src/org/soulspace/xmi/marshal" includes="*.java"/>
-			<fileset dir="${generate.dir}/src/org/soulspace/xmi/marshal/types" includes="*.java" />
-		</delete>
-<!--
-		<java fork="yes" classname="org.exolab.castor.builder.SourceGenerator" failonerror="yes"  >
-			<classpath>
-				<pathelement location="./cfg"/>
-		        <pathelement location="./bin"/>
-				<fileset dir="./lib/runtime">
-					<include name="*.jar" />
-				</fileset>
-			</classpath>
-			<arg value="-f"/>
-			<!##arg value="-nodesc"/##>
-			<!##arg value="-generateImportedSchemas"/##>
-			<arg value="-i"/>
-			<arg value="${generate.dir}/uml/uml1.4.xsd"/>
-			<arg value="-package"/>
-			<arg value="org.soulspace.xmi.marshal"/>
-			<arg value="-dest"/>
-			<arg value="${generate.dir}/src"/>
-			<arg value="-types"/>
-			<arg value="j2"/>
-		</java>
--->
-	</target>
-
-	<target name="generate-builders">
-<!--
-		<xslt
-			style="templates/builder.xsl"
-			in="${generate.dir}/uml/uml1.4.xsd"
-			out="${generate.dir}/src/org/soulspace/xmi/repository/XMIBuilder.java" />
-		<xslt
-			style="templates/repository.xsl"
-			in="${generate.dir}/uml/uml1.4.xsd"
-			out="${generate.dir}/src/org/soulspace/xmi/repository/XMIRepository.java" />
--->
-	</target>
-	
 	<target name="test-xmiloader">
 		<java
 			classname="org.soulspace.xmi.util.XMILoader"
@@ -78,7 +36,7 @@
 		</java>
 	</target>
 	
-	<target name="generate-schema">
+	<target name="generate-model" unless="generateModel.notRequired">
 		<delete>
 			<fileset dir="${backup.dir}"/>
 		</delete>
@@ -96,6 +54,7 @@
                     backupdir="${backup.dir}"
                     templateDirs="templates,../MdaTemplates/std-templates"
                     modelFile="model/uml1.4.xmi"
+					profiles="profiles/default-uml14.xmi"
 			>
 			<modelGenerator 	name="xmi/schema"
 				                imports="lib,model/lib"
@@ -147,14 +106,14 @@
 								extension="java"
 								namespaceReplacement="org.soulspace.xmi.uml14.repository"
 			/>
-			<modelGenerator 	name="xmi/parser"
+			<modelGenerator 	name="xmi/parser-xmi12"
                                 imports="lib,model/lib,java/lib,java/class,xmi/base"
 								subdir="src"
 								baseName="XmiParserImpl"
 								extension="java"
 								namespaceReplacement="org.soulspace.xmi.uml14.repository"
 			/>
-			<modelGenerator 	name="xmi/writer"
+			<modelGenerator 	name="xmi/writer-xmi12"
                                 imports="lib,model/lib,java/lib,java/class,xmi/base"
 								subdir="src"
 								baseName="XmiWriterImpl"

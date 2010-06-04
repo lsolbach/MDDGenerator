@@ -31,7 +31,25 @@ string extensions() {
 	}
 }
 
-numeric isAccessibleAssociation(map asso) {
-	super() && !isDerived(asso)
+string properties() {
+	map attrMap = additionalPropertyMap()
+	foreach attr | isAccessibleProperty(attr) <- AllAttributes {
+		attrMap.put(attr:Name, attr)
+	}
+	list keyList = attrMap.keyList()
+	foreach attrKey <- keyList {	
+		property(attrMap[attrKey])
+	}
+}
+
+string associations() {
+	map assoMap
+	foreach asso | isAccessibleAssociation(asso) <- element:Associations {
+		assoMap.put(asso:Name, asso)
+	}
+	list keyList = assoMap.keyList()
+	foreach assoKey <- keyList {	
+		association(assoMap[assoKey])
+	}
 }
 ?>

@@ -144,7 +144,7 @@ string lists(list elementList) {
 
 string registration(list elementList) {
 	foreach element <- elementList {?>
-	void register<?element:Name?>(String xmiId, <?element:Name?> element) {
+	void register<?element:Name?>(<?element:Name?> element) {
 		<?element:Name.firstLower()?>List.add(element);
 		xmiIdMap.put(element.getXmiId(), element);
 	}<?

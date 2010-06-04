@@ -10,6 +10,8 @@ string importJavaOverrides(map element) {
 		'import org.soulspace.xmi.uml14.elements.Exception;' 
 	} else if(element:Name eq 'Enumeration') {
 		'import org.soulspace.xmi.uml14.elements.Enumeration;' 
+	} else if(element:Name eq 'EnumerationLiteral') {
+		'import org.soulspace.xmi.uml14.elements.Enumeration;' 
 	}
 }
 
@@ -25,6 +27,24 @@ string javaTypeForType(map type, string generic) {
 	} else {
 		type:Name
 	}
+}
+
+numeric isSuppressedAssociation(map element, map asso) {
+	(element:Name eq 'Instance' && asso:Name eq 'owner')
+	||
+	(element:Name eq 'Instance' && asso:Name eq 'ownedInstance')
+	||
+	(element:Name eq 'LinkObject' && asso:Name eq 'owner')
+	||
+	(element:Name eq 'LinkObject' && asso:Name eq 'playedRole')
+}
+
+numeric isAccessibleProperty(map attr) {
+	super(attr) && !isDerived(attr)
+}
+
+numeric isAccessibleAssociation(map asso) {
+	super(asso) && !isDerived(asso)
 }
 
 numeric isPrimitive(map type) {
@@ -45,4 +65,39 @@ numeric isPrimitive(map type) {
       || typename eq 'double'
 }
 
+string annotations() {
+'@SuppressWarnings("unused")'
+}
+
+
+map additionalPropertyMap() {
+	additionalPropertyMap(This)
+}
+
+map additionalPropertyMap(map element) {
+	map attrMap
+	if(isInstanceOf(element, 'ModelElement')) {
+		map assoClassMap
+		foreach asso
+				| asso:Association:ElementType eq 'AssociationClass'
+				<- element:AllAssociations {
+			assoClassMap.put(asso:Association:Name, asso:Association)
+		}	
+		list keyList = assoClassMap.keyList()
+		foreach assoClassKey <- keyList {
+			map element = assoClassMap[assoClassKey]
+			foreach attr <- element:Attributes {
+				attrMap.put(attr:Name, attr)
+			}
+		}
+	}
+	attrMap
+}
+
+numeric isReferenceAttribute(map attr) {
+	attr:Type:Name eq 'Multiplicity'
+	|| attr:Type:Name eq 'Geometry'
+	|| attr:Type:Name eq 'LocationReference'
+	|| attr:Type:Name.endsWith('Expression')
+}
 ?>

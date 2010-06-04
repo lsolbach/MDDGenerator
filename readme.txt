@@ -1,6 +1,6 @@
-XmiRepository
-=============
+XmiRepository2
+==============
 
-Version 0.9.11 (--.08.2008)
+Version 0.1.0 (--.--.2010)
 
 * added package dependencies
