@@ -12,8 +12,8 @@ public interface XmiObject {
 	void setHRef(String hRef);
 	String getHRefId();
 
-	XmiObject getParent();
-	void setParent(XmiObject parent);
+	XmiObject getParentElement();
+	void setParentElement(XmiObject parent);
 	
 //	String getNamespace();
 //	void setNamespace(String namespace);

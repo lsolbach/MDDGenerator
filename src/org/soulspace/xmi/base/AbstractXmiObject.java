@@ -11,9 +11,9 @@ package org.soulspace.xmi.base;
  */
 public class AbstractXmiObject implements XmiObject {
 
-	private String namespace = "";
+	//private String namespace = "";
 	private String qualifiedName = "";
-	private XmiObject parent = null;
+	private XmiObject parentElement = null;
 	private String xmiId;
 	private String xmiIdRef;
 	private String hRef;
@@ -48,10 +48,10 @@ public class AbstractXmiObject implements XmiObject {
 	 *            Namespace for the XMI object
 	 * @param parent
 	 */
-	public AbstractXmiObject(String namespace, AbstractXmiObject parent) {
+	public AbstractXmiObject(String namespace, AbstractXmiObject parentElement) {
 		super();
-		this.namespace = namespace;
-		this.parent = parent;
+//		this.namespace = namespace;
+		this.parentElement = parentElement;
 	}
 
 	// /**
@@ -71,16 +71,16 @@ public class AbstractXmiObject implements XmiObject {
 	/**
 	 * @return Returns the parent.
 	 */
-	public XmiObject getParent() {
-		return parent;
+	public XmiObject getParentElement() {
+		return parentElement;
 	}
 
 	/**
 	 * @param parent
 	 *            The parent to set.
 	 */
-	public void setParent(XmiObject parent) {
-		this.parent = parent;
+	public void setParentElement(XmiObject parentElement) {
+		this.parentElement = parentElement;
 	}
 
 	/**
