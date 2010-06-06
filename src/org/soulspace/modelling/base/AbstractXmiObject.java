@@ -1,7 +1,7 @@
 /*
  * Created on Dec 28, 2004
  */
-package org.soulspace.xmi.base;
+package org.soulspace.modelling.base;
 
 /**
  * Base class for XMI objects

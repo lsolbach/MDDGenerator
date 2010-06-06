@@ -16,26 +16,28 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import org.soulspace.xmi.base.*;
-import org.soulspace.xmi.uml14.elements.*;
-import org.soulspace.xmi.uml14.elements.Class;
-import org.soulspace.xmi.uml14.elements.Exception;
-import org.soulspace.xmi.uml14.elements.Object;
-import org.soulspace.xmi.uml14.elements.Package;
-import org.soulspace.xmi.uml14.elements.impl.*;
-import org.soulspace.xmi.uml14.types.*;
+import org.soulspace.modelling.base.*;
+import org.soulspace.modelling.uml14.*;
+import org.soulspace.modelling.uml14.impl.*;
+import org.soulspace.modelling.uml14.elements.*;
+import org.soulspace.modelling.uml14.elements.Class;
+import org.soulspace.modelling.uml14.elements.Exception;
+import org.soulspace.modelling.uml14.elements.Object;
+import org.soulspace.modelling.uml14.elements.Package;
+import org.soulspace.modelling.uml14.elements.impl.*;
+import org.soulspace.modelling.uml14.types.*;
 
 @SuppressWarnings("unchecked")
-public class XmiParserImpl extends DefaultHandler {
+public class <?name()?> extends DefaultHandler {
 
-	private final XmiRepositoryImpl xmiRepository;
+	private final Uml14RepositoryImpl xmiRepository;
 	private XMLReader xmlReader;
 	private Stack<java.lang.Object> elementStack;
 
 	private boolean profile = false;
 	private StringBuilder sb;
 
-	public XmiParserImpl(XmiRepositoryImpl xmiRepository) {
+	public <?name()?>(Uml14RepositoryImpl xmiRepository) {
 		super();
 		this.xmiRepository = xmiRepository;
 		try {

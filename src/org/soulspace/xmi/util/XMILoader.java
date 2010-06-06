@@ -3,7 +3,7 @@
  */
 package org.soulspace.xmi.util;
 
-import org.soulspace.xmi.uml14.repository.*;
+import org.soulspace.modelling.uml14.impl.*;
 
 public class XMILoader {
 
@@ -12,12 +12,12 @@ public class XMILoader {
   }
 
   public static void main(String[] args) {
-	XmiRepositoryImpl xmiRepository;
+	  Uml14RepositoryImpl xmiRepository;
     if(args.length > 0) {
       for(int i = 0; i < args.length; i++) {
         System.out.println("Model: " + args[i]);
         try {
-          xmiRepository = new XmiRepositoryImpl(args[i]);
+          xmiRepository = new Uml14RepositoryImpl(args[i]);
           xmiRepository.initRepository();
           //System.out.println("Elements: " + xmiRepository.getXmiIdMap().size());          
         } catch (Exception e) {

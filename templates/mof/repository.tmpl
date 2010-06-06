@@ -11,19 +11,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.soulspace.xmi.base.*;
-import org.soulspace.xmi.uml14.elements.*;
-import org.soulspace.xmi.uml14.elements.Class;
-import org.soulspace.xmi.uml14.elements.Exception;
-import org.soulspace.xmi.uml14.elements.Object;
-import org.soulspace.xmi.uml14.elements.Package;
-import org.soulspace.xmi.uml14.elements.impl.*;
-import org.soulspace.xmi.uml14.types.*;
+import org.soulspace.modelling.base.*;
+import org.soulspace.modelling.uml14.elements.*;
+import org.soulspace.modelling.uml14.elements.Class;
+import org.soulspace.modelling.uml14.elements.Exception;
+import org.soulspace.modelling.uml14.elements.Object;
+import org.soulspace.modelling.uml14.elements.Package;
+import org.soulspace.modelling.uml14.elements.impl.*;
+import org.soulspace.modelling.uml14.types.*;
 
 /**
  * XmiRepository
  */
-public class XmiRepositoryImpl {
+public class <?name()?> {
 
 	private boolean profile = false;
 	private File file;
@@ -36,22 +36,22 @@ public class XmiRepositoryImpl {
 	/**
 	 * Constructor
 	 */
-	public XmiRepositoryImpl() {
+	public <?name()?>() {
 		super();
 	}
 
-	public XmiRepositoryImpl(String filename) {
+	public <?name()?>(String filename) {
 		super();
 		// this.file = new File(filename);
 		files = new File[] { new File(filename) };
 	}
 
-	public XmiRepositoryImpl(File file) {
+	public <?name()?>(File file) {
 		super();
 		files = new File[] { file };
 	}
 
-	public XmiRepositoryImpl(String[] filenames) {
+	public <?name()?>(String[] filenames) {
 		super();
 		files = new File[filenames.length];
 		for (int i = 0; i < filenames.length; i++) {
@@ -59,7 +59,7 @@ public class XmiRepositoryImpl {
 		}
 	}
 
-	public XmiRepositoryImpl(File[] files) {
+	public <?name()?>(File[] files) {
 		super();
 		this.files = files;
 	}

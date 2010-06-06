@@ -3,9 +3,9 @@ package org.soulspace.xmi.uml14.test;
 import java.io.File;
 import java.io.IOException;
 
-import org.soulspace.xmi.uml14.repository.XmiParserImpl;
-import org.soulspace.xmi.uml14.repository.XmiRepositoryImpl;
-import org.soulspace.xmi.uml14.repository.XmiWriterImpl;
+import org.soulspace.modelling.uml14.impl.Uml14RepositoryImpl;
+import org.soulspace.modelling.uml14.impl.Xmi12ReaderImpl;
+import org.soulspace.modelling.uml14.impl.Xmi12WriterImpl;
 import org.xml.sax.SAXException;
 
 public class ParserTest {
@@ -24,9 +24,9 @@ public class ParserTest {
 			out = args[1];			
 		}
 		
-		XmiRepositoryImpl xmiRepository = new XmiRepositoryImpl();
-		XmiParserImpl parser = new XmiParserImpl(xmiRepository);
-		XmiWriterImpl writer = new XmiWriterImpl(out);
+		Uml14RepositoryImpl xmiRepository = new Uml14RepositoryImpl();
+		Xmi12ReaderImpl parser = new Xmi12ReaderImpl(xmiRepository);
+		Xmi12WriterImpl writer = new Xmi12WriterImpl(out);
 		try {
 			parser.parseXmi(new File(in), false);
 			writer.write(xmiRepository);

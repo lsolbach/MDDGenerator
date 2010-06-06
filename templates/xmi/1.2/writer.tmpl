@@ -7,25 +7,27 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import org.soulspace.xmi.base.*;
-import org.soulspace.xmi.uml14.elements.*;
-import org.soulspace.xmi.uml14.elements.Class;
-import org.soulspace.xmi.uml14.elements.Exception;
-import org.soulspace.xmi.uml14.elements.Object;
-import org.soulspace.xmi.uml14.elements.Package;
-import org.soulspace.xmi.uml14.elements.impl.*;
-import org.soulspace.xmi.uml14.types.*;
+import org.soulspace.modelling.base.*;
+import org.soulspace.modelling.uml14.*;
+import org.soulspace.modelling.uml14.impl.*;
+import org.soulspace.modelling.uml14.elements.*;
+import org.soulspace.modelling.uml14.elements.Class;
+import org.soulspace.modelling.uml14.elements.Exception;
+import org.soulspace.modelling.uml14.elements.Object;
+import org.soulspace.modelling.uml14.elements.Package;
+import org.soulspace.modelling.uml14.elements.impl.*;
+import org.soulspace.modelling.uml14.types.*;
 
-public class XmiWriterImpl {
+public class <?name()?> {
 
 	private FileWriter writer = null;
 	String filename = "";
 	
-	public XmiWriterImpl(String filename) {
+	public <?name()?>(String filename) {
 		this.filename = filename;	
 	}
 	
-	public void write(XmiRepositoryImpl repository) {
+	public void write(Uml14RepositoryImpl repository) {
 		try {	
 			writer = new FileWriter(new File(filename));
 		<?writeXmiPrefix()?>

@@ -1,108 +1,103 @@
 <?
-string getGenerationInfo() {
-?>
-Template: <?GenContext:Name?>
-Imports: <?GenContext:Imports?>
-Time: <?GenContext:Timestamp?>
-<?
-}
-
-string getNamespace() {
-	if(GenContext:NamespacePrefix) {	
-?><?GenContext:NamespacePrefix?>.<?
-	}
-?><?Namespace?><?
-	if(GenContext:NamespaceSuffix) {
-?>.<?GenContext:NamespaceSuffix?><?
+string importJavaOverrides(map element) {
+	if(element:Name eq 'Class') {
+		'import org.soulspace.modelling.uml14.elements.Class;'
+	} else if(element:Name eq 'Object') {
+		'import org.soulspace.modelling.uml14.elements.Object;' 
+	} else if(element:Name eq 'Package') {
+		'import org.soulspace.modelling.uml14.elements.Package;' 
+	} else if(element:Name eq 'Exception') {
+		'import org.soulspace.modelling.uml14.elements.Exception;' 
+	} else if(element:Name eq 'Enumeration') {
+		'import org.soulspace.modelling.uml14.elements.Enumeration;' 
+	} else if(element:Name eq 'EnumerationLiteral') {
+		'import org.soulspace.modelling.uml14.elements.Enumeration;' 
 	}
 }
 
-string getClassifierNamespace(map classifier) {
-	if(GenContext:NamespacePrefix) {	
-?><?GenContext:NamespacePrefix?>.<?
+string importJavaOverrides() {
+	importJavaOverrides(This)
+}
+
+string javaTypeForType(map type, string generic) {
+	if(type:Namespace eq 'uml.Foundations.Data Types') {
+		javaTypeForUmlType(type)
+	} else if(generic) {
+		type:Name + '<' + generic + '>'
+	} else {
+		type:Name
 	}
-?><?classifier:Namespace?><?
-	if(GenContext:NamespaceSuffix) {
-?>.<?GenContext:NamespaceSuffix?><?
+}
+
+numeric isSuppressedAssociation(map element, map asso) {
+	(element:Name eq 'Instance' && asso:Name eq 'owner')
+	||
+	(element:Name eq 'Instance' && asso:Name eq 'ownedInstance')
+	||
+	(element:Name eq 'LinkObject' && asso:Name eq 'owner')
+	||
+	(element:Name eq 'LinkObject' && asso:Name eq 'playedRole')
+}
+
+numeric isAccessibleProperty(map attr) {
+	super(attr) && !isDerived(attr)
+}
+
+numeric isAccessibleAssociation(map asso) {
+	super(asso) && !isDerived(asso)
+}
+
+numeric isPrimitive(map type) {
+	string typename
+	if(type:Namespace eq 'uml.Foundations.Data Types') {
+		typename = javaTypeForUmlType(type)
+	} else {
+		typename = type:Name
 	}
+	
+	typename eq 'int'
+      || typename eq 'long'
+      || typename eq 'short'
+      || typename eq 'char'
+      || typename eq 'byte'
+      || typename eq 'boolean'
+      || typename eq 'float'
+      || typename eq 'double'
 }
 
-string getName() {
-?><?GenContext:Prefix?><?Name?><?GenContext:Suffix?><?
+string annotations() {
+'@SuppressWarnings("unused")'
 }
 
-string getClassifierName(map classifier) {
-?><?GenContext:Prefix?><?classifier:Name?><?GenContext:Suffix?><?
+
+map additionalPropertyMap() {
+	additionalPropertyMap(This)
 }
 
-numeric isOptional(map element) {
-  element:Multiplicity:Low == 0
-}
-
-numeric isMany(map element) {
-  element:Multiplicity:High == -1
-}
-
-numeric isZeroToOne(map element) {
-  element:Multiplicity:Low == 0 && element:Multiplicity:High == 1
-}
-
-numeric isOneToOne(map element) {
-  element:Multiplicity:Low == 1 && element:Multiplicity:High == 1
-}
-
-numeric isZeroToMany(map element) {
-  element:Multiplicity:Low == 0 && element:Multiplicity:High == -1
-}
-
-numeric isOneToMany(map element) {
-  element:Multiplicity:Low == 1 && element:Multiplicity:High == -1
-}
-
-numeric isQualified(map asso) {
-  numeric result = 0
-  if(asso:SourceEnd:Qualifiers) {
-    result = 1
-  }
-  result
-}
-
-numeric isOrdered(map asso) {
-  numeric result = 0
-  if(asso:Ordering eq 'ordered') {
-    result = 1
-  }
-  result
-}
-
-numeric isAggregateOrComposite(map asso) {
-  numeric result = 0
-  if(!(asso:Aggregation eq 'none')) {
-    result = 1
-  }
-  result
-}
-
-numeric isDerived(map element) {
-  numeric result = 0;
-  if(element:Derived) {
-    result = 1
-  }
-  result
-}
-
-numeric isComposite(map asso) {
-  numeric result = 0
-  if((asso:Aggregation eq 'composite')) {
-    result = 1
-  }
-  result
-}
-numeric isQuery(map op) {
-	numeric result = 0
-	if(op:Query) {
-		result = 1
+map additionalPropertyMap(map element) {
+	map attrMap
+	if(isInstanceOf(element, 'ModelElement')) {
+		map assoClassMap
+		foreach asso
+				| asso:Association:ElementType eq 'AssociationClass'
+				<- element:AllAssociations {
+			assoClassMap.put(asso:Association:Name, asso:Association)
+		}	
+		list keyList = assoClassMap.keyList()
+		foreach assoClassKey <- keyList {
+			map element = assoClassMap[assoClassKey]
+			foreach attr <- element:Attributes {
+				attrMap.put(attr:Name, attr)
+			}
+		}
 	}
-	result
+	attrMap
+}
+
+numeric isReferenceAttribute(map attr) {
+	attr:Type:Name eq 'Multiplicity'
+	|| attr:Type:Name eq 'Geometry'
+	|| attr:Type:Name eq 'LocationReference'
+	|| attr:Type:Name.endsWith('Expression')
 }
 ?>

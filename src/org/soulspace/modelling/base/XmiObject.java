@@ -1,4 +1,4 @@
-package org.soulspace.xmi.base;
+package org.soulspace.modelling.base;
 
 public interface XmiObject {
 
