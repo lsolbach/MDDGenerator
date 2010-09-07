@@ -1,0 +1,23 @@
+<?
+list elementList = factoryElementList()
+?>package <?namespace()?>;
+
+import java.util.List;
+
+import org.soulspace.modelling.base.XmiObject;
+import org.soulspace.modelling.repository.elements.*;
+import org.soulspace.modelling.repository.elements.Class;
+import org.soulspace.modelling.repository.elements.Package;
+
+public interface <?name()?> {
+<?
+create(elementList)
+?>
+}
+<?
+string create(list elementList) {
+	foreach element <- elementList {?>
+	public <?element:Name?> create<?element:Name?>(XmiObject xmiObject);<?
+	}
+}
+?>

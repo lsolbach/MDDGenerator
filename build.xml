@@ -1,0 +1,86 @@
+<project name="ModelRepository2" default="distribute">
+
+	<property environment="env"/>
+	<property file="build.properties"/>
+	<property name="common.build.dir" value="${env.COMMON_BUILD_HOME}"/>
+	
+	<!-- import common build files -->
+	<import file="${common.build.dir}/ant/common.properties.xml"/>
+	<import file="${common.build.dir}/ant/common.build.xml"/>
+
+	<path id="source.path">
+		<pathelement location="${generate.dir}/src"/>
+		<path refid="common.source.path"/>
+	</path>
+	
+	<target name="generate-local" depends="check-generate-required,generate-model"/>
+
+	<target name="check-generate-required">
+		<!--uptodate property="generateModel.notRequired" targetfile="${generate.dir}/src/org/soulspace/modelling/repository/ModelRepository.java" >
+		    <srcfiles dir="${basedir}/model" includes="ModelRepository.xmi"/>
+		</uptodate-->
+	</target>	
+		
+	<target name="generate-model" unless="generateModel.notRequired">
+		<delete>
+			<fileset dir="${backup.dir}"/>
+		</delete>
+		<copy todir="${backup.dir}" overwrite="true">
+			<fileset dir="${generate.dir}"/>
+		</copy>
+		<delete>
+			<fileset dir="${generate.dir}"/>
+		</delete>
+		
+		<!--
+		  - Generator
+		  -->
+		<soulmda destdir="${generate.dir}"
+                    backupdir="${backup.dir}"
+                    templateDirs="templates,../MdaTemplates/std-templates"
+                    modelFile="model/ModelRepository.xmi"
+					profiles="data/argouml/profiles/default-uml14.xmi"
+			>
+
+			<classGenerator 	name="java/element-interface"
+                                imports="lib,model/lib,java/lib,java/interface"
+								subdir="src"
+								extension="java"
+								stereotype="NONE"
+			/>
+			<classGenerator 	name="java/element-class"
+                                imports="lib,model/lib,java/lib,java/class"
+								subdir="src"
+								prefix="Abstract"
+								extension="java"
+								stereotype ="NONE"
+			/>
+			<classGenerator 	name="java/element-impl-class"
+                                imports="lib,model/lib,java/lib,java/class"
+								subdir="tmp"
+								suffix="Impl"
+								extension="java"
+								namespaceSuffix="impl"
+								stereotype ="NONE"
+			/>
+			<modelGenerator 	name="java/repository-interface"
+                                imports="lib,model/lib,java/lib,java/interface,java/base"
+								basename="ModelRepository"
+								subdir="src"
+								extension="java"
+								namespaceReplacement="org.soulspace.modelling.repository"
+								stereotype="NONE"
+			/>
+			<modelGenerator 	name="java/repository-class"
+                                imports="lib,model/lib,java/lib,java/class,java/base"
+								subdir="src"
+								basename="ModelRepository"
+								suffix="Impl"
+								extension="java"
+								namespaceReplacement="org.soulspace.modelling.repository.impl"
+								stereotype ="NONE"
+			/>
+		</soulmda>
+	</target>
+	
+</project>

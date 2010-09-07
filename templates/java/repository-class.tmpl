@@ -1,0 +1,52 @@
+<?
+list elementList = repositoryElementList()
+?>package <?namespace()?>;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.soulspace.modelling.repository.elements.*;
+import org.soulspace.modelling.repository.elements.Class;
+import org.soulspace.modelling.repository.elements.Package;
+
+public class <?name()?> {
+<?
+	container(elementList)
+?>
+	private Map<String, Element> idMap = new HashMap<String, Element>();
+<?
+	ctorDefault()
+	registration(elementList)
+	access(elementList)
+?>
+	public Element findById(String id) {
+		return idMap.get(id);
+	}
+}
+<?
+string container(list elementList) {
+	foreach element <- elementList {?>
+	private List<<?element:Name?>> <?element:Name.firstLower()?>List = new ArrayList<<?element:Name?>>();<?
+	}
+}
+
+string registration(list elementList) {
+	foreach element <- elementList {?>
+	void register<?element:Name?>(<?element:Name?> element) {
+		<?element:Name.firstLower()?>List.add(element);
+		idMap.put(element.getId(), element);
+	}<?
+	}
+}
+
+string access(list elementList) {
+	foreach element <- elementList {?>
+	public List<<?element:Name?>> get<?element:Name?>List() {
+		return <?element:Name.firstLower()?>List;
+	}<?
+	}
+}
+
+?>

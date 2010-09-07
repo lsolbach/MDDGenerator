@@ -1,0 +1,83 @@
+/*
+ * Java bean <?name()?>
+ * Implementation of interface <?Name?>.
+<? generationInfo(' * ')?>
+ */
+
+package <?namespace()?>;
+
+import java.util.*;
+<?imports()?>
+<?
+javaDoc()
+typeAnnotations()?>
+<?visibility()?> abstract class <?name()?> <?extension()?> <?implementations()?> {
+
+	// Fields<?
+propertyFields()
+associationFields()
+if(Name eq 'Element') {
+	elementFields()
+}
+?>
+	
+	// Constructors<?
+constructors()
+?>
+
+	// Accessors<?
+propertyAccessors()
+associationAccessors()
+if(Name eq 'Element') {
+	elementAccessors()
+}
+?>
+
+	// Operations	
+<?
+operations()
+?>
+
+	// Object methods<?
+equals()
+hashcode()
+?>
+}
+<?
+numeric isAccessibleProperty(map attr) {
+	!isDerived(attr)
+}
+
+string extension() {
+	if(SuperClasses.size() == 1) {
+		'extends ' + name(SuperClasses[0])
+	}
+}
+
+string elementFields() {
+?>
+	private Map<String, Stereotype> stereotypeMap;
+	private Map<String, TaggedValue> taggedValueMap;
+<?
+}
+
+string elementAccessors() {
+?>
+	public String getElementType() {
+		return "<?Name?>";
+	}
+	
+	public Element getThis() {
+		return this;
+	}
+	
+	public Map<String, Stereotype> getStereotypeMap() {
+		return stereotypeMap;
+	}
+
+	public Map<String, TaggedValue> getTaggedValueMap() {
+		return taggedValueMap;
+	}
+<?
+}
+?>

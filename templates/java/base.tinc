@@ -1,0 +1,25 @@
+<?
+list repositoryElementList() {
+	list elementList
+	foreach package <- Packages {
+		foreach element
+				| !isAbstract(element) && isInstanceOf(element, 'Element') && !element:StereotypeMap 
+				<- package:Classes {
+			elementList.add(element)
+		}	
+	}
+	elementList
+}
+
+list factoryElementList() {
+	list elementList
+	foreach package <- Packages {
+		foreach element
+				| !isAbstract(element) && !element:StereotypeMap
+				<- package:Classes {
+			elementList.add(element)
+		}	
+	}
+	elementList
+}
+?>

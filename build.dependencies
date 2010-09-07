@@ -1,0 +1,9 @@
+<dependencies>
+	<dependency type="runtime">
+	</dependency>
+	<dependency type="dev">
+		<package name="junit" version="3.8.1" type="lib">
+			<module name="junit"/>
+		</package>
+	</dependency>
+</dependencies>
