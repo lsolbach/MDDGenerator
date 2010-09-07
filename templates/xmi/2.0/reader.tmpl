@@ -79,7 +79,7 @@ public class <?name()?> extends DefaultHandler {
 	
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		String value = charsToString(ch, start, length);
-		if(value.trim().isEmpty()) {
+		if(value.trim().equals("")) {
 			return;
 		}
 		

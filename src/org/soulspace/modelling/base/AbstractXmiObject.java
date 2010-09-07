@@ -143,7 +143,7 @@ public class AbstractXmiObject implements XmiObject {
 		this.hRef = hRef;
 	}
 
-	public String getHRefId() {
+	public String getRefId() {
 		if (getXmiIdRef() != null) {
 			return getXmiIdRef();
 		} else if (getHRef() != null) {

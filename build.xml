@@ -9,8 +9,8 @@
 	<import file="${common.build.dir}/ant/common.build.xml"/>
 
 	<path id="source.path">
-		<path refid="common.source.path"/>
 		<pathelement location="${generate.dir}/src"/>
+		<path refid="common.source.path"/>
 	</path>
 	
 	<!--

@@ -10,7 +10,8 @@ public interface XmiObject {
 
 	String getHRef();
 	void setHRef(String hRef);
-	String getHRefId();
+
+	String getRefId();
 
 	XmiObject getParentElement();
 	void setParentElement(XmiObject parent);

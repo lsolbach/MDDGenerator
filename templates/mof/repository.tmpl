@@ -84,6 +84,10 @@ public class <?name()?> {
 		parseXmi(profileFile);
 	}
 
+	public XmiObject findByXmiId(String xmiId) {
+		return xmiIdMap.get(xmiId);
+	}
+
 	public void parseXmi(File file) {
 		// TODO use sax parser to parse file and build repository
 	}
