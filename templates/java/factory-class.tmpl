@@ -1,0 +1,61 @@
+<?
+list elementList = factoryElementList()
+?>package <?namespace()?>;
+
+import java.util.List;
+import java.util.ArrayList;
+
+import org.soulspace.modelling.base.XmiObject;
+import org.soulspace.modelling.repository.*;
+import org.soulspace.modelling.repository.elements.*;
+import org.soulspace.modelling.repository.elements.impl.*;
+import org.soulspace.modelling.repository.elements.Class;
+import org.soulspace.modelling.repository.elements.Package;
+
+public abstract class <?name()?> {
+	protected ModelRepository repository;
+	
+<?
+ctorDefault()
+create(elementList)
+init(elementList)
+?>
+
+	private String getXmiId(XmiObject xmiObject) {
+		if(xmiObject.getXmiId() != null) {
+			return xmiObject.getXmiId();
+		} else if(xmiObject.getRefId() != null) {
+			return xmiObject.getRefId();
+		}
+		return null;
+	}
+}
+<?
+string create(list elementList) {
+	foreach element <- elementList {?>
+	public <?element:Name?> create<?element:Name?>(XmiObject xmiObject) {
+		<?element:Name?>Impl <?javaName(element)?>;
+		String id = getXmiId(xmiObject);
+		<?javaName(element)?> = (<?element:Name?>Impl) repository.findById(id);
+		if(<?javaName(element)?> == null) {
+			<?javaName(element)?> = new <?element:Name?>Impl();
+			<?javaName(element)?>.setId(id);
+			repository.register<?element:Name?>(<?javaName(element)?>);
+		}
+		if(xmiObject.getXmiId() != null && !<?javaName(element)?>.getInitialized()) {
+			<?javaName(element)?> = init<?element:Name?>(<?javaName(element)?>, xmiObject);
+			<?javaName(element)?>.setInitialized(true);
+		}
+		return <?javaName(element)?>;
+	}
+	<?
+	}
+}
+
+string init(list elementList) {
+	foreach element <- elementList {?>
+	protected abstract <?element:Name?>Impl init<?element:Name?>(<?element:Name?>Impl <?javaName(element)?>, XmiObject xmiObject);
+	<?
+	}
+}
+?>

@@ -1,0 +1,65 @@
+<project name="UmlModelBuilder" default="distribute">
+
+	<property environment="env"/>
+	<property file="build.properties"/>
+	<property name="common.build.dir" value="${env.COMMON_BUILD_HOME}"/>
+	
+	<!-- import common build files -->
+	<import file="${common.build.dir}/ant/common.properties.xml"/>
+	<import file="${common.build.dir}/ant/common.build.xml"/>
+
+	<path id="source.path">
+		<pathelement location="${generate.dir}/src"/>
+		<path refid="common.source.path"/>
+	</path>
+	
+	<target name="generate-local" depends="check-generate-required,generate-model"/>
+
+	<target name="check-generate-required">
+		<!--uptodate property="generateModel.notRequired" targetfile="${generate.dir}/src/org/soulspace/modelling/repository/builder/ModelFactory.java" >
+		    <srcfiles dir="${basedir}/../ModelRepository2/model" includes="ModelRepository.xmi"/>
+		</uptodate-->
+	</target>	
+		
+	<target name="generate-model" unless="generateModel.notRequired">
+		<delete>
+			<fileset dir="${backup.dir}"/>
+		</delete>
+		<copy todir="${backup.dir}" overwrite="true">
+			<fileset dir="${generate.dir}"/>
+		</copy>
+		<delete>
+			<fileset dir="${generate.dir}"/>
+		</delete>
+		
+		<!--
+		  - Generator
+		  -->
+		<soulmda destdir="${generate.dir}"
+                    backupdir="${backup.dir}"
+                    templateDirs="templates,../MdaTemplates/std-templates"
+                    modelFile="../ModelRepository2/model/ModelRepository.xmi"
+					profiles="../ModelRepository2/data/argouml/profiles/default-uml14.xmi"
+			>
+
+			<modelGenerator 	name="java/factory-interface"
+                                imports="lib,model/lib,java/lib,java/interface,java/base"
+								basename="ModelFactory"
+								subdir="src"
+								extension="java"
+								namespaceReplacement="org.soulspace.modelling.repository.builder"
+								stereotype="NONE"
+			/>
+			<modelGenerator 	name="java/factory-class"
+                                imports="lib,model/lib,java/lib,java/class,java/base"
+								subdir="src"
+								basename="ModelFactory"
+								prefix="Abstract"
+								extension="java"
+								namespaceReplacement="org.soulspace.modelling.repository.builder.impl"
+								stereotype ="NONE"
+			/>
+		</soulmda>
+	</target>
+	
+</project>
