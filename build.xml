@@ -120,7 +120,7 @@
 								extension="java"
 								namespaceReplacement="org.soulspace.modelling.uml14.impl"
 			/>
-			<modelGenerator 	name="xmi/2.0/reader"
+			<!--modelGenerator 	name="xmi/2.0/reader"
                                 imports="lib,model/lib,java/lib,java/class,base"
 								subdir="src"
 								baseName="Xmi20ReaderImpl"
@@ -133,7 +133,7 @@
 								baseName="Xmi20WriterImpl"
 								extension="java"
 								namespaceReplacement="org.soulspace.modelling.uml14.impl"
-			/>
+			/-->
 		</soulmda>
 	</target>
 	
