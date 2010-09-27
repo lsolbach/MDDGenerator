@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
+	<classpathentry excluding="org/soulspace/modelling/repository/builder/uml14/impl/ElementInitializerAspect.aj" kind="src" path="src"/>
 	<classpathentry kind="src" path="generated/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/runtime/ModelRepository2.jar"/>
