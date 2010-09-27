@@ -1,20 +1,19 @@
 package org.soulspace.modelling.repository.elements.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.soulspace.modelling.repository.elements.AbstractAssociationClass;
-import org.soulspace.modelling.repository.elements.Association;
 import org.soulspace.modelling.repository.elements.AssociationClass;
 import org.soulspace.modelling.repository.elements.AssociationEnd;
 import org.soulspace.modelling.repository.elements.Attribute;
-import org.soulspace.modelling.repository.elements.Class;
 import org.soulspace.modelling.repository.elements.Classifier;
 import org.soulspace.modelling.repository.elements.Dependency;
-import org.soulspace.modelling.repository.elements.Element;
 import org.soulspace.modelling.repository.elements.Operation;
 
 public class AssociationClassImpl extends ClassImpl implements AssociationClass {
 
+	private List<AssociationEnd> connectionList = new ArrayList<AssociationEnd>();
+	
 	@Override
 	protected List<AssociationEnd> doGetAllAssociationList() {
 		return super.doGetAllAssociationList();
@@ -43,6 +42,22 @@ public class AssociationClassImpl extends ClassImpl implements AssociationClass 
 	@Override
 	protected List<Classifier> doGetReferencedTypeList() {
 		return super.doGetReferencedTypeList();
+	}
+
+	public List<AssociationEnd> getConnectionList() {
+		return connectionList;
+	}
+
+	public void setConnectionList(List<AssociationEnd> connectionList) {
+		this.connectionList = connectionList;
+	}
+
+	public void addConnection(AssociationEnd connection) {
+		connectionList.add(connection);
+	}
+
+	public void removeConnection(AssociationEnd connection) {
+		connectionList.remove(connection);
 	}
 
 }
