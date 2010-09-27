@@ -386,7 +386,7 @@ string attribute(map attr) {
 		if(attrs.getValue("<?attr:Name?>") != null) {<?
 				if(attr:Type:Name eq 'Boolean') {?>
 			element.set<?attr:Name.firstUpper()?>(java.lang.Boolean.parseBoolean(attrs.getValue("<?attr:Name?>")));<?
-				} else if(attr:Type:Name eq 'Integer' || attr:Type:Name eq 'UnsignedInteger') {?>
+				} else if(attr:Type:Name eq 'Integer' || attr:Type:Name eq 'UnlimitedInteger') {?>
 			element.set<?attr:Name.firstUpper()?>(java.lang.Integer.parseInt(attrs.getValue("<?attr:Name?>")));<?
 				} else if(hasStereotype(attr:Type, 'enumeration')) {?>
 			element.set<?attr:Name.firstUpper()?>(<?attr:Type:Name?>.valueOf(attrs.getValue("<?attr:Name?>").toUpperCase()));<?

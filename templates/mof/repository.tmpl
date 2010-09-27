@@ -29,7 +29,6 @@ public class <?name()?> {
 	private File file;
 	private File[] files;
 	private Map<String, XmiObject> xmiIdMap = new HashMap<String, XmiObject>();
-	private Map<String, XmiObject> nameMap = new HashMap<String, XmiObject>();
 
 	<?lists(elementList)?>
 
@@ -42,7 +41,6 @@ public class <?name()?> {
 
 	public <?name()?>(String filename) {
 		super();
-		// this.file = new File(filename);
 		files = new File[] { new File(filename) };
 	}
 
@@ -91,47 +89,6 @@ public class <?name()?> {
 	public void parseXmi(File file) {
 		// TODO use sax parser to parse file and build repository
 	}
-
-/*
-	public XMI readXmi(File file) {
-		XMI xmi = null;
-		FileReader reader;
-
-		try {
-			reader = new FileReader(file);
-			xmi = (XMI) XMI.unmarshal(reader);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (MarshalException e) {
-			e.printStackTrace();
-		} catch (ValidationException e) {
-			e.printStackTrace();
-		}
-
-		return xmi;
-	}
-
-	public void buildXmiRepository(XMI xmi) {
-		if (xmi != null) {
-			XMIBuilder builder;
-			if (profile) {
-				builder = new XMIBuilder(this, true);
-			} else {
-				builder = new XMIBuilder(this);
-			}
-			XMI_content content = xmi.getXMI_content();
-			Enumeration e = content.enumerateXMI_contentItem();
-			while (e.hasMoreElements()) {
-				XMI_contentItem cI = (XMI_contentItem) e.nextElement();
-				if (cI.getModel() != null) {
-					builder.traverseModel("", cI.getModel());
-				} else {
-					System.err.println("unknown xmi content!");
-				}
-			}
-		}
-	}
-*/
 
 <?
 	registration(elementList)

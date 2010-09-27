@@ -139,7 +139,7 @@ string writeAttributes(map element) {?>
 				writer.append(" <?attr:Name?>=\"" + <?argumentName(element)?>.get<?attr:Name.firstUpper()?>() + "\"");
 			}
 <?
-		} else if(attr:Type:Name eq 'Integer' || attr:Type:Name eq 'UnsignedInteger') {?>
+		} else if(attr:Type:Name eq 'Integer' || attr:Type:Name eq 'UnlimitedInteger') {?>
 			writer.append(" <?attr:Name?>=\"" + <?argumentName(element)?>.get<?attr:Name.firstUpper()?>() + "\"");
 <?
 		} else if(!isReferenceAttribute(attr)) {?>
