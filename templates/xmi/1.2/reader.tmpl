@@ -17,8 +17,6 @@ import org.xml.sax.helpers.DefaultHandler;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 import org.soulspace.modelling.base.*;
-import org.soulspace.modelling.uml14.*;
-import org.soulspace.modelling.uml14.impl.*;
 import org.soulspace.modelling.uml14.elements.*;
 import org.soulspace.modelling.uml14.elements.Class;
 import org.soulspace.modelling.uml14.elements.Exception;
@@ -50,10 +48,18 @@ public class <?name()?> extends DefaultHandler {
 		}
 	}
 
-	public void parseXmi(File file, boolean profile) throws SAXException, IOException {
+	public void loadProfile(File file) throws SAXException, IOException {
+		parseXmi(file, true);
+	}
+
+	public void loadModel(File file) throws SAXException, IOException {
+		parseXmi(file, false);
+	}
+
+	public void parseXmi(File file, boolean isProfile) throws SAXException, IOException {
 		elementStack = new Stack<java.lang.Object>();
 	    FileReader r = new FileReader(file);
-	    this.profile = profile;	
+	    this.profile = isProfile;	
 	    xmlReader.parse(new InputSource(r));
 	}
 
@@ -63,6 +69,7 @@ public class <?name()?> extends DefaultHandler {
 			java.lang.reflect.Method method = clazz.getMethod(name, type);
 			method.invoke(parent, element);
 		} catch (java.lang.Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -73,6 +80,7 @@ public class <?name()?> extends DefaultHandler {
 			java.lang.reflect.Method method = clazz.getMethod(name, type);
 			method.invoke(parent, data);
 		} catch (java.lang.Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -83,7 +91,6 @@ public class <?name()?> extends DefaultHandler {
 			return;
 		}
 		
-		System.out.println("#Characters: " + stripTrailingLine(value));
 		if(!elementStack.isEmpty()) {
 			java.lang.Object obj = elementStack.peek();
 			if(obj instanceof List) {
@@ -135,9 +142,8 @@ public class <?name()?> extends DefaultHandler {
 		} else {
 	    	elementName = name;
 		}
-//		System.out.println("Start of " + elementName);
 <?dispatchStartElement(elementList)?>
-		if(!isHandled) {
+		if(!isHandled && !elementName.startsWith("XMI")) {
 			System.out.println("WARN: Unhandled element: " + elementName);
 		}
 	}
@@ -149,7 +155,6 @@ public class <?name()?> extends DefaultHandler {
 		} else {
 	    	elementName = name;
 		}
-//		System.out.println("End of " + elementName);
 <?dispatchEndElement(elementList)?>
 	}
 
@@ -354,7 +359,7 @@ string handleEndElement(list elementList) {
 		if(!elementStack.isEmpty()) {
 			java.lang.Object obj = elementStack.peek();
 			if(obj instanceof XmiObject) {
-				XmiObject parentElement = (XmiObject) obj;
+				// XmiObject parentElement = (XmiObject) obj;
 				// addPrimitive(parentElement, sb.toString(), <?element:Name?>.class, "<?methodName(element)?>");
 			}
 		}

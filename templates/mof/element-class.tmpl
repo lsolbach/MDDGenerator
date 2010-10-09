@@ -84,4 +84,22 @@ string associationAccessors() {
 		associationAccessor(assoMap[assoKey])
 	}
 }
+
+string associationSetAnnotations(map asso) {
+	if(isComposition(asso:SourceEnd)) {?>
+	@Composition<?
+	}
+}
+
+string associationAddAnnotations(map asso) {
+	if(isComposition(asso:SourceEnd)) {?>
+	@Composition<?
+	}
+}
+
+string associationRemoveAnnotations(map asso) {
+	if(isComposition(asso:SourceEnd)) {?>
+	@Composition<?
+	}
+}
 ?>

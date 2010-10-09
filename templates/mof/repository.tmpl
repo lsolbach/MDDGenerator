@@ -2,14 +2,10 @@
 list elementList = elementList()
 ?>package <?namespace()?>;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.soulspace.modelling.base.*;
 import org.soulspace.modelling.uml14.elements.*;
@@ -17,20 +13,15 @@ import org.soulspace.modelling.uml14.elements.Class;
 import org.soulspace.modelling.uml14.elements.Exception;
 import org.soulspace.modelling.uml14.elements.Object;
 import org.soulspace.modelling.uml14.elements.Package;
-import org.soulspace.modelling.uml14.elements.impl.*;
-import org.soulspace.modelling.uml14.types.*;
 
 /**
- * XmiRepository
+ * <?name()?> is a repository for Uml objects to be used in generation.
  */
 public class <?name()?> {
 
-	private boolean profile = false;
-	private File file;
-	private File[] files;
 	private Map<String, XmiObject> xmiIdMap = new HashMap<String, XmiObject>();
 
-	<?lists(elementList)?>
+	<?properties(elementList)?>
 
 	/**
 	 * Constructor
@@ -39,84 +30,41 @@ public class <?name()?> {
 		super();
 	}
 
-	public <?name()?>(String filename) {
-		super();
-		files = new File[] { new File(filename) };
-	}
-
-	public <?name()?>(File file) {
-		super();
-		files = new File[] { file };
-	}
-
-	public <?name()?>(String[] filenames) {
-		super();
-		files = new File[filenames.length];
-		for (int i = 0; i < filenames.length; i++) {
-			files[i] = new File(filenames[i]);
-		}
-	}
-
-	public <?name()?>(File[] files) {
-		super();
-		this.files = files;
-	}
-
-	public void initRepository() {
-		for (File file : files) {
-			parseXmi(file);
-		}
-	}
-
-	public void initRepository(File file) {
-		parseXmi(file);
-	}
-
-	public void loadModel(File modelFile) {
-		profile = false;
-		parseXmi(file);
-	}
-
-	public void loadProfile(File profileFile) {
-		profile = true;
-		parseXmi(profileFile);
-	}
-
 	public XmiObject findByXmiId(String xmiId) {
 		return xmiIdMap.get(xmiId);
 	}
 
-	public void parseXmi(File file) {
-		// TODO use sax parser to parse file and build repository
-	}
-
-<?
-	registration(elementList)
-	access(elementList)
-?>
+	<?accessors(elementList)?>
 }
 
 <?
-string lists(list elementList) {
+string properties(list elementList) {
 	foreach element <- elementList {?>
 	private List<<?element:Name?>> <?element:Name.firstLower()?>List = new ArrayList<<?element:Name?>>();<?
 	}
 }
 
-string registration(list elementList) {
-	foreach element <- elementList {?>
-	void add<?element:Name?>(<?element:Name?> element) {
-		<?element:Name.firstLower()?>List.add(element);
-		xmiIdMap.put(element.getXmiId(), element);
-	}<?
-	}
-}
-
-string access(list elementList) {
-	foreach element <- elementList {?>
+string accessors(list elementList) {
+	foreach element <- elementList {
+?>
 	public List<<?element:Name?>> get<?element:Name?>List() {
 		return <?element:Name.firstLower()?>List;
-	}<?
+	}
+
+	public void set<?element:Name?>List(List<<?element:Name?>> <?element:Name.firstLower()?>List) {
+		this.<?element:Name.firstLower()?>List = <?element:Name.firstLower()?>List;
+	}
+
+	public void add<?element:Name?>(<?element:Name?> element) {
+		<?element:Name.firstLower()?>List.add(element);
+		xmiIdMap.put(element.getXmiId(), element);
+	}
+
+	public void remove<?element:Name?>(<?element:Name?> element) {
+		<?element:Name.firstLower()?>List.remove(element);
+		xmiIdMap.remove(element.getXmiId());
+	}
+<?
 	}
 }
 
