@@ -18,8 +18,6 @@
 	  -->
 	<target name="generate-local" depends="check-generate-required,generate-model"/>
 
-	<target name="test-local" depends="test-xmiloader"/>
-	
 	<!-- generate classes from schema -->
 	<target name="check-generate-required">
 		<uptodate property="generateModel.notRequired" targetfile="${generate.dir}/src/org/soulspace/xmi/uml14/XmiRepositoryImpl.java" >
@@ -27,15 +25,6 @@
 		</uptodate>
 	</target>	
 		
-	<target name="test-xmiloader">
-		<java
-			classname="org.soulspace.xmi.util.XMILoader"
-			classpathref="unittest.classpath">
-			<arg value="data/refModels/argouml/state.xmi"/>
-			<arg value="data/refModels/argouml/usecase.xmi"/>
-		</java>
-	</target>
-	
 	<target name="generate-model" unless="generateModel.notRequired">
 		<delete>
 			<fileset dir="${backup.dir}"/>
@@ -120,21 +109,18 @@
 								extension="java"
 								namespaceReplacement="org.soulspace.modelling.uml14.impl"
 			/>
-			<!--modelGenerator 	name="xmi/2.0/reader"
-                                imports="lib,model/lib,java/lib,java/class,base"
-								subdir="src"
-								baseName="Xmi20ReaderImpl"
-								extension="java"
-								namespaceReplacement="org.soulspace.modelling.uml14.impl"
-			/>
-			<modelGenerator 	name="xmi/2.0/writer"
-                                imports="lib,model/lib,java/lib,java/class,base"
-								subdir="src"
-								baseName="Xmi20WriterImpl"
-								extension="java"
-								namespaceReplacement="org.soulspace.modelling.uml14.impl"
-			/-->
 		</soulmda>
 	</target>
+	
+	<!--target name="test-local" depends="test-xmiloader"/-->
+	
+	<!--target name="test-xmiloader">
+		<java
+			classname="org.soulspace.xmi.util.XMILoader"
+			classpathref="unittest.classpath">
+			<arg value="data/refModels/argouml/state.xmi"/>
+			<arg value="data/refModels/argouml/usecase.xmi"/>
+		</java>
+	</target-->
 	
 </project>

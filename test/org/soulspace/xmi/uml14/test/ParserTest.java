@@ -44,9 +44,6 @@ public class ParserTest {
 		System.out.println("#Generalizations: " + xmiRepository.getGeneralizationList().size());
 		System.out.println("#Dependencies   : " + xmiRepository.getDependencyList().size());
 
-//		System.out.println("Boolean Value of 'true': " + Boolean.parseBoolean("true"));
-//		System.out.println("Boolean Value of 'true': " + Boolean.valueOf("true"));
-//		System.out.println("Boolean Value of 'true': " + Boolean.getBoolean("true"));
 	}
 
 }
