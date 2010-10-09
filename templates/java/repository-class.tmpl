@@ -7,11 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.soulspace.modelling.repository.*;
 import org.soulspace.modelling.repository.elements.*;
 import org.soulspace.modelling.repository.elements.Class;
 import org.soulspace.modelling.repository.elements.Package;
 
-public class <?name()?> {
+public class <?name()?> implements <?Name?> {
 <?
 	container(elementList)
 ?>
@@ -34,7 +35,7 @@ string container(list elementList) {
 
 string registration(list elementList) {
 	foreach element <- elementList {?>
-	void register<?element:Name?>(<?element:Name?> element) {
+	public void register<?element:Name?>(<?element:Name?> element) {
 		<?element:Name.firstLower()?>List.add(element);
 		idMap.put(element.getId(), element);
 	}<?

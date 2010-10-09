@@ -49,8 +49,8 @@ numeric isAccessibleProperty(map attr) {
 }
 
 string extension() {
-	if(SuperClasses.size() == 1) {
-		'extends ' + name(SuperClasses[0])
+	if(Name ne 'Element') {
+		'extends AbstractElement'
 	}
 }
 
