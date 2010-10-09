@@ -11,28 +11,13 @@ package org.soulspace.modelling.base;
  */
 public class AbstractXmiObject implements XmiObject {
 
-	//private String namespace = "";
+	private String xmiNamespace = "";
 	private String qualifiedName = "";
 	private XmiObject parentElement = null;
 	private String xmiId;
 	private String xmiIdRef;
 	private String hRef;
 	boolean profileElement;
-
-	/**
-	 * @return the profileElement
-	 */
-	public boolean getProfileElement() {
-		return profileElement;
-	}
-
-	/**
-	 * @param profileElement
-	 *            the profileElement to set
-	 */
-	public void setProfileElement(boolean profileElement) {
-		this.profileElement = profileElement;
-	}
 
 	/**
 	 * Constructor
@@ -50,23 +35,38 @@ public class AbstractXmiObject implements XmiObject {
 	 */
 	public AbstractXmiObject(String namespace, AbstractXmiObject parentElement) {
 		super();
-//		this.namespace = namespace;
+		this.xmiNamespace = namespace;
 		this.parentElement = parentElement;
 	}
 
-	// /**
-	// * @return Returns the namespace.
-	// */
-	// public String getNamespace() {
-	// return namespace;
-	// }
-	//
-	// /**
-	// * @param namespace The namespace to set.
-	// */
-	// public void setNamespace(String namespace) {
-	// this.namespace = namespace;
-	// }
+	/**
+	 * @return the profileElement
+	 */
+	public boolean getProfileElement() {
+		return profileElement;
+	}
+
+	/**
+	 * @param profileElement
+	 *            the profileElement to set
+	 */
+	public void setProfileElement(boolean profileElement) {
+		this.profileElement = profileElement;
+	}
+
+	/**
+	 * @return Returns the namespace.
+	 */
+	public String getXmiNamespace() {
+		return xmiNamespace;
+	}
+	
+	/**
+	 * @param namespace The namespace to set.
+	 */
+	public void setXmiNamespace(String namespace) {
+		this.xmiNamespace = namespace;
+	}
 
 	/**
 	 * @return Returns the parent.

@@ -16,8 +16,8 @@ public interface XmiObject {
 	XmiObject getParentElement();
 	void setParentElement(XmiObject parent);
 	
-//	String getNamespace();
-//	void setNamespace(String namespace);
+	String getXmiNamespace();
+	void setXmiNamespace(String namespace);
 
 	String getQualifiedName();
 	void setQualifiedName(String qualifiedName);
