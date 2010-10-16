@@ -1,5 +1,5 @@
 <?xml version = '1.0' encoding = 'UTF-8' ?>
-<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Wed Sep 15 10:05:36 CEST 2010'>
+<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Thu Oct 14 19:11:44 CEST 2010'>
   <XMI.header>    <XMI.documentation>
       <XMI.exporter>ArgoUML (using Netbeans XMI Writer version 1.0)</XMI.exporter>
       <XMI.exporterVersion>0.30.1(6) revised on $Date$ </XMI.exporterVersion>
@@ -1943,9 +1943,9 @@
                           ordering = 'unordered' aggregation = 'composite' targetScope = 'instance'
                           changeability = 'changeable'>
                           <UML:AssociationEnd.multiplicity>
-                            <UML:Multiplicity xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:00000000000011DB'>
+                            <UML:Multiplicity xmi.id = '127-0-1-1-45d04d44:12babaf3518:-8000:000000000000100A'>
                               <UML:Multiplicity.range>
-                                <UML:MultiplicityRange xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:00000000000011DC'
+                                <UML:MultiplicityRange xmi.id = '127-0-1-1-45d04d44:12babaf3518:-8000:0000000000001009'
                                   lower = '1' upper = '1'/>
                               </UML:Multiplicity.range>
                             </UML:Multiplicity>
@@ -1955,13 +1955,12 @@
                           </UML:AssociationEnd.participant>
                         </UML:AssociationEnd>
                         <UML:AssociationEnd xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:00000000000011DD'
-                          name = 'enumerationLiteral' visibility = 'public' isSpecification = 'false'
-                          isNavigable = 'true' ordering = 'ordered' aggregation = 'none' targetScope = 'instance'
-                          changeability = 'changeable'>
+                          name = 'literal' visibility = 'public' isSpecification = 'false' isNavigable = 'true'
+                          ordering = 'ordered' aggregation = 'none' targetScope = 'instance' changeability = 'changeable'>
                           <UML:AssociationEnd.multiplicity>
-                            <UML:Multiplicity xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:00000000000011E1'>
+                            <UML:Multiplicity xmi.id = '127-0-1-1-45d04d44:12babaf3518:-8000:0000000000001006'>
                               <UML:Multiplicity.range>
-                                <UML:MultiplicityRange xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:00000000000011E0'
+                                <UML:MultiplicityRange xmi.id = '127-0-1-1-45d04d44:12babaf3518:-8000:0000000000001005'
                                   lower = '1' upper = '-1'/>
                               </UML:Multiplicity.range>
                             </UML:Multiplicity>
