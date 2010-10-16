@@ -1,12 +1,12 @@
 package org.soulspace.modelling.repository.builder.uml14.impl;
 
-import java.util.Iterator;
 
 import org.soulspace.modelling.base.XmiObject;
 import org.soulspace.modelling.repository.ModelRepository;
 import org.soulspace.modelling.repository.builder.ModelFactory;
 import org.soulspace.modelling.repository.builder.impl.AbstractModelFactory;
 import org.soulspace.modelling.repository.elements.*;
+import org.soulspace.modelling.repository.elements.Class;
 import org.soulspace.modelling.repository.elements.Package;
 import org.soulspace.modelling.repository.elements.impl.*;
 import org.soulspace.modelling.uml14.elements.MultiplicityRange;
@@ -14,8 +14,7 @@ import org.soulspace.modelling.uml14.impl.Uml14RepositoryImpl;
 
 public class Uml14ModelFactoryImpl extends AbstractModelFactory implements ModelFactory {
 
-	private ModelRepository repository;
-	private Uml14RepositoryImpl umlRepository;
+	protected Uml14RepositoryImpl umlRepository;
 	
 	public Uml14ModelFactoryImpl(Uml14RepositoryImpl umlRepository, ModelRepository repository) {
 		this.repository = repository;
@@ -62,7 +61,10 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 	}
 	
 	protected Classifier createClassifier(org.soulspace.modelling.uml14.elements.Classifier xmiSource) {
-		if(xmiSource instanceof org.soulspace.modelling.uml14.elements.Class) {
+
+		if(xmiSource instanceof org.soulspace.modelling.uml14.elements.AssociationClass) {
+			return createAssociationClass(xmiSource);
+		} else if(xmiSource instanceof org.soulspace.modelling.uml14.elements.Class) {
 			return createClass(xmiSource);
 		} else if(xmiSource instanceof org.soulspace.modelling.uml14.elements.Interface) {
 			return createInterface(xmiSource);
@@ -92,8 +94,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 	//
 	protected <T extends Element> T initElement(T element, org.soulspace.modelling.base.XmiObject xmiSource) {
 		element.setId(xmiSource.getXmiId());
-		element.setProfileElement(xmiSource.getProfileElement());
-
+		element.setIsProfileElement(xmiSource.getProfileElement());
 		return element;
 	}	
 	
@@ -102,14 +103,20 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 		element = initElement(element, xmiSource);
 
 		element.setName(xmiSource.getName());
+		if(xmiSource.getNamespace() != null) {
+			element.setNamespace(buildNamespace(xmiSource.getNamespace()));			
+		} else {
+			element.setNamespace("");
+		}
 		
 		for(org.soulspace.modelling.uml14.elements.Stereotype xmiStereotype : xmiSource.getStereotypeSet()) {
-			// stereotype = createStereotype(xmiStereotype);
-			element.addStereotype(createStereotype(xmiStereotype));
+			Stereotype st = createStereotype(xmiStereotype);
+			element.addStereotype(st.getName(), st);
 		}
 
 		for(org.soulspace.modelling.uml14.elements.TaggedValue xmiTaggedValue : xmiSource.getTaggedValueSet()) {
-			element.addTaggedValue(createTaggedValue(xmiTaggedValue));
+			TaggedValue tv = createTaggedValue(xmiTaggedValue);
+			element.addTaggedValue(tv.getName(), tv);
 		}
 		
 		for(org.soulspace.modelling.uml14.elements.Comment xmiComment : xmiSource.getCommentSet()) {
@@ -121,7 +128,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 		}
 		
 		for(org.soulspace.modelling.uml14.elements.Component xmiComponent : xmiSource.getContainerSet()) {
-	
+			
 		}
 
 		for(org.soulspace.modelling.uml14.elements.StateMachine xmiStateMachine : xmiSource.getBehaviorSet()) {
@@ -131,19 +138,53 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 		return element;
 	}
 	
+	protected <T extends Package> T initNamespace(T namespace, org.soulspace.modelling.uml14.elements.Namespace xmiSource) {
+		namespace = initModelElement(namespace, xmiSource);
+		for(org.soulspace.modelling.uml14.elements.ModelElement xmiElement :  xmiSource.getOwnedElementSet()) {
+			// FIXME Namespace instead of package, add elements
+			if(xmiElement instanceof org.soulspace.modelling.uml14.elements.Package) {
+				namespace.addPackage(createPackage(xmiElement));
+			} else if(xmiElement instanceof org.soulspace.modelling.uml14.elements.AssociationClass) {
+				namespace.addClass(createAssociationClass(xmiElement));
+			} else if(xmiElement instanceof org.soulspace.modelling.uml14.elements.Class) {
+				namespace.addClass(createClass(xmiElement));
+			} else if(xmiElement instanceof org.soulspace.modelling.uml14.elements.Interface) {
+				namespace.addInterface(createInterface(xmiElement));
+			} else if(xmiElement instanceof org.soulspace.modelling.uml14.elements.DataType) {
+				namespace.addDataType(createDataType(xmiElement));
+			} else if(xmiElement instanceof org.soulspace.modelling.uml14.elements.Generalization) {
+				namespace.addGeneralization(createGeneralization(xmiElement));
+			} else if(xmiElement instanceof org.soulspace.modelling.uml14.elements.Association) {
+				namespace.addAssociation(createAssociation(xmiElement));
+			} else if(xmiElement instanceof org.soulspace.modelling.uml14.elements.Dependency) {
+				namespace.addDependency(createDependency(xmiElement));
+			} else {
+				// System.out.println("Unhandled ownedElement " + xmiElement.getClass().getSimpleName());
+			}
+		}
+		return namespace;
+	}
+	
 	protected <T extends Feature> T initFeature(T feature, org.soulspace.modelling.uml14.elements.Feature xmiSource) {
 		feature = initModelElement(feature, xmiSource);
 		feature.setVisibility(xmiSource.getVisibility().name());
 		feature.setOwnerScope(xmiSource.getOwnerScope().name());
 		// TODO feature.setIsDerived();
+		// feature.setIsDerived(arg0);
 		return feature;
 	}
 
 	protected <T extends StructuralFeature> T initStructuralFeature(T stf, org.soulspace.modelling.uml14.elements.StructuralFeature xmiSource) {
 		stf = initFeature(stf, xmiSource);
-		stf.setChangeability(xmiSource.getChangeability().name());
-		stf.setTargetScope(xmiSource.getTargetScope().name());
-		stf.setOrdering(xmiSource.getOrdering().name());
+		if(xmiSource.getChangeability() != null) {
+			stf.setChangeability(xmiSource.getChangeability().name());
+		}
+		if(xmiSource.getTargetScope() != null) {
+			stf.setTargetScope(xmiSource.getTargetScope().name());
+		}
+		if(xmiSource.getOrdering() != null) {
+			stf.setOrdering(xmiSource.getOrdering().name());			
+		}
 		stf.setMultiplicity(createMultiplicity(xmiSource.getMultiplicity()));
 		return stf;
 	}
@@ -160,7 +201,11 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 	}
 
 	protected <T extends Classifier> T initClassifier(T c, org.soulspace.modelling.uml14.elements.Classifier xmiSource) {
-//		c.setNamespace(xmiSource.getNamespace());
+		c = initModelElement(c, xmiSource);
+//		for(org.soulspace.modelling.uml14.elements.StructuralFeature feature : xmiSource.getTypedFeatureSet()) {
+//			
+//		}
+		
 		return c;
 	}
 
@@ -233,22 +278,33 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 		org.soulspace.modelling.uml14.elements.AssociationEnd xmiSource = (org.soulspace.modelling.uml14.elements.AssociationEnd) xmiObject;
 
 		associationEnd = initModelElement(associationEnd, xmiSource);
-		associationEnd.setAggregation(xmiSource.getAggregation().name());
-		associationEnd.setChangeability(xmiSource.getChangeability().name());
-		if(xmiSource.getName().startsWith("/")) {
-			// FIXME test associationEnd.getTaggedValueMap().get("derived") 
+		if(xmiSource.getAggregation() != null) {
+			associationEnd.setAggregation(xmiSource.getAggregation().name());
+		}
+		if(xmiSource.getChangeability() != null) {
+			associationEnd.setChangeability(xmiSource.getChangeability().name());
+		}
+		if(/* associationEnd.getTaggedValueMap().get("derived") != null ||*/
+				(xmiSource.getName() != null && xmiSource.getName().startsWith("/"))) {
 			associationEnd.setDerived(true);
 		}
 		associationEnd.setMultiplicity(createMultiplicity(xmiSource.getMultiplicity()));
 		associationEnd.setNavigable(xmiSource.getIsNavigable());
-		associationEnd.setOrdering(xmiSource.getOrdering().name());
+		if(xmiSource.getOrdering() != null) {
+			associationEnd.setOrdering(xmiSource.getOrdering().name());
+		}
 		for(org.soulspace.modelling.uml14.elements.Attribute xmiQualifier : xmiSource.getQualifierList()) {
 			associationEnd.addQualifier(createAttribute(xmiQualifier));
 		}
+		// FIXME
 		// associationEnd.setSourceEnd(xmiSource.get)
-		associationEnd.setTargetScope(xmiSource.getTargetScope().name());
+		if(xmiSource.getTargetScope() != null) {
+			associationEnd.setTargetScope(xmiSource.getTargetScope().name());
+		}
 		associationEnd.setType(createClassifier(xmiSource.getParticipant()));
-		associationEnd.setVisibility(xmiSource.getVisibility().name());
+		if(xmiSource.getVisibility() != null) {
+			associationEnd.setVisibility(xmiSource.getVisibility().name());
+		}
 		return associationEnd;
 	}
 
@@ -257,7 +313,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 		org.soulspace.modelling.uml14.elements.Attribute xmiSource = (org.soulspace.modelling.uml14.elements.Attribute) xmiObject;
 
 		attribute = initStructuralFeature(attribute, xmiSource);
-				
+		// TODO more?
 		return attribute;
 	}
 
@@ -381,8 +437,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 	protected ModelImpl initModel(ModelImpl model, XmiObject xmiObject) {
 		org.soulspace.modelling.uml14.elements.Model xmiSource = (org.soulspace.modelling.uml14.elements.Model) xmiObject;
 
-		model = initModelElement(model, xmiSource);
-		
+		model = initNamespace(model, xmiSource);
 		return model;
 	}
 
@@ -424,21 +479,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 	protected PackageImpl initPackage(PackageImpl aPackage, XmiObject xmiObject) {
 		org.soulspace.modelling.uml14.elements.Package xmiSource = (org.soulspace.modelling.uml14.elements.Package) xmiObject;
 
-		aPackage = initModelElement(aPackage, xmiSource);
-		for(org.soulspace.modelling.uml14.elements.ModelElement ownedElement : xmiSource.getOwnedElementSet()) {
-			if(ownedElement instanceof org.soulspace.modelling.uml14.elements.Package) {
-				aPackage.addPackage(createPackage(ownedElement));
-			} else if(ownedElement instanceof org.soulspace.modelling.uml14.elements.Class) {
-				aPackage.addClass(createClass(ownedElement));
-			} else if(ownedElement instanceof org.soulspace.modelling.uml14.elements.Interface) {
-				aPackage.addInterface(createInterface(ownedElement));
-			} else if(ownedElement instanceof org.soulspace.modelling.uml14.elements.DataType) {
-				aPackage.addDataType(createDataType(ownedElement));
-			} else {
-				// FIXME
-				System.out.println("Unhandled package element " + ownedElement.getClass().getSimpleName());
-			}
-		}
+		aPackage = initNamespace(aPackage, xmiSource);
 		
 		return aPackage;
 	}
@@ -515,8 +556,10 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 		taggedValue = initElement(taggedValue, xmiSource);
 		org.soulspace.modelling.uml14.elements.TagDefinition xmiTagDef
 			= (org.soulspace.modelling.uml14.elements.TagDefinition) umlRepository.findByXmiId(xmiSource.getType().getRefId());
-		taggedValue.setName(xmiTagDef.getName());
-
+		if(xmiTagDef != null) {
+			taggedValue.setName(xmiTagDef.getName());
+		}
+			
 		return taggedValue;
 	}
 
@@ -686,6 +729,9 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 		org.soulspace.modelling.uml14.elements.ActionSequence xmiSource = (org.soulspace.modelling.uml14.elements.ActionSequence) xmiObject;
 
 		actionSequence = initAction(actionSequence, xmiSource);
+		for(org.soulspace.modelling.uml14.elements.Action xmiAction : xmiSource.getActionList()) {
+			actionSequence.addAction(createAction(xmiAction));
+		}
 
 		return actionSequence;
 	}
@@ -722,4 +768,24 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 		
 		return constraint;
 	}
+
+	String buildNamespace(org.soulspace.modelling.uml14.elements.ModelElement xmiSource) {
+		StringBuilder sb = new StringBuilder("");
+		if(xmiSource != null && !(xmiSource instanceof org.soulspace.modelling.uml14.elements.Model)) {
+			buildNamespace(xmiSource, sb);			
+		}
+		return sb.toString();
+	}
+	
+	void buildNamespace(org.soulspace.modelling.uml14.elements.ModelElement xmiSource, StringBuilder sb) {
+		if(xmiSource.getNamespace() != null
+				&& !(xmiSource.getNamespace() instanceof org.soulspace.modelling.uml14.elements.Model)) {
+			buildNamespace(xmiSource.getNamespace(), sb);
+		}
+		if(sb.length() > 0) {
+			sb.append(".");
+		}
+		sb.append(xmiSource.getName());
+	}
+
 }

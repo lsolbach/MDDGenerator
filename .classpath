@@ -2,8 +2,9 @@
 <classpath>
 	<classpathentry excluding="org/soulspace/modelling/repository/builder/uml14/impl/ElementInitializerAspect.aj" kind="src" path="src"/>
 	<classpathentry kind="src" path="generated/src"/>
+	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/runtime/ModelRepository2.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/ModelRepository2.jar" sourcepath="/ModelRepository2"/>
 	<classpathentry kind="lib" path="lib/runtime/XmiRepository2.jar" sourcepath="/XmiRepository2"/>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>

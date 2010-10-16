@@ -18,7 +18,7 @@ public class Uml14ModelBuilderImpl {
 		this.factory = new Uml14ModelFactoryImpl(this.umlRepository, modelRepository);
 	}
 	
-	ModelRepository build() {
+	public ModelRepository build() {
 		for(Model model : umlRepository.getModelList()) {
 			factory.createModel(model);
 		}
