@@ -7,9 +7,13 @@ public class ElementImpl extends AbstractElement {
 	public ElementImpl() {
 		super();
 	}
-
-	public ElementImpl(String id, String namespace, boolean profileElement, boolean initialized) {
-		super(id, namespace, profileElement, initialized);
+	
+	public ElementImpl(String id, boolean isProfileElement, boolean initialized) {
+		super(id, isProfileElement, initialized);
+	}
+	
+	public ElementImpl(String id, boolean isProfileElement, boolean initialized, Element parentElement) {
+		super(id, isProfileElement, initialized, parentElement);
 	}
 
 }
