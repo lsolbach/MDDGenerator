@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="unittest"/>
+	<classpathentry kind="lib" path="lib/runtime/JavaUtilLibrary.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/ModelRepository2.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/TemplateEngine.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/UmlModelBuilder.jar" sourcepath="/UmlModelBuilder"/>
+	<classpathentry kind="lib" path="lib/runtime/XmiRepository2.jar" sourcepath="/XmiRepository2"/>
+	<classpathentry kind="lib" path="lib/dev/ant.jar"/>
+	<classpathentry kind="lib" path="lib/dev/junit.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/jakarta-oro.jar"/>
+	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

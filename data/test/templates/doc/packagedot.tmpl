@@ -1,0 +1,92 @@
+digraph "<?QualifiedName?>" {
+    outputmode=nodefirst;
+    
+	node [shape=plaintext fontsize=9];
+<?
+	foreach Classes {
+		string stereotype
+		stereotype = Classes:Stereotypes[0]?>
+	<?Classes:Name?> [
+    label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="2"<?
+    if(stereotype eq 'entity') {?>
+    BGCOLOR="#CCFFFF"<?
+    } else if(stereotype eq 'service') {?>
+    BGCOLOR="#FFCCFF"<?
+    }?>
+    >
+    <TR>
+    <TD ALIGN="CENTER" PORT="top"><?
+    foreach Classes:Stereotypes {
+    stereotype = Classes:Stereotypes
+  	?>&lt;&lt;<?Classes:Stereotypes?>&gt;&gt;<BR ALIGN="CENTER"/><?
+  	}
+  	?><?Classes:Name
+  	?></TD>
+  	</TR>
+  	<TR>
+  	<TD ALIGN="left"><?
+  	foreach Classes:Attributes {
+  	  if(Classes:Attributes:Visibility eq 'public') {
+  	  ?>+<?
+  	  } else if(Classes:Attributes:Visibility eq 'protected') {
+  	  ?>#<?
+  	  } else if(Classes:Attributes:Visibility eq 'private') {
+  	  ?>-<?
+  	  }
+  	?><?Classes:Attributes:Name?><BR ALIGN="left"/><?}
+  	?></TD>
+  	</TR>
+  	<TR>
+  	<TD ALIGN="left" PORT="bottom"><?
+  	foreach Classes:Operations {
+  	  if(Classes:Operations:Visibility eq 'public') {
+  	  ?>+<?
+  	  } else if(Classes:Operations:Visibility eq 'protected') {
+  	  ?>#<?
+  	  } else if(Classes:Operations:Visibility eq 'private') {
+  	  ?>-<?
+  	  }
+  	?><?Classes:Operations:Name?>()<BR ALIGN="left"/><?}
+  	?></TD>
+  	</TR>
+  	</TABLE>
+  	>
+  ];
+<?
+    foreach Classes:SuperClasses {?>
+	  <?Classes:SuperClasses:Name?>:bottom -> <?Classes:Name?>:top [
+      arrowhead=none,
+      arrowtail=onormal
+		]
+		<?
+    }
+?>
+<?
+	foreach Classes:Associations {
+	  if(Classes:Associations:Navigable) {?>
+	<?Classes:Name?>:bottom -> <?Classes:Associations:Type:Name?>:top [
+    fontsize=12
+    <?
+	if(Classes:Associations:Aggregation eq 'composite') {?>
+    arrowtail=diamond<?
+	} else if(Classes:Associations:Aggregation eq 'aggregate') {?>
+    arrowtail=odiamond<?
+	}?>
+    arrowhead=vee
+    headlabel=<
+    <?Classes:Associations:Name?>
+    >
+  ];<?
+      }
+    }?>
+		
+<?
+  foreach Classes:Dependencies {?>
+	<?Classes:Name?>:bottom -> <?Classes:Dependencies:Supplier:Name?>:top [
+    arrowhead=vee,
+    style=dashed
+  ];<?
+	}
+  }?>	
+}

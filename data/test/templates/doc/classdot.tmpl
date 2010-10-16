@@ -1,0 +1,52 @@
+digraph "<?QualifiedName?>" {
+	node [shape=plaintext fontsize=9];
+		<?string stereotype
+		stereotype = Stereotypes[0]?>
+  <?Name?> [
+  	label=<
+    <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="2"<?
+    if(StereotypeMap['entity'] ne '') {?>
+    BGCOLOR="#CCFFFF"<?
+    } else if(StereotypeMap['service'] ne '') {?>
+    BGCOLOR="#FFCCFF"<?
+    }?>
+    >
+    <TR>
+    <TD ALIGN="CENTER" PORT="top"><?
+    foreach Stereotypes {
+    stereotype = Stereotypes
+  	?>&lt;&lt;<?Stereotypes?>&gt;&gt;<BR ALIGN="CENTER"/><?
+  	}
+  	?><?Name
+  	?></TD>
+  	</TR>
+  	<TR>
+  	<TD ALIGN="left"><?
+  	foreach Attributes {
+  	  if(Attributes:Visibility eq 'public') {
+  	  ?>+<?
+  	  } else if(Attributes:Visibility eq 'protected') {
+  	  ?>#<?
+  	  } else if(Attributes:Visibility eq 'private') {
+  	  ?>-<?
+  	  }
+  	?><?Attributes:Name?><BR ALIGN="left"/><?}
+  	?></TD>
+  	</TR>
+  	<TR>
+  	<TD ALIGN="left" PORT="bottom"><?
+  	foreach Operations {
+  	  if(Operations:Visibility eq 'public') {
+  	  ?>+<?
+  	  } else if(Operations:Visibility eq 'protected') {
+  	  ?>#<?
+  	  } else if(Operations:Visibility eq 'private') {
+  	  ?>-<?
+  	  }
+  	?><?Operations:Name?>()<BR ALIGN="left"/><?}
+  	?></TD>
+  	</TR>
+  	</TABLE>
+  	>
+  ];
+}

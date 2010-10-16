@@ -1,0 +1,488 @@
+<?
+string getGenerationInfo() {?>
+ * Generated with soulspace.org MDA generator
+ *
+ * Template: <?GenContext:Name?>
+ * Imports: <?GenContext:Imports?>
+ * Time: <?GenContext:Timestamp?><?
+}
+
+string createInterfaceImports(list reftypes) {
+	foreach type <- reftypes {
+		if(type:Namespace && type:Namespace ne getNamespace()) {
+?>import <?type:QualifiedName?>;
+<?
+		}
+	}
+}
+
+
+string createClassImports(list reftypes) {
+?>import <?QualifiedName?>;
+<?
+	foreach type <- reftypes {
+		if(type:Namespace) {
+?>import <?type:QualifiedName?>;
+<?
+		}
+	}
+}
+
+string createInterfaceAssociationImports() {?>
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;	
+<?
+}
+
+string createClassAssociationImports() {?>
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;	
+<?
+}
+
+string createDependencyImports(list dependencies) {
+	foreach dep <- dependencies {
+?>import <?dep:Supplier:QualifiedName?>;
+<?
+	}
+}
+
+string extendInterfaceSuperClasses(list superClasses) {
+	if(superClasses) {?>
+	extends<?
+		foreach superClass <- superClasses {
+?> <?superClass:Name?><?
+			if(superClass.size() > superClass.index() + 1) {
+?>, <?
+			}
+		}
+	}
+}
+
+string implementClassSuperClasses(list superClasses) {?>
+	implements <?Name?><?
+	if(superClasses) {
+?>, <?
+		foreach superClass <- superClasses {
+?> <?superClass:Name?><?
+			if(superClass.index() + 1 < superClass.size()) {
+?>, <?
+			}
+		}
+	}
+}
+
+string extendClassSuperClasses(list superClasses) {
+	if(superClasses) {?>
+	extends<?
+		foreach superClass <- superClasses {
+?> <?superClass:Name?>Impl<?
+			if(superClass.size() > superClass.index() + 1) {
+?>, <?
+			}
+		}
+	}
+}
+
+string createConstructors() {?>
+	/**
+	 * Default constructor. (TODO check if needed)
+	 */
+	<?Name?>Impl() {
+	}
+
+<?
+	if(Attributes) {
+?>
+	/**
+	 * Constructor with all properties.
+	 */
+	<?Name?>Impl(<?createConstructorParameters(Attributes, 'all')?>) {<?
+	createConstructorInitializations(Attributes, 'all')?>
+	}
+<?
+	}
+}
+
+string createConstructorParameters(list attributes, string type) {
+	numeric firstParam
+	firstParam = 1
+	if(attributes) {
+		foreach attr <- attributes {
+			if(type eq 'all') {
+				if(!firstParam) {
+?>, <?
+				} else {
+					firstParam = 0
+				}
+?><?attr:Type:Name?> <?attr:Name?><?
+			}
+		}
+	}
+}
+
+string createConstructorInitializations(list attributes, string type) {
+	foreach attr <- attributes {
+		if(type eq 'all') {?>
+		this.<?attr:Name?> = <?attr:Name?>;<?
+		}
+	}
+}
+
+string createPropertyMember(map attribute) {?>
+	private <?attribute:Type:Name?> <?attribute:Name?>;<?
+}
+
+string createPropertyMembers(list attributes) {
+	foreach attr <- attributes {?>
+	private <?attr:Type:Name?> <?attr:Name?>;<?
+	}
+}
+
+string createPropertyInterfaces(map attribute) {
+	if(attribute:OwnerScope ne 'classifier') {?>
+	/**
+	 * Returns the value of <?attribute:Name?>.
+	 * @return 
+	 */
+	<?attribute:Type:Name?> get<?attribute:MethodSuffix?>();
+<?
+		if(attribute:Changeability ne 'frozen') {
+?>
+	/**
+	 * Sets the value of <?attribute:Name?>.
+	 * @param <?attribute:Name?> to set
+	 */
+	void set<?attribute:MethodSuffix?>(<?attribute:Type:Name?> <?attribute:Name?>);
+<?
+		}
+	}
+}
+
+
+string createPropertyMethods(map attribute) {
+	if(attribute:OwnerScope ne 'classifier') {?>
+	/**
+	 * Returns the value of <?attribute:Name?>.
+	 * @return 
+	 */
+	<?attribute:Visibility?> <?attribute:Type:Name?> get<?attribute:MethodSuffix?>() {
+		return <?attribute:Name?>;
+	}
+<?
+		if(attribute:Changeability ne 'frozen') {
+?>
+	/**
+	 * Sets the value of <?attribute:Name?>.
+	 * @param <?attribute:Name?> to set
+	 */
+	<?attribute:Visibility?> void set<?attribute:MethodSuffix?>(<?attribute:Type:Name?> <?attribute:Name?>) {
+		this.<?attribute:Name?> = <?attribute:Name?>;
+	}
+<?
+		}
+	}
+}
+
+string createDependencyMembers(list dependencies) {
+	foreach dep <- dependencies {?>
+	private <?dep:Supplier:Name?> <?dep:Name?>;<?
+	}
+}
+
+string createDependencyInterface(map dependency) {?>
+	/**
+	 * Set dependency
+	 *
+	 */
+	void set<?dependency:MethodSuffix?>(<?dependency:Supplier:Name?> <?dependency:Name?>);
+<?
+}
+
+string createDependencyMethod(map dependency) {?>
+	/**
+	 * Set dependency
+	 *
+	 */
+	public void set<?dependency:MethodSuffix?>(<?dependency:Supplier:Name?> <?dependency:Name?>) {
+		this.<?dependency:Name?> = <?dependency:Name?>;
+	}
+<?
+}
+
+
+string createAssociationMember(map association) {
+	if(association:Navigable) {
+		if(association:Multiplicity:High eq '1' &&  !association:Qualifiers) {?>
+	private <?associationType(association)?> <?associationProperty(association)?>;<?
+		} else {?>
+	private <?associationType(association)?> <?associationProperty(association)?> = new <?
+				associationTypeImplementation(association)?>();<?
+		}
+	}
+}
+
+
+string createAssociationMembers(list associations) {
+	foreach asso <- associations {
+		if(asso:Navigable) {
+			if(asso:Multiplicity:High eq '1' &&  !asso:Qualifiers) {?>
+	private <?associationType(asso)?> <?associationProperty(asso)?>;<?
+			} else {?>
+	private <?associationType(asso)?> <?associationProperty(asso)?> = new <?
+				associationTypeImplementation(asso)?>();<?
+			}
+		}
+	}
+}
+
+
+string createAssociationInterfaces(map association) {
+
+	if(association:Navigable && association:Visibility eq 'public') {?>
+	/**
+	 * Returns the value of <?associationProperty(association)?>.
+	 * @return
+	 */
+	<?associationType(association)?> get<?associationMethodSuffix(association)?>();
+<?
+		if(association:Changeability ne 'frozen') {?>
+	/**
+	 * Sets the value of <?associationProperty(association)?>.
+	 * @param <?association:Role?> to set
+	 */
+	void set<?associationMethodSuffix(association)?>(<?associationType(association)?> <?associationProperty(association)?>);
+<?
+			if(association:Multiplicity:High ne '1' || association:Qualifiers) {
+?>
+	/**
+	 * Adds the <?association:Role?> to the <?associationProperty(association)?>.
+	 * @param <?association:Role?> to add
+	 */
+	void add<?association:MethodSuffix?>(<?association:Type:Name?> <?association:Role?>);
+
+	/**
+	 * Removes the <?association:Role?> from the <?associationProperty(association)?>.
+	 * @param <?association:Role?> to remove
+	 */
+	void remove<?association:MethodSuffix?>(<?association:Type:Name?> <?association:Role?>);
+<?			}
+	   }
+   }
+}
+
+
+string createAssociationMethods(map association) {
+
+	if(association:Navigable && association:Visibility eq 'public') {?>
+	/**
+	 * Returns the value of <?associationProperty(association)?>.
+	 * @return
+	 */
+	<?association:Visibility?> <?associationType(association)?> get<?associationMethodSuffix(association)?>() {
+		return <?associationProperty(association)?>;
+	}
+<?
+		if(association:Changeability ne 'frozen') {?>
+	/**
+	 * Sets the value of <?associationProperty(association)?>.
+	 * @param <?association:Role?> to set
+	 */
+	<?association:Visibility?> void set<?associationMethodSuffix(association)?>(<?associationType(association)?> <?associationProperty(association)?>) {
+		this.<?associationProperty(association)?> = <?associationProperty(association)?>;
+	}
+<?
+			if(association:Multiplicity:High ne '1' || association:Qualifiers) {
+?>
+	/**
+	 * Adds the <?association:Role?> to the <?associationProperty(association)?>.
+	 * @param <?association:Role?> to add
+	 */
+	<?association:Visibility?> void add<?association:MethodSuffix?>(<?association:Type:Name?> <?association:Role?>) {
+		<?associationProperty(association)?>.add(<?association:Role?>);
+	}
+
+	/**
+	 * Removes the <?association:Role?> from the <?associationProperty(association)?>.
+	 * @param <?association:Role?> to remove
+	 */
+	<?association:Visibility?> void remove<?association:MethodSuffix?>(<?association:Type:Name?> <?association:Role?>)
+	{
+		<?associationProperty(association)?>.remove(<?association:Role?>);
+	}
+<?			}
+	   }
+   }
+}
+
+
+string associationMethodSuffix(map association) {
+?><?association:MethodSuffix?><?associationSuffix(association)?><?
+}
+
+
+string associationProperty(map association) {
+?><?association:Name?><?associationSuffix(association)?><?
+}
+
+
+string associationType(map association) {
+	if(association:Multiplicity:High eq '1' &&  !association:Qualifiers) {
+?><?association:Type:Name?><?
+   } else if(association:Association:Stereotypes.size() == 0) {
+?>Collection<<?association:Type:Name?>><?
+	} else {
+		foreach stereotype <- association:Association:Stereotypes {
+			if(stereotype:Name eq 'list') {
+?>List<<?association:Type:Name?>><?
+			} else if(stereotype:Name eq 'set') {
+?>Set<<?association:Type:Name?>><?
+			} else if(stereotype:Name eq 'map') {
+?>Map<String, <?association:Type:Name?>><?
+			}
+		}
+	}
+}
+
+
+string associationTypeImplementation(map association) {
+	if(association:Multiplicity:High ne '1' || association:Qualifiers) {
+   		if(association:Association:Stereotypes.size() == 0) {
+?>ArrayList<<?association:Type:Name?>><?
+		} else {
+			foreach stereotype <- association:Association:Stereotypes {
+				if(stereotype:Name eq 'list') {
+?>ArrayList<<?association:Type:Name?>><?
+				} else if(stereotype:Name eq 'set') {
+?>HashSet<<?association:Type:Name?>><?
+				} else if(stereotype:Name eq 'map') {
+?>HashMap<String, <?association:Type:Name?>><?
+				}
+			}
+		}
+	}
+}
+
+
+string associationSuffix(map association) {
+	if(association:Multiplicity:High ne '1' || association:Qualifiers) {
+	   if(association:Association:Stereotypes.size() == 0) {
+?>Collection<?
+		} else {
+			foreach stereotype <- association:Association:Stereotypes {
+				if(stereotype:Name eq 'list') {
+?>List<?
+				} else if(stereotype:Name eq 'set') {
+?>Set<?
+				} else if(stereotype:Name eq 'map') {
+?>Map<?
+				}
+			}
+		}
+	}
+}
+
+
+string printQualifiers(numeric count, list qualifiers) {
+	if(count > 0) {
+		printQualifiers((count - 1), qualifiers)
+		if(qualifiers.size() > 0) {
+			foreach qualifier <- qualifiers {
+?>/* Count <?count?> Qualifier <?qualifier:Name?> */<?
+			}
+		}
+	}
+}
+
+string createOperationInterface(map operation) {
+	if(operation:Visibility eq 'public') {?>
+	/**
+	 * <?operation:TaggedValueMap['documentation']?>
+	 */
+	<?operation:ReturnType:Name?> <?operation:Name?>(<?createParameters(operation:Parameters)?>);
+<?
+	}
+}
+
+string createOperationMethod(map operation) {
+	if(operation:Visibility eq 'public') {?>
+	/**
+	 * <?operation:TaggedValueMap['documentation']?>
+	 */
+	<?operation:Visibility?> <?operation:ReturnType:Name?> <?operation:Name?>(<?createParameters(operation:Parameters)?>) {
+<?
+		if(operation:ReturnType:Name ne 'void') {
+			if(isPrimitive(operation:ReturnType:Name)) {
+?>
+	  <?operation:ReturnType:Name?> result;<?
+			  } else {
+?>
+	  <?operation:ReturnType:Name?> result = null;
+<?
+			  }
+?>
+// USER-BEGIN(Op-<?operation:Id?>)
+
+// USER-END(Op-<?operation:Id?>)
+	  return result; 
+<?		} else {
+?>
+// USER-BEGIN(Op-<?operation:Id?>)
+
+// USER-END(Op-<?operation:Id?>)
+<?
+		}
+?>
+	}
+<?
+	}
+}
+
+string createParameters(list params) {
+	if(params) {
+		foreach param <- params {
+	    	if(param:Kind ne 'return') {
+?><?param:Type:Name?> <?param:Name?><?
+				if(params.index() + 1 < params.size()) {
+?>, <?
+				}
+			}
+		}
+	}
+}
+
+string createQualifierParameters(list qualifiers) {
+	if(qualifiers) {
+		foreach qualifier <- qualifiers {
+?><?qualifier:Type:Name?> <?qualifier:Name?><?
+			if(qualifiers.index() + 1 < qualifiers.size()) {
+?>, <?
+			}
+		}
+	}
+}
+
+numeric isPrimitive(string typename) {
+	numeric result
+	if(typename eq 'int'
+			|| operation:ReturnType:Name eq 'long'
+			|| operation:ReturnType:Name eq 'short'
+			|| operation:ReturnType:Name eq 'char'
+			|| operation:ReturnType:Name eq 'byte'
+			|| operation:ReturnType:Name eq 'boolean'
+			|| operation:ReturnType:Name eq 'float'
+			|| operation:ReturnType:Name eq 'double') {
+		result = 1
+	} else {
+		result = 0
+	}
+	result
+}
+?>

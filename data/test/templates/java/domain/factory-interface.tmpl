@@ -1,0 +1,38 @@
+/*
+ * Interface for factory <?Name?>
+ * <?getGenerationInfo()?>
+ */
+
+package <?Namespace?>;
+
+// Imports
+<?
+createInterfaceAssociationImports()
+createInterfaceImports(AllReferencedTypes)
+createDomainAnnotationImports()
+?>
+// USER-BEGIN(Imports)
+<?USERSECTIONS:Imports
+?>// USER-END(Imports)
+
+/**
+ * <?TaggedValueMap['documentation']?>
+ *
+ */
+<?createDomainAnnotations()?>
+<?Visibility?> interface <?Name?> <?extendInterfaceSuperClasses(SuperClasses)?> {
+
+	// Associations
+<?
+foreach Associations {
+}
+?>
+
+	// Operations
+<?foreach Operations {
+	createOperationInterface(Operations)
+}?>
+
+}
+
+

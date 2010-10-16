@@ -1,0 +1,229 @@
+/*
+ * Class <?getName()?>
+ * <?getGenerationInfo()?>
+ */
+package <?Namespace?>;
+
+// Imports<?
+createImports(AllReferencedTypes)?>
+// USER-BEGIN(Imports)
+<?
+USERSECTIONS:Imports
+?>// USER-END(Imports)
+
+/**
+ * <?TaggedValueMap['documentation']?>
+ *
+ */
+
+<?Visibility?><?if(Abstract) {?> abstract<?}?> class <?getName()?>
+   <?if(SuperClasses) {?>extends <?SuperClasses[0]:Name?>Impl<?}?>
+   implements <?Name?> {
+
+  // Attributes
+<?
+list attributes
+attributes = Attributes
+foreach attributes {?>
+  // <?attributes:TaggedValueMap['documentation']?> 
+  <?attributes:Visibility?> <?if(attributes:OwnerScope eq 'classifier') {?>static <?}?><?attributes:Type:Name?> <?attributes:Name?>;
+<?}?>
+
+  // Association Attributes
+<?
+list associations
+associations = Associations
+foreach associations {  
+  if(associations:Navigable) {
+    if(associations:Multiplicity:High == 1) {
+?>  <?associations:Visibility?> <?associations:Type:Name?> <?associations:Name?>;
+<?
+    } else {
+?>  <?associations:Visibility?> Collection <?associations:Name?>;
+<?
+    }
+  }
+}?>
+
+// USER-BEGIN(Attributes)
+// USER-END(Attributes)
+
+  /**
+   * Default constructor
+   */
+  public <?Name?>Impl() {
+  	super();
+  }
+
+// USER-BEGIN(Constructors)
+// USER-END(Constructors)
+
+  // Getter/Setter
+<?
+foreach attributes {?>
+  /**
+   * Getter for attribute <?attributes:Name?>
+   * @return 
+   */
+  public <?attributes:Type:Name?> get<?attributes:MethodSuffix?>() {
+  	return <?attributes:Name?>;
+  }
+<?if(attributes:Changeability ne 'frozen') {?>
+  /**
+   * Setter for attribute <?attributes:Name?>
+   * @param new value
+   */
+  public void set<?attributes:MethodSuffix?>(<?attributes:Type:Name?> newValue) {
+  <?if(attributes:Type:Name eq 'String') {
+  string hasLength
+  hasLength = 'false'
+  foreach attributes:TaggedValues {?>
+    <?if (attributes:TaggedValues:Name eq 'length') {
+    	  hasLength = 'true'?>
+  	if(newValue.length() > <?attributes:TaggedValues:Value?>) {
+  	  <?attributes:Name?> = newValue.substring(0, <?attributes:TaggedValues:Value?>);
+  	} else {
+  	  <?attributes:Name?> = newValue;
+  	}
+    <?}
+    if(hasLength eq 'false') {?>
+  	  <?attributes:Name?> = newValue;
+    <?}?>
+  <?}?>
+  <?} else {?>
+  	<?attributes:Name?> = newValue;
+  <?}?>
+  }
+<?}?>
+<?}?>
+
+  // Associations
+<?
+associations = Associations
+foreach associations {?>
+  <?if(associations:Navigable) {?>
+  /**
+   * Getter for association <?associations:Role?>
+   * @return
+   */
+<?
+    if(associations:Multiplicity:High == 1) {
+?>  <?associations:Visibility?> <?associations:Type:Name?> get<?associations:MethodSuffix?>() {
+    return <?associations:Role?>;
+  }
+    <?} else {
+?>  <?associations:Visibility?> Collection get<?associations:MethodSuffix?>() {
+    return <?associations:Role?>;
+  }
+    <?}?>
+    <?if(associations:Changeability ne 'frozen') {?>
+  /**
+   * Setter for association <?associations:Role?>
+   * @param new value
+   */
+  <?associations:Visibility?> void set<?associations:MethodSuffix?>(<?
+     if(associations:Multiplicity:High == 1) {
+     ?><?associations:Type:Name?><?
+     } else {?>Collection<?
+     }?> newValue) {
+	<?associations:Role?> = newValue;
+  }
+    <?}?>
+  <?}?>
+<?}?>
+
+
+
+  // Operations
+<?list operations
+operations = Operations?>
+<?foreach operations {?>
+  /**
+   * <?operations:TaggedValueMap['documentation']?><?foreach operations:Parameters {?><?if(operations:Parameters:Kind ne 'return') {?>
+   * @param <?operations:Parameters:Name?><?}?><?}?><?foreach operations:Parameters {?><?if(operations:Parameters:Kind eq 'return' && operations:Parameters:Type:Name ne 'void') {?>
+   * @return <?operations:Parameters:Name?><?}?><?}?>
+   */
+  <?operations:Visibility?> <?operations:ReturnType:Name?> <?operations:Name?>(
+  <?foreach operations:Parameters {?><?if(operations:Parameters:Kind ne 'return') {
+    ?><?operations:Parameters:Type:Name?> <?operations:Parameters:Name?><?}?> <?}?>)
+  {
+	<?if(operations:ReturnType:Name ne 'void') {?>
+	  <?if(operations:ReturnType:Name eq 'int'
+	  || operations:ReturnType:Name eq 'long'
+	  || operations:ReturnType:Name eq 'short'
+	  || operations:ReturnType:Name eq 'char'
+	  || operations:ReturnType:Name eq 'byte'
+	  || operations:ReturnType:Name eq 'boolean'
+	  || operations:ReturnType:Name eq 'float'
+	  || operations:ReturnType:Name eq 'double') {?>
+	  <?operations:ReturnType:Name?> returnValue;
+	  <?} else {?>
+	  <?operations:ReturnType:Name?> returnValue = null;
+	  <?}?>
+// USER-BEGIN(Op-<?operations:Id?>)
+// USER-END(Op-<?operations:Id?>)
+	  return returnValue; 
+	<?}?>
+  }<?
+}?>
+
+  public boolean equals(Object o) {
+  	if(this == o) return true;
+  	if(!(o instanceof <?Name?>)) return false;
+  	
+  	<?Name?> other = (<?Name?>) o;
+
+  	if(super.getClass() != Object.class) {
+  	  if(!super.equals(other)) return false;
+    }
+
+  	<?attributes = Attributes
+  	foreach attributes {
+  		  if((attributes:Type:Name eq 'boolean')
+  		  || (attributes:Type:Name eq 'byte')
+  		  || (attributes:Type:Name eq 'char')
+  		  || (attributes:Type:Name eq 'short')
+  		  || (attributes:Type:Name eq 'int')
+  		  || (attributes:Type:Name eq 'long')
+  		  || (attributes:Type:Name eq 'float')
+  		  || (attributes:Type:Name eq 'double')
+  		  ) {?>
+		if(get<?attributes:MethodSuffix?>() != other.get<?attributes:MethodSuffix?>()) return false;<?
+  		  } else {?>
+		if(get<?attributes:MethodSuffix?>().equals(other.get<?attributes:MethodSuffix?>())) return false;<?
+  		  }
+  	  }?>
+  	return true;
+  }
+  
+  public int hashCode() {
+  	int result = 17;
+  	if(super.getClass() != Object.class) {
+  	  result = 29 * result + super.hashCode();
+    }
+  	<?foreach attributes {
+  		  if((attributes:Type:Name eq 'byte')
+  		  || (attributes:Type:Name eq 'char')
+  		  || (attributes:Type:Name eq 'short')
+  		  || (attributes:Type:Name eq 'int')
+  		  ) {?>
+  	result = 29 * result + <?attributes:Name?>;<?
+  		  } else if(attributes:Type:Name eq 'long') {?>
+  	result = 29 * result + (int) (<?attributes:Name?> ^ (<?attributes:Name?> >>> 32));<?
+  		  } else if(attributes:Type:Name eq 'float') {?>
+  	result = 29 * result + Float.floatToIntBits(<?attributes:Name?>);<?
+  		  } else if(attributes:Type:Name eq 'double') {?>
+  	result = 29 * result + Double.doubleToIntBits(<?attributes:Name?>);<?
+  		  } else if(attributes:Type:Name eq 'boolean') {?>
+  	result = 29 * result + <?attributes:Name?>?1:0;<?
+  		  } else {?>
+    result = 29 * result + <?attributes:Name?>.hashCode();<?
+  		  }
+  	  }?>
+  	return result;
+  }
+  
+// USER-BEGIN(Operations)
+// USER-END(Operations)
+
+}

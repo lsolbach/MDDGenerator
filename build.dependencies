@@ -1,0 +1,34 @@
+<dependencies>
+	<dependency type="dev">
+		<package name="fitnesse" version="20070619" type="lib">
+			<module name="fitnesse"/>
+			<module name="fitlibrary"/>
+		</package>
+		<package name="junit" version="3.8.1" type="lib">
+			<module name="junit"/>
+		</package>
+		<package name="apache-ant" version="1.6.5" type="lib">
+			<module name="ant"/>
+		</package>
+	</dependency>
+	<dependency type="runtime">
+		<package name="TemplateEngine" version="1.0.0rc1" type="project">
+			<module name="TemplateEngine"/>
+		</package>
+		<package name="XmiRepository2" version="0.1.0" type="project">
+			<module name="XmiRepository2"/>
+		</package>
+		<package name="ModelRepository2" version="0.1.0" type="project">
+			<module name="ModelRepository2"/>
+		</package>
+		<package name="UmlModelBuilder" version="0.1.0" type="project">
+			<module name="UmlModelBuilder"/>
+		</package>
+		<package name="JavaUtilLibrary" version="0.1.0" type="project">
+			<module name="JavaUtilLibrary"/>
+		</package>
+		<package name="jakarta-oro" version="2.0.8" type="lib">
+			<module name="jakarta-oro"/>
+		</package>
+	</dependency>
+</dependencies>

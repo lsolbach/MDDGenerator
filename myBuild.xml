@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<!DOCTYPE project [
+	<!ENTITY properties SYSTEM "file:../Build/common.properties">
+	<!ENTITY paths SYSTEM "file:../Build/common.paths">
+	<!ENTITY targets SYSTEM "file:../Build/common.targets">
+]>
+<project name="MdaGenerator" default="deploy">
+
+	<!-- define local properties -->
+	<property name="model.dir" location="model"/>
+	<property name="generation.dir" location="generated"/>
+	<property name="backup.dir" location="backup"/>
+	<property name="target.jar" value="MdaGenerator.jar"/>
+	
+	<property file="./build.properties"/>
+
+	<import file="../Build/common.properties.xml"/>
+
+	<path id="compile.classpath">
+		<path refid="common.compile.classpath"/>
+		<path refid="xerces.classpath"/>
+		<path refid="lib.dev.classpath"/>
+		<path refid="lib.runtime.classpath"/>
+		<!--path refid="commons-logging.classpath"/-->
+	</path>
+
+	<path id="lib.dev.classpath">
+		<pathelement location="${lib.dev.dir}/junit.jar"/>
+	</path>
+
+	<path id="lib.runtime.classpath">
+		<pathelement location="${lib.runtime.dir}/ModelRepository.jar"/>
+		<pathelement location="${lib.runtime.dir}/TemplateEngine.jar"/>
+		<pathelement location="${lib.runtime.dir}/Utils.jar"/>
+		<pathelement location="${lib.runtime.dir}/castor-xml.jar"/>
+		<pathelement location="${lib.runtime.dir}/jakarta-oro.jar"/>
+	</path>
+	
+	<path id="gen.classpath">
+		<pathelement location="${build.dir}"/>
+		<path refid="compile.classpath"/>
+	</path>
+	
+	<target name="init-local">
+		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${generation.dir}"/>
+	</target>
+	
+	<target name="create-manifest" depends="init">
+		<manifest file="${build.dir}/MANIFEST.MF">
+			<attribute name="Build-On" value="${timestamp.iso}"/>
+			<attribute name="Build-By" value="${user.name}"/>
+		</manifest>
+	</target>
+	
+	<target name="compile-local" depends="create-manifest"/>
+
+	<target name="mdaGenerator" depends="compile">
+		<taskdef name="mdaGenerator" classname="org.soulspace.mda.generator.ant.MdaGeneratorTask">
+			<classpath refid="gen.classpath"/>
+		</taskdef>
+
+		<!-- make a backup of the generated files -->
+		<copy todir="${backup.dir}" overwrite="true">
+			<fileset dir="${generation.dir}"/>
+		</copy>
+		
+		<!-- delete generation dir -->
+		<delete>
+			<fileset dir="${generation.dir}"/>
+		</delete>
+		
+		<!-- call generator -->
+		<mdaGenerator destDir="${generation.dir}"
+			backupDir="${backup.dir}"
+			templateDir="../MDAGenerator/templates/"
+			modelFile="${model.dir}/dummy2.xmi">
+			
+			<classGenerator name="test/class" extension="txt"/>
+			<classGenerator name="java/interface" extension="java"/>
+			<classGenerator name="java/class" suffix="Impl" extension="java"/>
+			<classGenerator name="mvc/controller" suffix="Controller" extension="java"/>
+			<classGenerator name="mvc/view" suffix="View" extension="java"/>
+			<classGenerator name="ejb/entitybean" suffix="Bean" extension="java" stereotype="entity"/>
+			<classGenerator name="ejb/sessionbean" suffix="Bean" extension="java" stereotype="service"/>
+			<classGenerator name="doc/classdot" extension="dot"/>
+			<packageGenerator name="doc/packagedot" extension="dot">
+				<IncludeStereotype name="entity"/>
+				<ExcludeStereotype name="extern"/>
+			</packageGenerator>
+			<modelGenerator name="db/create_table_ddl" basename="create_tables" extension="sql"/>
+			<modelGenerator name="db/drop_table_ddl" basename="drop_tables" extension="sql"/>
+			<modelGenerator name="xml/schema" basename="model" extension="xsd"/>
+			<modelgenerator name="doc/htmldoc" basename="model" extension="html"/>
+			<modelgenerator name="hibernate/mapping" basename="model" extension="hbm.xml"/>
+	  </mdaGenerator>
+		
+		<!-- create UML diagrams from generated .dot files -->
+		<mkdir dir="${generation.dir}/img"/>
+		<apply executable="/usr/bin/dot" dest="${generation.dir}">
+			<arg value="-Tgif"/>
+			<srcfile/>
+			<arg value="-o"/>
+			<targetfile/>
+			<fileset dir="${generation.dir}" includes="**/*.dot"/>
+			<mapper type="glob" from="*.dot" to="*.gif"/>
+		</apply>
+	</target>
+	
+	<import file="../Build/common.build.xml"/>
+
+</project>

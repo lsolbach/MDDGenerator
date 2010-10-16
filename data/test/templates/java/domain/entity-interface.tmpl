@@ -1,0 +1,44 @@
+/*
+ * Interface of entity <?Name?>
+ * <?getGenerationInfo()?>
+ */
+
+package <?getNamespace()?>;
+
+// Imports<?
+createInterfaceAssociationImports()
+createInterfaceImports(AllReferencedTypes)
+createDomainAnnotationImports()
+?>
+// USER-BEGIN(Imports)
+<?USERSECTIONS:Imports
+?>// USER-END(Imports)
+
+/**
+ * <?TaggedValueMap['documentation']?>
+ *
+ */
+<?createDomainAnnotations()?>
+<?Visibility?> interface <?getName()?> <?extendInterfaceSuperClasses(SuperClasses)?> {
+
+	// Properties
+<?
+foreach Attributes {
+	createPropertyInterfaces(Attributes)
+}?>
+
+	// Associations
+<?
+foreach Associations {
+	createAssociationInterfaces(Associations)
+}
+?>
+
+	// Operations
+<?foreach Operations {
+	createOperationInterface(Operations)
+}?>
+
+}
+
+

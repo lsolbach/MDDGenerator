@@ -1,0 +1,54 @@
+/*
+ * Class for entity <?Name?>
+ * <?getGenerationInfo()?>
+ */
+
+package <?getNamespace()?>;
+
+// Imports<?
+createClassAssociationImports()
+
+createClassImports(AllReferencedTypes)
+
+createDomainAnnotationImports()
+?>
+// USER-BEGIN(Imports)
+<?USERSECTIONS:Imports
+?>// USER-END(Imports)
+
+/**
+ * <?TaggedValueMap['documentation']?>
+ *
+ */
+<?createDomainAnnotations()?>
+<?Visibility?> class <?getName()?> <?extendClassSuperClasses(SuperClasses)?> <?implementClassSuperClasses(SuperClasses)?> {
+
+	// Constructors
+<?createConstructors()?>
+
+	// Properties
+<?createPropertyMembers(Attributes)?>
+
+<?createAssociationMembers(Associations)?>
+
+	// Property Access
+<?
+foreach Attributes {
+	createPropertyMethods(Attributes)
+}?>
+
+	// Association Access
+<?
+foreach Associations {
+	createAssociationMethods(Associations)
+}
+?>
+
+	// Operations
+<?foreach Operations {
+	createOperationMethod(Operations)
+}?>
+
+}
+
+

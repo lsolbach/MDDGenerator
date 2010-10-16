@@ -1,0 +1,36 @@
+<?
+string getGenerationInfo() {?>
+Template: <?GenContext:Name?>
+Imports: <?GenContext:Imports?>
+Time: <?GenContext:Timestamp?>
+<?}
+
+string getNamespace() {
+	if(GenContext:NamespacePrefix) {	
+?><?GenContext:NamespacePrefix?>.<?
+	}
+?><?Namespace?><?
+	if(GenContext:NamespaceSuffix) {
+?>.<?GenContext:NamespaceSuffix?><?
+	}
+}
+
+string getClassifierNamespace(map classifier) {
+	if(GenContext:NamespacePrefix) {	
+?><?GenContext:NamespacePrefix?>.<?
+	}
+?><?classifier:Namespace?><?
+	if(GenContext:NamespaceSuffix) {
+?>.<?GenContext:NamespaceSuffix?><?
+	}
+}
+
+string getName() {
+?><?GenContext:Prefix?><?Name?><?GenContext:Suffix?><?
+}
+
+string getClassifierName(map classifier) {
+?><?GenContext:Prefix?><?classifier:Name?><?GenContext:Suffix?><?
+}
+
+?>

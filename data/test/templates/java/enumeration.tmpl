@@ -1,0 +1,29 @@
+/*
+ * Enumeration <?Name?>
+ * <?getGenerationInfo()?>
+ */
+
+package <?Namespace?>;
+<?
+list reftypes
+reftypes = AllReferencedTypes
+if(reftypes:_SIZE > 0) {?>
+// Imports<?
+  foreach reftypes {
+    if(reftypes:Namespace ne Namespace) {?>
+import <?reftypes:QualifiedName?>;<?
+    }
+  }
+}?>
+
+/**
+ * <?TaggedValueMap['documentation']?>
+ */
+<?Visibility?> enum <?Name?> {
+  <?
+foreach Attributes {
+  if(Attributes:OwnerScope eq 'classifier') {?><?Attributes:Name?><?if(Attributes:_INDEX < Attributes:_SIZE - 1) {?>, <?}?><?
+  }
+}
+?>
+}

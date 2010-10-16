@@ -1,0 +1,36 @@
+/*
+ * Interface for service <?Name?>
+ * <?getGenerationInfo()?>
+ */
+
+package <?Namespace?>;
+
+// Imports
+<?
+createInterfaceAssociationImports()
+createInterfaceImports(AllReferencedTypes)
+createDomainAnnotationImports()
+createDependencyImports(Dependencies)
+?>
+// USER-BEGIN(Imports)
+<?USERSECTIONS:Imports
+?>// USER-END(Imports)
+
+/**
+ * <?TaggedValueMap['documentation']?>
+ *
+ */
+<?createDomainAnnotations()?>
+<?Visibility?> interface <?Name?> <?extendInterfaceSuperClasses(SuperClasses)?> {
+
+	// Dependencies
+<?foreach Dependencies {
+	createDependencyInterface(Dependencies)
+}?>
+
+	// Operations
+<?foreach Operations {
+	createOperationInterface(Operations)
+}?>
+
+}

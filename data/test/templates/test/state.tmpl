@@ -1,0 +1,21 @@
+StateMachine <?Name?> <?Id?>
+<?
+foreach States {?>
+	State: Name <?States:Name?>, Id <?States:Id?>
+<?
+}
+?>
+
+<?
+foreach Transitions {?>
+	Transition: Name <?Transitions:Name?>, Id <?Transitions:Id?>
+<?createEvents(Transitions:Events)
+}
+
+string createEvents(list events) {
+	foreach events {
+?><?events:Name?> <?
+	}
+}
+?>
+

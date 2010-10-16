@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+<!--
+  -  <?getName()?>
+  -  <?getGenerationInfo()?>
+  -->
+	
+<?
+foreach(Classes) {
+	if(exposeBean(Classes:Stereotypes)) {?>
+	<bean id="<?Classes:Name?>" class="<?Classes:Namespace?>.impl.<?Classes:Name?>Impl"><?
+		foreach Classes:Dependencies {?>
+		<property name="<?Classes:Dependencies:Name?>" ref="<?Classes:Dependencies:Supplier:Name?>"/><?		
+		}
+?>
+	</bean>
+<?
+	}
+}
+?>
+
+</beans>
+
+<?
+numeric exposeBean(list stereotypes) {
+	numeric expose
+	expose = 0;
+	foreach(stereotypes) {
+		if(stereotypes eq 'service' || stereotypes eq 'repository' || stereotypes eq 'factory') {
+			expose = 1;
+		}
+	}
+	expose
+}
+?>

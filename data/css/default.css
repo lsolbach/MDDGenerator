@@ -1,0 +1,110 @@
+/*
+ * Default CSS Stylesheet
+ */
+
+a.ref {
+	color: #0000ff;
+}
+
+a.ref:hover {
+  color: #0077ff;
+}
+
+body {
+	background-color: #ffffff;
+	margin: 0px;
+	font-size: 10pt;
+	font-family: sans-serif;
+}
+
+h1 {
+	font-weight: bold;
+	font-size: 20pt;
+	font-family: sans-serif;
+}
+
+h2 {
+	font-weight: bold;
+	font-size: 16pt;
+	font-family: sans-serif;
+}
+
+h3 {
+	font-weight: bold;
+	font-size: 12pt;
+	font-family: sans-serif;
+}
+
+h4 {
+	font-weight: bold;
+	font-size: 10pt;
+	font-family: sans-serif;
+}
+
+p {
+	font-size: 10pt;
+	font-family: sans-serif;
+}
+
+table {
+	border: 0px;
+	padding: 0px;
+	width: 100%;
+}
+
+th {
+	background-color:#cccccc;
+	text-align: left;
+	font-weight: bold;
+	font-size: 10pt;
+	font-family: sans-serif;
+}
+
+td {
+	background-color:#eeeeee;
+	text-align: left;
+	font-size: 10pt;
+	font-family: sans-serif;
+}
+
+table.form {
+	border: 0px;
+	padding: 1px;
+	width: 100%;
+}
+
+th.form {
+	background-color:#999999;
+	text-align: left;
+	font-weight: bold;
+	font-size: 10pt;
+	font-family: sans-serif;
+}
+
+td.form {
+	background-color:#cccccc;
+	text-align: left;
+	font-size: 10pt;
+	font-family: sans-serif;
+}
+
+table.info {
+	border: 0px;
+	padding: 1px;
+	width: 100%;
+}
+
+th.info {
+	background-color:#999999;
+	text-align: left;
+	font-weight: bold;
+	font-size: 10pt;
+	font-family: sans-serif;
+}
+
+td.info {
+	background-color:#cccccc;
+	text-align: left;
+	font-size: 10pt;
+	font-family: sans-serif;
+}

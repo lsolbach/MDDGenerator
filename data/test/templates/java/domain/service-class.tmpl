@@ -1,0 +1,39 @@
+/*
+ * Class for service <?Name?>
+ * <?getGenerationInfo()?>
+ */
+
+package <?getNamespace()?>;
+
+// Imports
+<?
+createClassAssociationImports()
+createDomainAnnotationImports()
+createClassImports(AllReferencedTypes)
+createDependencyImports(Dependencies)
+?>
+// USER-BEGIN(Imports)
+<?USERSECTIONS:Imports
+?>// USER-END(Imports)
+
+/**
+ * <?TaggedValueMap['documentation']?>
+ *
+ */
+<?createDomainAnnotations()?>
+<?Visibility?> class <?getName()?> <?implementInterfaceSuperClasses(SuperClasses)?> {
+
+	// Dependency Members
+<?createDependencyMembers(Dependencies)?>
+
+	// Dependencies
+<?foreach Dependencies {
+	createDependencyMethod(Dependencies)
+}?>
+
+	// Operations
+<?foreach Operations {
+	createOperationMethod(Operations)
+}?>
+
+}

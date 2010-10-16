@@ -1,0 +1,95 @@
+/*
+ * Interface <?Name?>
+ * <?getGenerationInfo()?>
+ */
+
+package <?Namespace?>;
+
+// Imports<?
+list reftypes
+reftypes = AllReferencedTypes
+foreach reftypes {
+  if(reftypes:Namespace ne Namespace) {?>
+import <?reftypes:QualifiedName?>;<?
+  }
+}?>
+// USER-BEGIN(Imports)
+<?USERSECTIONS:Imports
+?>// USER-END(Imports)
+
+/**
+ * <?TaggedValueMap['documentation']?>
+ *
+ */
+<?Visibility?> interface <?Name?> <?if(SuperClasses > 0) {?>
+  extends<?foreach SuperClasses {?> <?SuperClasses:Name?><?if(SuperClasses:_SIZE > SuperClasses:_INDEX + 1) {?>,<?}?>
+    <?}?>
+  <?}?> {
+
+  // Properties
+<?
+foreach Attributes {
+  if(Attributes:OwnerScope ne 'classifier') {?>
+  /**
+   * Returns the value of <?Attributes:Name?>.
+   * @return 
+   */
+  <?Attributes:Type:Name?> get<?Attributes:MethodSuffix?>();
+<?
+    if(Attributes:Changeability ne 'frozen') {?>
+  /**
+   * Sets the value of <?Attributes:Name?>.
+   * @param <?Attributes:Name?> new value
+   */
+  void set<?Attributes:MethodSuffix?>(<?Attributes:Type:Name?> <?Attributes:Name?>);
+<?
+    }
+  }
+}?>
+
+  // Associations
+<?
+list associations
+associations = Associations 
+foreach associations {
+  if(associations:Navigable) {?>
+  /**
+   * Getter for association <?associations:Role?>
+   * @return
+   */
+<?  if(associations:Multiplicity:High == 1) {
+?>  <?associations:Visibility?> <?associations:Type:Name?> get<?associations:MethodSuffix?>();
+    <?
+    } else {
+    ?>
+  <?associations:Visibility?> Collection get<?associations:MethodSuffix?>();
+    <?
+    }
+    if(associations:Changeability ne 'frozen') {?>
+  /**
+   * Setter for association <?associations:Role?>
+   * @param <?associations:Role?> new value
+   */
+  <?associations:Visibility?> void set<?associations:MethodSuffix?>(<?
+     if(associations:Multiplicity:High == 1) {
+     ?><?associations:Type:Name?><?
+     } else {
+     ?>Collection<?
+     }?> newValue);
+<?   }
+   }
+}?>
+
+  // Operations
+<?foreach Operations {?>
+  /**
+   * <?Operations:TaggedValueMap['documentation']?>
+   */
+  <?Operations:Visibility?> <?Operations:ReturnType:Name?> <?Operations:Name?>(<?list parameters?><?parameters = Operations:Parameters?><?
+  foreach parameters {?><?
+    if(parameters:Kind ne 'return') {?>
+    <?parameters:Type:Name?> <?parameters:Name?><?}?> <?}?>
+  );
+<?}?>
+
+}

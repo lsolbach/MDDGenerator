@@ -1,0 +1,43 @@
+/*
+ * Interface of repository <?Name?>
+ * <?getGenerationInfo()?>
+ */
+
+package <?Namespace?>;
+
+// Imports
+<?
+createInterfaceAssociationImports()
+createInterfaceImports(AllReferencedTypes)
+createDomainAnnotationImports()
+?>
+// USER-BEGIN(Imports)
+<?USERSECTIONS:Imports
+?>// USER-END(Imports)
+
+/**
+ * <?TaggedValueMap['documentation']?>
+ *
+ */
+<?createDomainAnnotations()?>
+<?Visibility?> interface <?Name?> <?extendInterfaceSuperClasses(SuperClasses)?> {
+
+	// Properties
+<?
+foreach attr <- Attributes {
+	createPropertyInterfaces(attr)
+}?>
+
+	// Associations
+<?
+foreach asso <- Associations {
+	createRepositoryInterfaces(asso)
+}
+?>
+
+	// Operations
+<?foreach op <- Operations {
+	createOperationInterface(op)
+}?>
+
+}

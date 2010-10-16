@@ -1,0 +1,51 @@
+/*
+ * Class of repository <?Name?>
+ * <?getGenerationInfo()?>
+ */
+
+package <?Namespace?>.impl;
+
+// Imports<?
+createClassAssociationImports()
+createClassImports(AllReferencedTypes)
+createDomainAnnotationImports()
+?>
+// USER-BEGIN(Imports)
+<?USERSECTIONS:Imports
+?>// USER-END(Imports)
+
+/**
+ * <?TaggedValueMap['documentation']?>
+ *
+ */
+<?createDomainAnnotations()?>
+<?Visibility?> class <?Name?>Impl <?extendClassSuperClasses(SuperClasses)?> <?implementClassSuperClasses(SuperClasses)?> {
+
+	// Properties
+<?
+foreach Attributes {
+	createPropertyMembers(Attributes)
+}?>
+
+	// Property Access
+<?
+foreach Attributes {
+	createPropertyMethods(Attributes)
+}?>
+
+	// Repository Access
+<?
+foreach Associations {
+	createRepositoryMethods(Associations)
+}
+?>
+
+	// Operations
+<?
+foreach Operations {
+	createOperationMethod(Operations)
+}?>
+
+}
+
+

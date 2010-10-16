@@ -1,0 +1,81 @@
+<?
+
+string createDomainAnnotations() {
+	foreach stereotype <- Stereotypes {
+		if(stereotype:Name eq 'entity') {
+?>@Entity
+<?		} else if(stereotype:Name eq 'temporal entity') {
+?>@TemporalEntity
+<?		} else if(stereotype:Name eq 'revisioned entity') {
+?>@RevisionedEntity
+<?		} else if(stereotype:Name eq 'aggregate root') {
+?>@AggregateRoot
+<?		} else if(stereotype:Name eq 'aggregate child') {?>
+@AggregateChild
+<?		} else if(stereotype:Name eq 'repository') {?>
+@Repository
+<?		} else if(stereotype:Name eq 'factory') {?>
+@Factory
+<?		} else if(stereotype:Name eq 'service') {?>
+@Service
+<?	    }
+	}
+}
+
+string createDomainAnnotationImports() {
+	foreach stereotype <- Stereotypes {
+		if(stereotype:Name eq 'entity') {
+?>import org.soulspace.annotations.Entity;
+<?		} else if(stereotype:Name eq 'temporal entity') {
+?>import org.soulspace.annotations.TemporalEntity;
+<?		} else if(stereotype:Name eq 'revisioned entity') {
+?>import org.soulspace.annotations.RevisionedEntity;
+<?		} else if(stereotype:Name eq 'aggregate root') {
+?>import org.soulspace.annotations.AggregateRoot;
+<?		} else if(stereotype:Name eq 'aggregate child') {
+?>import org.soulspace.annotations.AggregateChild;
+<?		} else if(stereotype:Name eq 'repository') {
+?>import org.soulspace.annotations.Repository;
+<?		} else if(stereotype:Name eq 'factory') {
+?>import org.soulspace.annotations.Factory;
+<?		} else if(stereotype:Name eq 'service') {
+?>import org.soulspace.annotations.Service;
+<?	    }
+	}
+}
+
+string createRepositoryInterfaces(map association) {
+
+	if(association:Navigable && association:Visibility eq 'public') {?>
+	/**
+	 * Returns the list of <?association:Role?>.
+	 * @return
+	 */
+	List<<?association:Type:Name?>> get<?association:MethodSuffix?>List();
+
+	/**
+	 * Returns the specified <?association:Role?>.
+	 * @return
+	 */
+	<?association:Type:Name?> get<?association:MethodSuffix?>(<?createQualifierParameters(association:Qualifiers)?>);
+<?
+		if(association:Changeability ne 'frozen') {
+			if(association:Multiplicity:High ne '1' || association:Qualifiers) {
+?>
+	/**
+	 * Stores the <?association:Role?> in the repository.
+	 * @param <?association:Role?> to add
+	 */
+	void store<?association:MethodSuffix?>(<?association:Type:Name?> <?association:Role?>);
+
+	/**
+	 * Removes the <?association:Role?> from the repository.
+	 * @param <?association:Role?> to remove
+	 */
+	void remove<?association:MethodSuffix?>(<?association:Type:Name?> <?association:Role?>);
+<?			}
+	   }
+   }
+}
+
+?>

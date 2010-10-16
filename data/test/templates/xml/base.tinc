@@ -1,0 +1,9 @@
+<?
+string getGenerationInfo() {<?
+  -  generated with soulspace.org MDA generator
+  -  <?GenContext:Name?>
+  -  <?GenContext:Imports?>
+  -  <?GenContext:Timestamp?><?
+}
+
+?>

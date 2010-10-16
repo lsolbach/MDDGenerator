@@ -1,0 +1,172 @@
+<?xml version="1.0" ?>
+<!-- 
+  - UML 1.4/2.0 Schema
+  - Supports Poseidon 4, ArgoUML 0.24
+  - Copyright 2004-2008 Ludger Solbach
+  -->
+<?xml-stylesheet href="gen.css" type="text/css"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
+<!--
+  xmlns:XMI="XMI"
+  xmlns:UML="UML"
+  xmlns:UML2="UML2"
+  targetNamespace="XMI">
+-->
+  <xs:element name="XMI">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="XMI.header" minOccurs="0" maxOccurs="1" />
+        <xs:element ref="XMI.content" minOccurs="0" maxOccurs="1" />
+      </xs:sequence>
+      <xs:attribute name='xmi.version' type='xs:string' fixed='1.2' />
+      <xs:attribute name='timestamp' type='xs:string' use='optional' />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="XMI.header">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="XMI.documentation" />
+        <xs:element ref="XMI.metamodel" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="XMI.content">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="Model"/>
+		<xs:element ref="A_context_raisedSignal"/>
+        <xs:element ref="Diagram"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="XMI.documentation">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="XMI.owner" />
+        <xs:element ref="XMI.exporter" />
+        <xs:element ref="XMI.exporterVersion" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="XMI.metamodel">
+    <xs:complexType>
+      <xs:attribute ref="xmi.name"/>
+      <xs:attribute ref="xmi.version"/>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="XMI.exporter" type="xs:string"/>  
+  <xs:element name="XMI.exporterVersion" type="xs:string"/>
+  <xs:element name="XMI.owner" type="xs:string"/>
+  <xs:element name="XMI.reference" type="xs:string"/>
+  <!--xs:attribute name="xmi.id" type="xs:string" />
+  <xs:attribute name="xmi.idref" type="xs:string" /-->
+
+<!-- Types -->
+<?renderTypes()?>
+
+<!-- Elements -->
+<?renderElements()?>
+
+</xs:schema>
+<?
+
+string renderElements() {
+  foreach package <- Packages {
+    foreach class | (!class:StereotypeMap['enumeration'] && class:Abstract) <- package:Classes {
+      renderAbstractElement(class)
+    }
+    foreach class | (!class:StereotypeMap['enumeration'] && !class:Abstract) <- package:Classes {
+      renderConcreteElement(class)
+    }
+  }
+}
+
+string renderTypes() {
+  foreach package <- Packages {
+    foreach class | (class:StereotypeMap['enumeration']) <- package:Classes {
+      renderEnumType(class)
+    }
+  }
+}
+
+string renderAbstractElement(map element) {
+	foreach asso | (asso:Name ne '') <- element:Associations {?>
+	<xs:element name="<?element:Name?>.<?asso:Name?>">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<!-- render referred types -->
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+<?	
+	}
+}
+
+string renderConcreteElement(map element) {
+	map renderedMap?>
+	<xs:element name="<?element:Name?>">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded"><?
+
+	if(element:SuperClasses.size() > 0) {
+		foreach superClass <- element:SuperClasses {
+			renderParentElementRefs(superClass, renderedMap)
+		}
+	}
+
+	foreach ref | (ref:Name ne '') <- element:Associations {?>
+				<xs:element ref="<?element:Name?>.<?ref:Name?>"/><?
+	}?>
+			</xs:choice><?
+	foreach attr <- element:AllAttributes {?>
+			<xs:attribute name="<?attr:Name?>" type="<?renderAttributeType(attr)?>"/><?
+	}
+?>
+		</xs:complexType>
+	</xs:element>
+<?
+}
+
+string renderParentElementRefs(map element, map renderedMap) {
+	renderedMap.put(element:Name, element:Name)
+	if(element:SuperClasses.size() > 0) {
+		foreach superClass <- element:SuperClasses {
+			if(!renderedMap[superClass:Name]) {
+				renderParentElementRefs(superClass, renderedMap)
+			}
+		}
+	}
+	if(element:Abstract) {
+		foreach ref | (ref:Name ne '') <- element:Associations {?>
+				<xs:element ref="<?element:Name?>.<?ref:Name?>"/><?
+		}
+	}
+}
+
+string renderAttributeType(map attr) {
+	if(attr:Type:Name eq 'String') {?>xs:string<?
+	} else if(attr:Type:Name eq 'boolean') {?>xs:boolean<?
+	} else {
+		attr:Type:Name.firstLower()?>Type<?
+	}
+}
+
+string renderEnumType(map enum) {?>
+	<xs:simpleType name="<?enum:Name.firstLower()?>Type">
+		<xs:restriction base="xs:NMTOKEN"><?
+	foreach value <- enum:AllAttributes {?>
+			<xs:enumeration value="<?value:Name?>" /><?
+	}?>
+		</xs:restriction>
+	</xs:simpleType>
+<?
+}
+
+?>
