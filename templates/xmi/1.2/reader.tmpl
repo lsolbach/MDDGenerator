@@ -204,7 +204,7 @@ string dispatchStartElement(list elementList) {
 		}
 		<?
 			}
-		} else if(element:ElementType eq 'AssociationEnd') {?>
+		} else if(element:ElementType eq 'AssociationEnd' && !isComposition(element)) {?>
 		if(elementName.equals("<?element:SourceEnd:Type:Name?>.<?element:Name?>")) {
 			// Asso <?element:SourceEnd:Type:Name?>.<?element:Name?>
 			start<?element:SourceEnd:Type:Name?>_<?element:Name.firstUpper()?>(attrs);
@@ -234,7 +234,7 @@ string dispatchEndElement(list elementList) {
 		}
 		<?
 			}
-		} else if(element:ElementType eq 'AssociationEnd') {?>
+		} else if(element:ElementType eq 'AssociationEnd' && !isComposition(element)) {?>
 		if(elementName.equals("<?element:SourceEnd:Type:Name?>.<?element:Name?>")) {
 			// Asso <?element:SourceEnd:Type:Name?>.<?element:Name?>
 			end<?element:SourceEnd:Type:Name?>_<?element:Name.firstUpper()?>();
@@ -291,7 +291,7 @@ string handleStartElement(list elementList) {
 		sb = new StringBuilder();
 	}
 <?
-		} else if(element:ElementType eq 'AssociationEnd') {?>
+		} else if(element:ElementType eq 'AssociationEnd' && !isComposition(element)) {?>
 	protected void start<?element:SourceEnd:Type:Name?>_<?element:Name.firstUpper()?>(Attributes attrs) {
 		List<XmiObject> elementList = new ArrayList<XmiObject>();
 		elementStack.push(elementList);
@@ -365,7 +365,7 @@ string handleEndElement(list elementList) {
 		}
 	}
 <?
-		} else if(element:ElementType eq 'AssociationEnd') {?>
+		} else if(element:ElementType eq 'AssociationEnd' && !isComposition(element)) {?>
 	protected void end<?element:SourceEnd:Type:Name?>_<?element:Name.firstUpper()?>() {
 		List<XmiObject> elementList = (List<XmiObject>) elementStack.pop();
 		if(!elementStack.isEmpty() && !elementList.isEmpty()) {
@@ -377,6 +377,13 @@ string handleEndElement(list elementList) {
 				parentElement.set<?element:Name.firstUpper()?>(element);<?
 			} else {?>
 				parentElement.add<?element:Name.firstUpper()?>(element);<?
+			}
+			if(isNavigable(element:SourceEnd) && !isDerived(element:SourceEnd) && element:SourceEnd:Name) {
+				if(!isMany(element:SourceEnd)) {?>
+				element.set<?element:SourceEnd:Name.firstUpper()?>(parentElement);<?
+				} else {?>
+				element.add<?element:SourceEnd:Name.firstUpper()?>(parentElement);<?
+				}
 			}?>
 			}
 		}

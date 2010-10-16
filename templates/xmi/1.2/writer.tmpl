@@ -44,6 +44,12 @@ public class <?name()?> {
 	}
 	
 	private String xmlEncode(String input) {
+		// FIXME implement encoding
+		input = input.replace("&", "&amp;");
+		input = input.replace("<", "&lt;");
+		input = input.replace(">", "&gt;");
+		input = input.replace("\"", "&quot;");
+		input = input.replace("'", "&apos;");
 		return input;
 	}
 	
