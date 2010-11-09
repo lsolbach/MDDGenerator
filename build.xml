@@ -18,7 +18,7 @@
 	  -->
 	<target name="generate-local" depends="check-generate-required,generate-model"/>
 
-	<!-- generate classes from schema -->
+	<!-- generate classes from model -->
 	<target name="check-generate-required">
 		<uptodate property="generateModel.notRequired" targetfile="${generate.dir}/src/org/soulspace/xmi/uml14/XmiRepositoryImpl.java" >
 		    <srcfiles dir="${basedir}/model" includes="uml1.4.xmi"/>
