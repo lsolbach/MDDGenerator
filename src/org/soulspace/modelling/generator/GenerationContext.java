@@ -280,7 +280,7 @@ public class GenerationContext {
 				String[] profileNames = getProfiles().split(",");
 				for (String profileName : profileNames) {
 					// log("loading profile " + profileName);
-					xmiReader.loadProfile(new File(profileName));
+					xmiReader.loadProfile(new File(profileName.trim()));
 				}
 			}
 			// log("loading model " + modelFile);

@@ -316,7 +316,7 @@ public abstract class ClassifierGenerator {
 				File[] templateFiles = new File[importTemplateNames.length + 1];
 				for (int i = 0; i < importTemplateNames.length; i++) {
 					templateFiles[i] = locateFile(templateDirs,
-							importTemplateNames[i], ".tinc");
+							importTemplateNames[i].trim(), ".tinc");
 				}
 				templateFiles[importTemplateNames.length] = locateFile(
 						templateDirs, genContext.getName(), ".tmpl");
@@ -339,7 +339,7 @@ public abstract class ClassifierGenerator {
 	File[] getTemplateDirs(List<String> templateDirNames) {
 		File[] templateDirs = new File[templateDirNames.size()];
 		for (int i = 0; i < templateDirNames.size(); i++) {
-			File file = new File(templateDirNames.get(i));
+			File file = new File(templateDirNames.get(i).trim());
 			if (!file.exists() || !file.isDirectory()) {
 				throw new RuntimeException("Error validating directory "
 						+ templateDirNames.get(i));
@@ -383,7 +383,7 @@ public abstract class ClassifierGenerator {
 	boolean generateForStereotype(Classifier classifier) {
 		if (!genContext.getExcludeStereotypes().isEmpty()) {
 			for (String excStereotype : genContext.getExcludeStereotypes()) {
-				if (classifier.getStereotypeMap().containsKey(excStereotype)) {
+				if (classifier.getStereotypeMap().containsKey(excStereotype.trim())) {
 					return false;
 				}
 			}
@@ -406,7 +406,7 @@ public abstract class ClassifierGenerator {
 		boolean generate = false;
 		String[] incStereotypes = genContext.getStereotype().split(",");
 		for (String incStereotype : incStereotypes) {
-			if (classifier.getStereotypeMap().containsKey(incStereotype)) {
+			if (classifier.getStereotypeMap().containsKey(incStereotype.trim())) {
 				generate = true;
 			}
 		}
@@ -425,14 +425,14 @@ public abstract class ClassifierGenerator {
 			generate = true;
 		} else if (genContext.getNamespaceIncludes().size() > 0) {
 			for (String namespace : genContext.getNamespaceIncludes()) {
-				if (classifier.getNamespace().startsWith(namespace)) {
+				if (classifier.getNamespace().startsWith(namespace.trim())) {
 					generate = true;
 				}
 			}
 		}
 		if (genContext.getNamespaceExcludes().size() > 0) {
 			for (String namespace : genContext.getNamespaceExcludes()) {
-				if (classifier.getNamespace().startsWith(namespace)) {
+				if (classifier.getNamespace().startsWith(namespace.trim())) {
 					generate = false;
 				}
 			}
