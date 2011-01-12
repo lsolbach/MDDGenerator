@@ -25,7 +25,7 @@ string enumValues() {
 	foreach attr <- Attributes {
 		valueList = valueList.add(attr:Name.toUpper() + ' ("' + attr:Name + '")')	
 	}
-	formatListWithLineBreaksAndTabs(valueList, ',', 1) + ';'
+	formatListWithLineFeedsAndTabs(valueList, ',', 1) + ';'
 }
 ?>
 
