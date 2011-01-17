@@ -5,7 +5,7 @@ list elementList = factoryElementList()
 import java.util.List;
 import java.util.ArrayList;
 
-import org.soulspace.modelling.base.XmiObject;
+import org.soulspace.modelling.base.*;
 import org.soulspace.modelling.repository.*;
 import org.soulspace.modelling.repository.elements.*;
 import org.soulspace.modelling.repository.elements.impl.*;
@@ -14,6 +14,7 @@ import org.soulspace.modelling.repository.elements.Package;
 
 public abstract class <?name()?> {
 	protected ModelRepository repository;
+	protected UmlRepository umlRepository;
 	
 <?
 ctorDefault()
@@ -42,9 +43,15 @@ string create(list elementList) {
 			<?javaName(element)?>.setId(id);
 			repository.register<?element:Name?>(<?javaName(element)?>);
 		}
-		if(xmiObject.getXmiId() != null && !<?javaName(element)?>.getInitialized()) {
-			<?javaName(element)?> = init<?element:Name?>(<?javaName(element)?>, xmiObject);
-			<?javaName(element)?>.setInitialized(true);
+		if(!<?javaName(element)?>.getInitialized()) {
+			if(xmiObject.getXmiId() != null) {
+				<?javaName(element)?> = init<?element:Name?>(<?javaName(element)?>, xmiObject);
+				<?javaName(element)?>.setInitialized(true);
+			} else {
+				XmiObject xmiSource = umlRepository.findByXmiId(id);
+				<?javaName(element)?> = init<?element:Name?>(<?javaName(element)?>, xmiSource);
+				<?javaName(element)?>.setInitialized(true);
+			}
 		}
 		return <?javaName(element)?>;
 	}

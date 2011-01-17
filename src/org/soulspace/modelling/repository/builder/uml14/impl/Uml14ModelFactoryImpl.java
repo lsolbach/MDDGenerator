@@ -13,8 +13,6 @@ import org.soulspace.modelling.uml14.elements.MultiplicityRange;
 import org.soulspace.modelling.uml14.impl.Uml14RepositoryImpl;
 
 public class Uml14ModelFactoryImpl extends AbstractModelFactory implements ModelFactory {
-
-	protected Uml14RepositoryImpl umlRepository;
 	
 	public Uml14ModelFactoryImpl(Uml14RepositoryImpl umlRepository, ModelRepository repository) {
 		this.repository = repository;
@@ -167,8 +165,8 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 	
 	protected <T extends Feature> T initFeature(T feature, org.soulspace.modelling.uml14.elements.Feature xmiSource) {
 		feature = initModelElement(feature, xmiSource);
-		feature.setVisibility(xmiSource.getVisibility().name());
-		feature.setOwnerScope(xmiSource.getOwnerScope().name());
+		feature.setVisibility(xmiSource.getVisibility().getName());
+		feature.setOwnerScope(xmiSource.getOwnerScope().getName());
 		// TODO feature.setIsDerived();
 		// feature.setIsDerived(arg0);
 		return feature;
@@ -176,14 +174,17 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 
 	protected <T extends StructuralFeature> T initStructuralFeature(T stf, org.soulspace.modelling.uml14.elements.StructuralFeature xmiSource) {
 		stf = initFeature(stf, xmiSource);
+		if(xmiSource.getType() != null) {
+			stf.setType(createClassifier(xmiSource.getType()));
+		}
 		if(xmiSource.getChangeability() != null) {
-			stf.setChangeability(xmiSource.getChangeability().name());
+			stf.setChangeability(xmiSource.getChangeability().getName());
 		}
 		if(xmiSource.getTargetScope() != null) {
-			stf.setTargetScope(xmiSource.getTargetScope().name());
+			stf.setTargetScope(xmiSource.getTargetScope().getName());
 		}
 		if(xmiSource.getOrdering() != null) {
-			stf.setOrdering(xmiSource.getOrdering().name());			
+			stf.setOrdering(xmiSource.getOrdering().getName());			
 		}
 		stf.setMultiplicity(createMultiplicity(xmiSource.getMultiplicity()));
 		return stf;
@@ -192,6 +193,9 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 	protected <T extends BehaviouralFeature> T initBehaviouralFeature(T bef, org.soulspace.modelling.uml14.elements.BehaviouralFeature xmiSource) {
 		bef = initFeature(bef, xmiSource);
 		bef.setIsQuery(xmiSource.getIsQuery());
+		for(org.soulspace.modelling.uml14.elements.Parameter xmiParam : xmiSource.getParameterList()) {
+			bef.addParameter(createParameter(xmiParam));
+		}
 		return bef;
 	}
 
@@ -259,6 +263,16 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 		for(org.soulspace.modelling.uml14.elements.AssociationEnd xmiAEnd : xmiSource.getConnectionList()) {
 			association.addConnection(createAssociationEnd(xmiAEnd));
 		}
+		// initialize source ends of the association ends
+		if(association.getConnectionList().size() == 1) {
+			AssociationEnd ae = association.getConnectionList().get(0);
+			ae.setSourceEnd(ae);
+		} else if(association.getConnectionList().size() == 2) {
+			AssociationEnd ae1 = association.getConnectionList().get(0);
+			AssociationEnd ae2 = association.getConnectionList().get(1);
+			ae1.setSourceEnd(ae2);
+			ae2.setSourceEnd(ae1);
+		}
 		return association;
 	}
 
@@ -279,19 +293,21 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 
 		associationEnd = initModelElement(associationEnd, xmiSource);
 		if(xmiSource.getAggregation() != null) {
-			associationEnd.setAggregation(xmiSource.getAggregation().name());
+			associationEnd.setAggregation(xmiSource.getAggregation().getName());
 		}
 		if(xmiSource.getChangeability() != null) {
-			associationEnd.setChangeability(xmiSource.getChangeability().name());
+			associationEnd.setChangeability(xmiSource.getChangeability().getName());
 		}
 		if(/* associationEnd.getTaggedValueMap().get("derived") != null ||*/
 				(xmiSource.getName() != null && xmiSource.getName().startsWith("/"))) {
 			associationEnd.setDerived(true);
 		}
-		associationEnd.setMultiplicity(createMultiplicity(xmiSource.getMultiplicity()));
+		if(xmiSource.getMultiplicity() != null) {
+			associationEnd.setMultiplicity(createMultiplicity(xmiSource.getMultiplicity()));			
+		}
 		associationEnd.setNavigable(xmiSource.getIsNavigable());
 		if(xmiSource.getOrdering() != null) {
-			associationEnd.setOrdering(xmiSource.getOrdering().name());
+			associationEnd.setOrdering(xmiSource.getOrdering().getName());
 		}
 		for(org.soulspace.modelling.uml14.elements.Attribute xmiQualifier : xmiSource.getQualifierList()) {
 			associationEnd.addQualifier(createAttribute(xmiQualifier));
@@ -299,11 +315,11 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 		// FIXME
 		// associationEnd.setSourceEnd(xmiSource.get)
 		if(xmiSource.getTargetScope() != null) {
-			associationEnd.setTargetScope(xmiSource.getTargetScope().name());
+			associationEnd.setTargetScope(xmiSource.getTargetScope().getName());
 		}
 		associationEnd.setType(createClassifier(xmiSource.getParticipant()));
 		if(xmiSource.getVisibility() != null) {
-			associationEnd.setVisibility(xmiSource.getVisibility().name());
+			associationEnd.setVisibility(xmiSource.getVisibility().getName());
 		}
 		return associationEnd;
 	}
@@ -313,7 +329,9 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 		org.soulspace.modelling.uml14.elements.Attribute xmiSource = (org.soulspace.modelling.uml14.elements.Attribute) xmiObject;
 
 		attribute = initStructuralFeature(attribute, xmiSource);
-		// TODO more?
+		// TODO add initial value
+		//attribute.se
+		xmiSource.getInitialValue();
 		return attribute;
 	}
 
@@ -344,7 +362,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 				aClass.addOperation(op);
 			}
 		}
-		aClass.setVisibility(xmiSource.getVisibility().name());
+		aClass.setVisibility(xmiSource.getVisibility().getName());
 		return aClass;
 	}
 
@@ -469,7 +487,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 		org.soulspace.modelling.uml14.elements.Operation xmiSource = (org.soulspace.modelling.uml14.elements.Operation) xmiObject;
 
 		operation = initBehaviouralFeature(operation, xmiSource);
-		operation.setConcurrency(xmiSource.getConcurrency().name());
+		operation.setConcurrency(xmiSource.getConcurrency().getName());
 		operation.setIsAbstract(xmiSource.getIsAbstract());
 		
 		return operation;
@@ -531,9 +549,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 	protected StereotypeImpl initStereotype(StereotypeImpl stereotype,
 			XmiObject xmiObject) {
 		org.soulspace.modelling.uml14.elements.Stereotype xmiSource = (org.soulspace.modelling.uml14.elements.Stereotype) xmiObject;
-
 		stereotype = initModelElement(stereotype, xmiSource);
-
 		return stereotype;
 	}
 
@@ -788,4 +804,11 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements Model
 		sb.append(xmiSource.getName());
 	}
 
+	XmiObject getXmiSource(XmiObject xmiObject) {
+		if(xmiObject.isReference()) {
+			return umlRepository.findByXmiId(xmiObject.getRefId());
+		} else {
+			return xmiObject;
+		}
+	}
 }
