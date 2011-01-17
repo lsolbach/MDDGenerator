@@ -318,12 +318,6 @@ string handleEndElement(list elementList) {
 				XmiObject parentElement = (XmiObject) obj; 
 				element.setParentElement(parentElement);
 				addElement(parentElement, element, <?element:Name?>.class, "<?methodName(element)?>");
-				<?
-				if(!isMany(element)) {?>
-					//parentElement.set<?element:Name.firstUpper()?>(element);<?
-				} else {?>
-					//parentElement.add<?element:Name.firstUpper()?>(element);<?
-				}?>
 			} else if(obj instanceof List) {
 				List<XmiObject> elementList = (List<XmiObject>) obj;
 				elementList.add(element);

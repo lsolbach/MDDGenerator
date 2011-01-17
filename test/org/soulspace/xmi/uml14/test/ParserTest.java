@@ -29,7 +29,7 @@ public class ParserTest {
 		Xmi12WriterImpl writer = new Xmi12WriterImpl(out);
 		try {
 			parser.parseXmi(new File(in), false);
-			writer.write(xmiRepository);
+//			writer.write(xmiRepository);
 		} catch (SAXException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

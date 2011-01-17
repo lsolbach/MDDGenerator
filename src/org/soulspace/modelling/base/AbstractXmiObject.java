@@ -156,4 +156,7 @@ public class AbstractXmiObject implements XmiObject {
 		return null;
 	}
 
+	public boolean isReference() {
+		return getXmiIdRef() != null || getHRef() != null;
+	}
 }

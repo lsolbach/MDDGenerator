@@ -12,7 +12,8 @@ public interface XmiObject {
 	void setHRef(String hRef);
 
 	String getRefId();
-
+	boolean isReference();
+	
 	XmiObject getParentElement();
 	void setParentElement(XmiObject parent);
 	
