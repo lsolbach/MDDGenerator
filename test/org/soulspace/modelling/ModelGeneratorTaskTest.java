@@ -11,13 +11,7 @@ public class ModelGeneratorTaskTest extends AbstractGeneratorTaskTest {
 	public static void main(String[] args) {
 
 		ModelGeneratorTaskTest mgtTest = new ModelGeneratorTaskTest();
-		//mgtTest.testRepositoryInterface();
-		//mgtTest.testZebraHtmlDoc();
-		//mgtTest.testZebraDesignHtmlDoc();
-		//mgtTest.testUml14Schema();
-		//mgtTest.testMultipleTemplateDirs();		
-		//mgtTest.testStdTemplates();		
-		mgtTest.testUserSections();		
+		mgtTest.testAddressModel();
 	}
 	
 	void testRepositoryInterface() {
@@ -127,6 +121,25 @@ public class ModelGeneratorTaskTest extends AbstractGeneratorTaskTest {
 		cg.setExtension("java");
 		//cg.setImports("");
 		cg.setUserSection("PA");
+		mdaGeneratorTask.addClassGenerator(cg);
+		mdaGeneratorTask.execute();		
+	}
+
+	void testAddressModel() {
+		ModelGeneratorTask mdaGeneratorTask = new ModelGeneratorTask();
+		setupTask(mdaGeneratorTask);
+		
+		mdaGeneratorTask.setModelFile(new File("data/test/model/AddressComponent.xmi"));
+		mdaGeneratorTask.setTemplateDirs("../MdaTemplates/std-templates2,../MdaTemplates/templates2");
+		mdaGeneratorTask.setProfiles("../MdaTemplates/profiles/argouml/default-uml14.xmi,../MdaTemplates/profiles/MDSDProfile.xmi");
+		mdaGeneratorTask.setBackupDir(new File("data/test/backup"));
+		
+		ClassGenerator cg = new ClassGenerator();
+		System.out.println("Template: entity-interface");
+		cg.setName("domain/java/entity-interface");
+		cg.setExtension("java");
+		cg.setImports("lib,model/lib,java/lib,java/interface,common/java/lib,domain/lib,domain/java/lib");
+		cg.setStereotype("entity");
 		mdaGeneratorTask.addClassGenerator(cg);
 		mdaGeneratorTask.execute();		
 	}

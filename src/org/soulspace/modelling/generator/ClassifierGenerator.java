@@ -24,7 +24,7 @@ import org.apache.tools.ant.BuildException;
 import org.soulspace.modelling.repository.elements.Classifier;
 import org.soulspace.modelling.repository.elements.ModelElement;
 import org.soulspace.template.TemplateEngine;
-import org.soulspace.template.datasource.impl.BeanDataSource;
+import org.soulspace.template.datasource.impl.BeanDataSourceImpl;
 import org.soulspace.template.impl.TemplateEngineImpl;
 import org.soulspace.template.util.RegExHelper;
 import org.soulspace.template.util.StringHelper;
@@ -40,7 +40,7 @@ public abstract class ClassifierGenerator {
 
 	protected TemplateEngine engine;
 
-	protected BeanDataSource dataSource;
+	protected BeanDataSourceImpl dataSource;
 
 	protected Pattern pattern;
 
@@ -366,7 +366,7 @@ public abstract class ClassifierGenerator {
 	 * 
 	 * @param ds
 	 */
-	public void setDataSource(BeanDataSource ds) {
+	public void setDataSource(BeanDataSourceImpl ds) {
 		dataSource = ds;
 	}
 
@@ -458,7 +458,7 @@ public abstract class ClassifierGenerator {
 
 		// TODO fix exception handling?
 		try {
-			BeanDataSource myDS = new BeanDataSource(classifier);
+			BeanDataSourceImpl myDS = new BeanDataSourceImpl(classifier);
 			myDS.add("GenContext", genContext);
 			if (isSet(genContext.getUserSection())) {
 				userSections = readUserSections(getPath(ctx, classifier, true));

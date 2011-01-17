@@ -12,7 +12,7 @@
 		</package>
 	</dependency>
 	<dependency type="runtime">
-		<package name="TemplateEngine" version="1.0.0rc1" type="project">
+		<package name="TemplateEngine" version="1.0.0rc4" type="project">
 			<module name="TemplateEngine"/>
 		</package>
 		<package name="XmiRepository2" version="0.1.0" type="project">
