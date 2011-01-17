@@ -1,8 +1,8 @@
 <?xml version = '1.0' encoding = 'UTF-8' ?>
-<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Sat Oct 16 16:38:32 CEST 2010'>
+<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Fri Jan 14 01:21:43 CET 2011'>
   <XMI.header>    <XMI.documentation>
       <XMI.exporter>ArgoUML (using Netbeans XMI Writer version 1.0)</XMI.exporter>
-      <XMI.exporterVersion>0.31.6(6) revised on $Date: 2010/10/16 19:26:25 $ </XMI.exporterVersion>
+      <XMI.exporterVersion>0.31.6(6) revised on $Date: 2011/01/17 07:01:14 $ </XMI.exporterVersion>
     </XMI.documentation>
     <XMI.metamodel xmi.name="UML" xmi.version="1.4"/></XMI.header>
   <XMI.content>
@@ -588,7 +588,7 @@
                                     </UML:Multiplicity>
                                   </UML:AssociationEnd.multiplicity>
                                   <UML:AssociationEnd.participant>
-                                    <UML:Class xmi.idref = '127-0-0-1--541b47f7:115fbe8e244:-8000:000000000000090D'/>
+                                    <UML:Class xmi.idref = '127-0-1-1--592c2302:12ad1625f1b:-8000:0000000000000F90'/>
                                   </UML:AssociationEnd.participant>
                                 </UML:AssociationEnd>
                                 <UML:AssociationEnd xmi.id = '127-0-0-1-3b779086:115fbcd84ea:-8000:00000000000007E8'
@@ -1329,7 +1329,7 @@
                                     </UML:Multiplicity>
                                   </UML:AssociationEnd.multiplicity>
                                   <UML:AssociationEnd.participant>
-                                    <UML:Class xmi.idref = '127-0-0-1-3b779086:115fbcd84ea:-8000:0000000000000827'/>
+                                    <UML:Class xmi.idref = '127-0-1-1--592c2302:12ad1625f1b:-8000:0000000000000F92'/>
                                   </UML:AssociationEnd.participant>
                                 </UML:AssociationEnd>
                                 <UML:AssociationEnd xmi.id = '127-0-0-1--541b47f7:115fbe8e244:-8000:00000000000009CA'

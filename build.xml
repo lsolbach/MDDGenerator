@@ -13,15 +13,9 @@
 		<path refid="common.source.path"/>
 	</path>
 	
-	<target name="generate-local" depends="check-generate-required,generate-model"/>
+	<target name="generate-local" depends="generate-model"/>
 
-	<target name="check-generate-required">
-		<!--uptodate property="generateModel.notRequired" targetfile="${generate.dir}/src/org/soulspace/modelling/repository/ModelRepository.java" >
-		    <srcfiles dir="${basedir}/model" includes="ModelRepository.xmi"/>
-		</uptodate-->
-	</target>	
-		
-	<target name="generate-model" unless="generateModel.notRequired">
+	<target name="generate-model">
 		<delete>
 			<fileset dir="${backup.dir}"/>
 		</delete>

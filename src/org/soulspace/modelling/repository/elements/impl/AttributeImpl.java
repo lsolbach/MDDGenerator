@@ -6,7 +6,7 @@ public class AttributeImpl extends AbstractAttribute {
 
 	@Override
 	protected boolean doCheckOverride(Attribute attr) {
-		if (attr == null) {
+		if (attr == null || attr.getType() == null) {
 			return false;
 		}
 		if (!getType().equals(attr.getType())) {
