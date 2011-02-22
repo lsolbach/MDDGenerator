@@ -2,16 +2,16 @@ package org.soulspace.modelling;
 
 import java.io.File;
 
-import org.soulspace.modelling.generator.ant.ClassGenerator;
+import org.soulspace.modelling.generator.ClassGenerator;
+import org.soulspace.modelling.generator.ModelGenerator;
 import org.soulspace.modelling.generator.ant.ModelGeneratorTask;
-import org.soulspace.modelling.generator.ant.ModelGenerator;
 
 public class ModelGeneratorTaskTest extends AbstractGeneratorTaskTest {
 
 	public static void main(String[] args) {
 
 		ModelGeneratorTaskTest mgtTest = new ModelGeneratorTaskTest();
-		mgtTest.testAddressModel();
+		mgtTest.testPersonApp();
 	}
 	
 	void testRepositoryInterface() {
@@ -135,11 +135,49 @@ public class ModelGeneratorTaskTest extends AbstractGeneratorTaskTest {
 		mdaGeneratorTask.setBackupDir(new File("data/test/backup"));
 		
 		ClassGenerator cg = new ClassGenerator();
-		System.out.println("Template: entity-interface");
-		cg.setName("domain/java/entity-interface");
-		cg.setExtension("java");
-		cg.setImports("lib,model/lib,java/lib,java/interface,common/java/lib,domain/lib,domain/java/lib");
+		System.out.println("Template: hibernate-mapping");
+		cg.setName("domain/persistence/hibernate-mapping");
+		cg.setExtension("hbn.xml");
+		cg.setImports("lib,model/lib,common/lib,common/xml/lib,java/lib,persistence/db/lib,domain/model/lib,domain/persistence/lib");
 		cg.setStereotype("entity");
+		mdaGeneratorTask.addClassGenerator(cg);
+		mdaGeneratorTask.execute();		
+	}
+
+	void testStateMachine() {
+		ModelGeneratorTask mdaGeneratorTask = new ModelGeneratorTask();
+		setupTask(mdaGeneratorTask);
+		
+		mdaGeneratorTask.setModelFile(new File("../../apps/PersonWeb/model/PersonWeb.xmi"));
+		mdaGeneratorTask.setTemplateDirs("../MdaTemplates/std-templates2,../MdaTemplates/templates2");
+		mdaGeneratorTask.setProfiles("../MdaTemplates/profiles/argouml/default-uml14.xmi,../MdaTemplates/profiles/MDSDProfile.xmi");
+		mdaGeneratorTask.setBackupDir(new File("data/test/backup"));
+		
+		ClassGenerator cg = new ClassGenerator();
+		System.out.println("Template: webflow2");
+		cg.setName("presentation/spring/webflow2");
+		cg.setExtension("xml");
+		cg.setImports("lib,model/lib,common/lib,common/xml/lib");
+		cg.setStereotype("flow");
+		mdaGeneratorTask.addClassGenerator(cg);
+		mdaGeneratorTask.execute();		
+	}
+
+	void testPersonApp() {
+		ModelGeneratorTask mdaGeneratorTask = new ModelGeneratorTask();
+		setupTask(mdaGeneratorTask);
+		
+		mdaGeneratorTask.setModelFile(new File("../../apps/PersonAppComponent/model/PersonAppComponent.xmi"));
+		mdaGeneratorTask.setTemplateDirs("../MdaTemplates/std-templates2,../MdaTemplates/templates2");
+		mdaGeneratorTask.setProfiles("../MdaTemplates/profiles/argouml/default-uml14.xmi,../MdaTemplates/profiles/MDSDProfile.xmi,../../apps/PersonComponent/model/PersonComponent.xmi");
+		mdaGeneratorTask.setBackupDir(new File("data/test/backup"));
+		
+		ClassGenerator cg = new ClassGenerator();
+		System.out.println("Template: webflow2");
+		cg.setName("presentation/spring/webflow2");
+		cg.setExtension("xml");
+		cg.setImports("lib,model/lib,common/lib,common/xml/lib");
+		cg.setStereotype("flow");
 		mdaGeneratorTask.addClassGenerator(cg);
 		mdaGeneratorTask.execute();		
 	}

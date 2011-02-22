@@ -1,0 +1,72 @@
+<project name="AddressComponent" default="distribute">
+
+	<property environment="env"/>
+	<property file="build.properties"/>
+	<property name="common.build.dir" value="/home/soulman/devel/CommonBuild"/>
+
+	<!-- import common build files -->
+	<import file="${common.build.dir}/ant/common.properties.xml"/>
+	<import file="${common.build.dir}/ant/common.build.xml"/>
+	<import file="${common.build.dir}/ant/library.build.xml"/>
+	
+	<property name="mdsd.dir" value="/home/soulman/devel/workspaces/soulspace/MdaTemplates"/>
+
+	<path id="source.path">
+		<path refid="common.source.path"/>
+		<pathelement location="${generate.dir}/src"/>
+	</path>
+	
+	<target name="generate-local" depends="mdagenerator"/>
+	
+	<target name="mdagenerator" depends="">
+		<unzip src="model/${ant.project.name}.zargo" dest="model" overwrite="true">
+			<patternset includes="${ant.project.name}.xmi"/>
+		</unzip>
+		<delete>
+			<fileset dir="${backup.dir}"/>
+		</delete>
+		<copy todir="${backup.dir}" overwrite="true">
+			<fileset dir="${generate.dir}"/>
+		</copy>
+		<delete>
+			<fileset dir="${generate.dir}"/>
+		</delete>
+		
+		<mdsd destdir="${generate.dir}"
+                    backupdir="${backup.dir}"
+		            templateDirs="${mdsd.dir}/std-templates2,${mdsd.dir}/templates2,templates"
+					profiles="${mdsd.dir}/profiles/argouml/default-uml14.xmi,${mdsd.dir}/profiles/MDSDProfile.xmi"
+					modelFile="model/${ant.project.name}.xmi"
+			>
+				<!-- Plain java stuff -->
+			<classGenerator name="java/enumeration" 
+							imports="lib,model/lib,java/lib"
+							extension="java"
+				            subdir="src"
+							stereotype="enumeration">
+			</classGenerator>
+			<generatorGroup>
+				<classGenerator name="domain/java/entity-interface" 
+								imports="lib,model/lib,java/lib,java/interface,common/java/lib,domain/model/lib,domain/java/lib"
+								extension="java"
+								subdir="src"
+								stereotype="entity"/>
+			</generatorGroup>
+			<packageGenerator name="domain/persistence/create-tables"
+							imports="lib,model/lib,persistence/db/lib,domain/model/lib,domain/persistence/lib,domain/persistence/ddl"
+							basename="create-tables"
+							extension="sql"
+							subdir="db"
+							stereotype="component">
+			</packageGenerator>
+		</mdsd>
+		
+		<!-- create UML diagrams from generated .dot files -->
+		<!--mkdir dir="${generate.dir}/img"/-->
+		<antcall target="create-graph">
+			<param name="graph.src.dir" value="${generate.dir}"/>
+			<param name="graph.dest.dir" value="${generate.dir}"/>
+		</antcall>
+	</target>
+		
+</project>

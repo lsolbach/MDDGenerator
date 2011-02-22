@@ -1,0 +1,35 @@
+package <?namespace()?>;
+
+import org.apache.tools.ant.Task;
+import org.soulspace.modelling.generator.*;
+
+public abstract class AbstractGeneratorTask extends Task {
+
+	protected GenerationContext ctx;
+
+	public AbstractGeneratorTask() {
+		super();
+		ctx = new GenerationContext();
+	}
+	<?join(mapFiltered(delegate, isConcreteModelElement, package:Classes) , lineFeed())?>
+}
+<?
+string delegate(map element) {
+?>
+	public void add<?element:Name?>Generator(<?element:Name?>Generator g) {
+		ctx.getMainGroup().add<?element:Name?>Generator(g);
+	}
+<?
+}
+
+/* TODO remove if join map works (refactor other templates) */
+string delegates(map package) {
+	foreach element | isConcreteModelElement(element) <- package:Classes {?>
+	public void add<?element:Name?>Generator(<?element:Name?>Generator g) {
+		ctx.getMainGroup().add<?element:Name?>Generator(g);
+	}
+	<?
+	}
+}
+
+?>

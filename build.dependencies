@@ -7,21 +7,23 @@
 		<package name="junit" version="3.8.1" type="lib">
 			<module name="junit"/>
 		</package>
-		<package name="apache-ant" version="1.6.5" type="lib">
+		<package name="apache-ant" version="1.8.2" type="lib">
 			<module name="ant"/>
+			<module name="ant-launcher"/>
+			<module name="ant-testutil"/>
 		</package>
 	</dependency>
 	<dependency type="runtime">
 		<package name="TemplateEngine" version="1.0.0rc4" type="project">
 			<module name="TemplateEngine"/>
 		</package>
-		<package name="XmiRepository2" version="0.1.0" type="project">
+		<package name="XmiRepository2" version="0.2.0" type="project">
 			<module name="XmiRepository2"/>
 		</package>
-		<package name="ModelRepository2" version="0.1.0" type="project">
+		<package name="ModelRepository2" version="0.2.0" type="project">
 			<module name="ModelRepository2"/>
 		</package>
-		<package name="UmlModelBuilder" version="0.1.0" type="project">
+		<package name="UmlModelBuilder" version="0.2.0" type="project">
 			<module name="UmlModelBuilder"/>
 		</package>
 		<package name="JavaUtilLibrary" version="0.1.0" type="project">

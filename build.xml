@@ -8,4 +8,80 @@
 	<import file="${common.build.dir}/ant/common.properties.xml"/>
 	<import file="${common.build.dir}/ant/common.build.xml"/>
 	
+	<path id="source.path">
+		<pathelement location="${generate.dir}/src"/>
+		<path refid="common.source.path"/>
+	</path>
+
+    <target name="generate-local" depends="generate-model"/>
+	
+	<target name="check-generate-required">
+		<!--uptodate property="generateModel.notRequired" targetfile="${generate.dir}/src/org/soulspace/modelling/repository/builder/ModelFactory.java" >
+		    <srcfiles dir="${basedir}/../ModelRepository2/model" includes="ModelRepository.xmi"/>
+		</uptodate-->
+	</target>	
+		
+	<target name="generate-model">
+		<delete>
+			<fileset dir="${backup.dir}"/>
+		</delete>
+		<copy todir="${backup.dir}" overwrite="true">
+			<fileset dir="${generate.dir}"/>
+		</copy>
+		<delete>
+			<fileset dir="${generate.dir}"/>
+		</delete>
+		
+		<!--
+		  - Generator
+		  -->
+		<soulmda destdir="${generate.dir}"
+                    backupdir="${backup.dir}"
+                    templateDirs="../MdaTemplates/std-templates,../MdaTemplates/templates,templates"
+                    modelFile="../ModelRepository2/model/ModelRepository.xmi"
+					profiles="../MdaTemplates/profiles/argouml/default-uml14.xmi"
+			>
+			<classGenerator 	name="generator-class"
+                                imports="lib,model/lib,java/lib,common"
+								suffix="Generator"
+								subdir="src"
+								extension="java"
+								namespaceReplacement="org.soulspace.modelling.generator"
+								namespaceIncludes="org.soulspace.modelling.repository.elements"
+								generationFilterPattern="^\s*$"
+								stereotype="NONE"
+			/>
+			<packageGenerator 	name="generator-group"
+                                imports="lib,model/lib,java/lib,common"
+								basename="GeneratorGroup"
+								subdir="src"
+								extension="java"
+								namespaceReplacement="org.soulspace.modelling.generator"
+								namespaceIncludes="org.soulspace.modelling.repository.elements"
+								useNameAsNamespace="true"
+								stereotype="NONE"
+			/>
+			<packageGenerator 	name="generation-context"
+                                imports="lib,model/lib,java/lib,common"
+								basename="AbstractGenerationContext"
+								subdir="src"
+								extension="java"
+								namespaceReplacement="org.soulspace.modelling.generator"
+								namespaceIncludes="org.soulspace.modelling.repository.elements"
+								useNameAsNamespace="true"
+								stereotype="NONE"
+			/>
+			<packageGenerator 	name="generator-task"
+                                imports="lib,model/lib,java/lib,common"
+								basename="AbstractGeneratorTask"
+								subdir="src"
+								extension="java"
+								namespaceReplacement="org.soulspace.modelling.generator.ant"
+								namespaceIncludes="org.soulspace.modelling.repository.elements"
+								useNameAsNamespace="true"
+								stereotype="NONE"
+			/>
+		</soulmda>
+	</target>
+
 </project>

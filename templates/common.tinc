@@ -1,0 +1,5 @@
+<?
+numeric isConcreteModelElement(map element) {
+	isInstanceOf(element, 'ModelElement') && !isAbstract(element)
+}
+?>

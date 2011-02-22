@@ -1,0 +1,53 @@
+package <?namespace()?>;
+
+import org.soulspace.modelling.repository.ModelRepository;
+import org.soulspace.modelling.repository.elements.*;
+import org.soulspace.modelling.repository.elements.Class;
+import org.soulspace.modelling.repository.elements.Package;
+import org.soulspace.template.datasource.impl.BeanDataSourceImpl;
+
+public abstract class AbstractGenerationContext {
+
+	protected GeneratorGroup mainGroup = new GeneratorGroup();
+	protected ModelRepository repository;
+
+	public abstract ModelRepository getRepository();
+
+	public GeneratorGroup getMainGroup() {
+		return mainGroup;
+	}
+
+	public void setMainGroup(GeneratorGroup mainGroup) {
+		this.mainGroup = mainGroup;
+	}
+
+<?join(mapFiltered(addMethod, isConcreteModelElement, Classes), lineFeed())?>
+
+	public void callGenerators(GenerationContext ctx, GeneratorGroup gg, BeanDataSourceImpl ds) {
+		if(ds == null) {
+			ds = new BeanDataSourceImpl(getRepository());
+		}
+<?join(mapFiltered(callGenerator, isConcreteModelElement, Classes), lineFeed())?>
+		for(GeneratorGroup genGroup : gg.getGeneratorGroups()) {
+			callGenerators(ctx, genGroup, ds);
+		}
+	}
+
+}
+<?
+string callGenerator(map element) {?>
+		for(<?element:Name?> element : getRepository().get<?element:Name?>List()) {
+			for(<?element:Name?>Generator generator : gg.get<?element:Name?>Generators()) {
+				generator.generate(ctx, element, ds);
+			}
+		}
+<?
+}
+
+string addMethod(map element) {?>
+	public void add<?element:Name?>Generator(<?element:Name?>Generator cg) {
+		mainGroup.add<?element:Name?>Generator(cg);
+	}
+<?
+}
+?>

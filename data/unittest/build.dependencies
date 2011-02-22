@@ -1,0 +1,30 @@
+<dependencies>
+	<dependency type="aspect">
+		<package name="ArchitectureAspects" version="0.1.0" type="project">
+			<module name="ArchitectureAspects"/>
+		</package>
+		<package name="DomainAspects" version="0.1.0" type="project">
+			<module name="DomainAspects"/>
+		</package>
+		<package name="InfrastructureAspects" version="0.2.0" type="project">
+			<module name="InfrastructureAspects"/>
+		</package>
+	</dependency>
+	<dependency type="runtime">
+		<package name="AnnotationLibrary" version="0.2.1" type="project">
+			<module name="AnnotationLibrary"/>
+		</package>
+		<package name="spring" version="3.0.5" type="lib">
+			<module name="org.springframework.core"/>
+			<module name="org.springframework.beans"/>
+			<module name="org.springframework.context"/>
+			<module name="org.springframework.aop"/>
+			<module name="org.springframework.transaction"/>
+		</package>
+	</dependency>
+	<dependency type="dev">
+		<package name="junit" version="3.8.1" type="lib">
+			<module name="junit"/>
+		</package>
+	</dependency>
+</dependencies>

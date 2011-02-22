@@ -34,7 +34,7 @@ import org.soulspace.util.CollectionUtils;
  * @author soulman Base class for ant generators
  * 
  */
-public abstract class ClassifierGenerator {
+public abstract class ModelElementGenerator {
 
 	protected GeneratorContext genContext;
 
@@ -47,16 +47,16 @@ public abstract class ClassifierGenerator {
 	/**
 	 * Constructor
 	 */
-	public ClassifierGenerator() {
+	protected ModelElementGenerator() {
 		super();
 		genContext = new GeneratorContext();
 	}
 
-	public ClassifierGenerator(GeneratorContext genContext) {
+	protected ModelElementGenerator(GeneratorContext genContext) {
 		super();
 		this.genContext = genContext;
 	}
-	
+
 	public GeneratorContext getGeneratorContext() {
 		return genContext;
 	}
@@ -327,7 +327,8 @@ public abstract class ClassifierGenerator {
 			}
 		} catch (Exception e) {
 			engine = null;
-			System.err.println("Error processing " + genContext.getName());
+			System.err.println("Error creating a template engine for template "
+					+ genContext.getName());
 			throw new RuntimeException(
 					"Error creating a template engine for template "
 							+ genContext.getName(), e);
@@ -370,26 +371,27 @@ public abstract class ClassifierGenerator {
 		dataSource = ds;
 	}
 
-	boolean mustGenerate(Classifier classifier) {
-		return generateForNamespace(classifier)
-				&& generateForStereotype(classifier)
-				&& !checkForProfile(classifier);
+	boolean mustGenerate(ModelElement element) {
+		return generateForNamespace(element)
+				&& generateForStereotype(element)
+				&& !checkForProfile(element);
 	}
 
-	boolean checkForProfile(Classifier classifier) {
-		return classifier.getIsProfileElement();
+	boolean checkForProfile(ModelElement element) {
+		return element.getIsProfileElement();
 	}
 
-	boolean generateForStereotype(Classifier classifier) {
+	boolean generateForStereotype(ModelElement element) {
 		if (!genContext.getExcludeStereotypes().isEmpty()) {
 			for (String excStereotype : genContext.getExcludeStereotypes()) {
-				if (classifier.getStereotypeMap().containsKey(excStereotype.trim())) {
+				if (element.getStereotypeMap().containsKey(
+						excStereotype.trim())) {
 					return false;
 				}
 			}
 		}
 		// TODO remove
-		if (classifier.getStereotypeMap().get("external") != null) {
+		if (element.getStereotypeMap().get("external") != null) {
 			return false;
 		}
 		if (!isSet(genContext.getStereotype())) {
@@ -397,16 +399,16 @@ public abstract class ClassifierGenerator {
 		}
 		String st = genContext.getStereotype();
 		if (st.equals("NONE")) {
-			return classifier.getStereotypeMap().isEmpty();
+			return element.getStereotypeMap().isEmpty();
 		}
 		if (st.equals("ALL")) {
-			return !classifier.getStereotypeMap().isEmpty();
+			return !element.getStereotypeMap().isEmpty();
 		}
 
 		boolean generate = false;
 		String[] incStereotypes = genContext.getStereotype().split(",");
 		for (String incStereotype : incStereotypes) {
-			if (classifier.getStereotypeMap().containsKey(incStereotype.trim())) {
+			if (element.getStereotypeMap().containsKey(incStereotype.trim())) {
 				generate = true;
 			}
 		}
@@ -414,25 +416,33 @@ public abstract class ClassifierGenerator {
 		return generate;
 	}
 
-	boolean generateForNamespace(Classifier classifier) {
+	boolean generateForNamespace(ModelElement element) {
 		boolean generate = false;
-		if(classifier.getNamespace() == null) {
-			return false;
+		String namespace = "";
+		if (getUseNameAsNamespace()) {
+			// TODO check if set
+			namespace = element.getQualifiedName();
+		} else {
+			namespace = element.getNamespace();
 		}
-		if (genContext.getNamespaceIncludes().size() == 0
-				&& genContext.getNamespaceExcludes().size() == 0
-				&& !classifier.getNamespace().startsWith("java")) {
+		if ((genContext.getNamespaceIncludes() == null
+					|| genContext.getNamespaceIncludes().size() == 0)
+					&& (genContext.getNamespaceExcludes() == null
+					||genContext.getNamespaceExcludes().size() == 0)
+				) {
 			generate = true;
-		} else if (genContext.getNamespaceIncludes().size() > 0) {
-			for (String namespace : genContext.getNamespaceIncludes()) {
-				if (classifier.getNamespace().startsWith(namespace.trim())) {
+		} else if (genContext.getNamespaceIncludes() != null
+				&& genContext.getNamespaceIncludes().size() > 0) {
+			for (String ns : genContext.getNamespaceIncludes()) {
+				if (namespace.startsWith(ns.trim())) {
 					generate = true;
 				}
 			}
 		}
-		if (genContext.getNamespaceExcludes().size() > 0) {
-			for (String namespace : genContext.getNamespaceExcludes()) {
-				if (classifier.getNamespace().startsWith(namespace.trim())) {
+		if (genContext.getNamespaceExcludes() != null
+				&& genContext.getNamespaceExcludes().size() > 0) {
+			for (String ns : genContext.getNamespaceExcludes()) {
+				if (namespace.startsWith(ns.trim())) {
 					generate = false;
 				}
 			}
@@ -440,42 +450,53 @@ public abstract class ClassifierGenerator {
 		return generate;
 	}
 
+	public void generate(GenerationContext ctx, ModelElement element) {
+		generate(ctx, element, null);
+	}
+
 	/**
 	 * 
 	 * @param gt
-	 * @param classifier
+	 * @param element
 	 */
-	public void generate(GenerationContext ctx, Classifier classifier) {
-		if (!mustGenerate(classifier)) {
+	public void generate(GenerationContext ctx, ModelElement element,
+			BeanDataSourceImpl ds) {
+		if (!mustGenerate(element)) {
 			// no generation needed
 			return;
 		}
 		String output;
 		Map<String, String> userSections = null;
-		//dataSource = ctx.getDataSource();
+		// dataSource = ctx.getDataSource();
 
 		engine = getEngine(ctx);
-
+		BeanDataSourceImpl myDS;
 		// TODO fix exception handling?
+		if (ds != null) {
+			myDS = new BeanDataSourceImpl(element, ds);
+		} else {
+			myDS = new BeanDataSourceImpl(element);
+		}
+		if (isSet(genContext.getUserSection())) {
+			userSections = readUserSections(getPath(ctx, element, true));
+			myDS.add("USERSECTIONS", userSections);
+		}
 		try {
-			BeanDataSourceImpl myDS = new BeanDataSourceImpl(classifier);
 			myDS.add("GenContext", genContext);
-			if (isSet(genContext.getUserSection())) {
-				userSections = readUserSections(getPath(ctx, classifier, true));
-				myDS.add("USERSECTIONS", userSections);
-			}
 
 			output = engine.generate(myDS);
 
 			if (acceptWrite(output)) {
-				createPackagePath(ctx, classifier);
-				writeFile(getPath(ctx, classifier, false), output);
+				createPackagePath(ctx, element);
+				writeFile(getPath(ctx, element, false), output);
 			}
-		} catch (Exception e1) {
+		} catch (Exception e) {
 			System.err.println("Exception while processing template "
 					+ genContext.getName() + " for classifier "
-					+ classifier.getName() + "!");
-			e1.printStackTrace();
+					+ element.getName() + "!");
+			throw new RuntimeException("Exception while processing template "
+					+ genContext.getName() + " for classifier "
+					+ element.getName() + "!", e);
 		}
 	}
 
@@ -488,7 +509,7 @@ public abstract class ClassifierGenerator {
 
 	// FIXME refactor to use JavaUtils instead of TemplateEngine StringHelper
 	protected void createPackagePath(GenerationContext ctx,
-			Classifier classifier) {
+			ModelElement element) {
 		StringBuilder sb = new StringBuilder();
 		if (ctx.getDestDir() != null) {
 			sb.append(ctx.getDestDir().getAbsolutePath() + File.separator);
@@ -507,12 +528,12 @@ public abstract class ClassifierGenerator {
 						File.separatorChar)
 						+ File.separatorChar);
 			}
-			sb.append(classifier.getNamespace()
+			sb.append(element.getNamespace()
 					.replace('.', File.separatorChar)
 					+ File.separatorChar);
-			if (classifier instanceof Package
+			if (element instanceof Package
 					&& genContext.getUseNameAsNamespace()) {
-				sb.append(classifier.getName().replace('.', File.separatorChar)
+				sb.append(element.getName().replace('.', File.separatorChar)
 						+ File.separatorChar);
 			}
 			if (StringHelper.isSet(genContext.getNamespaceSuffix())) {
@@ -572,7 +593,7 @@ public abstract class ClassifierGenerator {
 		return sb.toString();
 	}
 
-	protected String getPath(GenerationContext ctx, Classifier cf,
+	protected String getPath(GenerationContext ctx, ModelElement element,
 			boolean backup) {
 		StringBuilder sb = new StringBuilder();
 
@@ -582,8 +603,7 @@ public abstract class ClassifierGenerator {
 			}
 		} else {
 			if (ctx.getBackupDir() != null) {
-				sb
-						.append(ctx.getBackupDir().getAbsolutePath()
+				sb.append(ctx.getBackupDir().getAbsolutePath()
 								+ File.separator);
 			}
 		}
@@ -601,10 +621,10 @@ public abstract class ClassifierGenerator {
 						File.separatorChar)
 						+ File.separatorChar);
 			}
-			sb.append(cf.getNamespace().replace('.', File.separatorChar)
+			sb.append(element.getNamespace().replace('.', File.separatorChar)
 					+ File.separatorChar);
-			if (cf instanceof Package && genContext.getUseNameAsNamespace()) {
-				sb.append(cf.getName().replace('.', File.separatorChar)
+			if (element instanceof Package && genContext.getUseNameAsNamespace()) {
+				sb.append(element.getName().replace('.', File.separatorChar)
 						+ File.separatorChar);
 			}
 			if (StringHelper.isSet(genContext.getNamespaceSuffix())) {
@@ -618,7 +638,7 @@ public abstract class ClassifierGenerator {
 			sb.append(genContext.getPrefix());
 		}
 		if (!StringHelper.isSet(genContext.getBasename())) {
-			sb.append(cf.getName());
+			sb.append(element.getName());
 		} else {
 			sb.append(genContext.getBasename());
 		}
@@ -683,9 +703,11 @@ public abstract class ClassifierGenerator {
 					sb.append(line + "\n");
 				}
 			}
-		} catch (IOException e1) {
-			System.err.println("Error parsing user sections on file " + filename);
-			e1.printStackTrace();
+		} catch (IOException e) {
+			System.err.println("Error parsing user sections on file "
+					+ filename);
+			throw new RuntimeException("Error parsing user sections on file "
+					+ filename, e);
 		}
 
 		return userSections;

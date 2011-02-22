@@ -2,13 +2,13 @@ package org.soulspace.modelling.generator.ant;
 
 import java.util.regex.Pattern;
 
-import org.soulspace.modelling.generator.ClassifierGenerator;
+import org.soulspace.modelling.generator.ModelElementGenerator;
 import org.soulspace.modelling.generator.GeneratorContext;
 import org.soulspace.modelling.generator.Param;
 import org.soulspace.template.util.StringHelper;
 import org.soulspace.util.CollectionUtils;
 
-public abstract class ClassifierGeneratorWrapper extends ClassifierGenerator {
+public abstract class ClassifierGeneratorWrapper extends ModelElementGenerator {
 
 	
 	public ClassifierGeneratorWrapper() {
