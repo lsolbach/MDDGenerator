@@ -24,8 +24,11 @@
 		    <srcfiles dir="${basedir}/model" includes="uml1.4.xmi"/>
 		</uptodate>
 	</target>	
-		
+
 	<target name="generate-model" unless="generateModel.notRequired">
+		<unzip src="model/uml1.4.zargo" dest="model" overwrite="true">
+			<patternset includes="uml1.4.xmi"/>
+		</unzip>
 		<delete>
 			<fileset dir="${backup.dir}"/>
 		</delete>

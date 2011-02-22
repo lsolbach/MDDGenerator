@@ -61,6 +61,7 @@ public class <?name()?> extends DefaultHandler {
 	    FileReader r = new FileReader(file);
 	    this.profile = isProfile;	
 	    xmlReader.parse(new InputSource(r));
+	    r.close();
 	}
 
 	private void addElement(XmiObject parent, XmiObject element, java.lang.Class<?'<?'?> extends XmiObject> type, String name) {

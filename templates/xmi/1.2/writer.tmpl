@@ -38,9 +38,13 @@ public class <?name()?> {
 		<?writeXmiPostfix()?>
 			writer.close();
 		} catch(IOException e) {
-			e.printStackTrace();
+			try {
+			    writer.close();
+			} catch(IOException e1) {
+				// can't do anything
+			}
 			throw new RuntimeException(e);
-		} 
+		}
 	}
 	
 	private String xmlEncode(String input) {

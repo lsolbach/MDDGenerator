@@ -26,7 +26,7 @@ public class ParserTest {
 		
 		Uml14RepositoryImpl xmiRepository = new Uml14RepositoryImpl();
 		Xmi12ReaderImpl parser = new Xmi12ReaderImpl(xmiRepository);
-		Xmi12WriterImpl writer = new Xmi12WriterImpl(out);
+//		Xmi12WriterImpl writer = new Xmi12WriterImpl(out);
 		try {
 			parser.parseXmi(new File(in), false);
 //			writer.write(xmiRepository);
