@@ -1,9 +1,9 @@
 <dependencies>
 	<dependency type="runtime">
-		<package name="XmiRepository2" version="0.1.0" type="project">
+		<package name="XmiRepository2" version="0.2.0" type="project">
 			<module name="XmiRepository2"/>
 		</package>
-		<package name="ModelRepository2" version="0.1.0" type="project">
+		<package name="ModelRepository2" version="0.2.0" type="project">
 			<module name="ModelRepository2"/>
 		</package>
 	</dependency>

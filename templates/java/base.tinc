@@ -15,7 +15,7 @@ list factoryElementList() {
 	list elementList
 	foreach package <- Packages {
 		foreach element
-				| !isAbstract(element) && !element:StereotypeMap
+				| !hasStereotype(element)
 				<- package:Classes {
 			elementList.add(element)
 		}	
