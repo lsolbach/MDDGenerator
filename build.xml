@@ -16,6 +16,9 @@
 	<target name="generate-local" depends="generate-model"/>
 
 	<target name="generate-model">
+		<unzip src="model/ModelRepository.zargo" dest="model" overwrite="true">
+			<patternset includes="ModelRepository.xmi"/>
+		</unzip>
 		<delete>
 			<fileset dir="${backup.dir}"/>
 		</delete>

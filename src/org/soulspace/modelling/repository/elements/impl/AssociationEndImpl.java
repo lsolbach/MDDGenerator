@@ -6,6 +6,10 @@ public class AssociationEndImpl extends AbstractAssociationEnd {
 
 	@Override
 	protected boolean doCheckOverride(AssociationEnd ae) {
+		if((getName() == null) 
+				|| (getName() != null && ae.getName() == null)) {
+			return false;
+		}
 		if(!getName().equals(ae.getName())) {
 			return false;
 		}
