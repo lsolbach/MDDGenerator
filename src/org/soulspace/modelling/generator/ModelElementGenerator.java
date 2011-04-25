@@ -13,7 +13,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -21,7 +20,6 @@ import java.util.regex.Pattern;
 
 import org.apache.oro.text.regex.MatchResult;
 import org.apache.tools.ant.BuildException;
-import org.soulspace.modelling.repository.elements.Classifier;
 import org.soulspace.modelling.repository.elements.ModelElement;
 import org.soulspace.template.TemplateEngine;
 import org.soulspace.template.datasource.impl.BeanDataSourceImpl;
@@ -307,12 +305,10 @@ public abstract class ModelElementGenerator {
 
 		engine = new TemplateEngineImpl();
 		String[] importTemplateNames = null;
-		String[] templates = null;
 
 		try {
 			if (isSet(genContext.getImports())) {
 				importTemplateNames = genContext.getImports().split(",");
-				templates = new String[importTemplateNames.length + 1];
 				File[] templateFiles = new File[importTemplateNames.length + 1];
 				for (int i = 0; i < importTemplateNames.length; i++) {
 					templateFiles[i] = locateFile(templateDirs,
@@ -531,8 +527,7 @@ public abstract class ModelElementGenerator {
 			sb.append(element.getNamespace()
 					.replace('.', File.separatorChar)
 					+ File.separatorChar);
-			if (element instanceof Package
-					&& genContext.getUseNameAsNamespace()) {
+			if (genContext.getUseNameAsNamespace()) {
 				sb.append(element.getName().replace('.', File.separatorChar)
 						+ File.separatorChar);
 			}
@@ -623,7 +618,7 @@ public abstract class ModelElementGenerator {
 			}
 			sb.append(element.getNamespace().replace('.', File.separatorChar)
 					+ File.separatorChar);
-			if (element instanceof Package && genContext.getUseNameAsNamespace()) {
+			if (genContext.getUseNameAsNamespace()) {
 				sb.append(element.getName().replace('.', File.separatorChar)
 						+ File.separatorChar);
 			}
