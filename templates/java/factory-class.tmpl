@@ -23,10 +23,12 @@ init(elementList)
 ?>
 
 	private String getXmiId(XmiObject xmiObject) {
-		if(xmiObject.getXmiId() != null) {
-			return xmiObject.getXmiId();
-		} else if(xmiObject.getRefId() != null) {
-			return xmiObject.getRefId();
+		if(xmiObject != null) {
+			if(xmiObject.getXmiId() != null) {
+				return xmiObject.getXmiId();
+			} else if(xmiObject.getRefId() != null) {
+				return xmiObject.getRefId();
+			}
 		}
 		return null;
 	}

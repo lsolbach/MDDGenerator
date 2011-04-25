@@ -27,6 +27,9 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 			org.soulspace.modelling.base.XmiObject xmiSource) {
 		element.setId(xmiSource.getXmiId());
 		element.setIsProfileElement(xmiSource.getProfileElement());
+		if(xmiSource.getParentElement() != null) {
+			element.setParentElement(createElement(xmiSource.getParentElement()));
+		}
 		return element;
 	}
 
@@ -83,6 +86,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		for (org.soulspace.modelling.uml14.elements.ModelElement xmiElement : xmiSource
 				.getOwnedElementSet()) {
 			namespace.addOwnedElement(createModelElement(xmiElement));
+			// FIXME trace addition of owned elements
 		}
 		return namespace;
 	}
@@ -92,7 +96,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		feature = initModelElement(feature, xmiSource);
 		feature.setVisibility(xmiSource.getVisibility().getName());
 		feature.setOwnerScope(xmiSource.getOwnerScope().getName());
-		// TODO feature.setIsDerived();
+		// FIXME feature.setIsDerived();
 		// feature.setIsDerived(arg0);
 		return feature;
 	}
@@ -229,16 +233,21 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 	protected Association initAssociation(Association association,
 			XmiObject xmiObject) {
 		org.soulspace.modelling.uml14.elements.Association xmiSource = (org.soulspace.modelling.uml14.elements.Association) xmiObject;
-
 		association = initModelElement(association, xmiSource);
 		for (org.soulspace.modelling.uml14.elements.AssociationEnd xmiAEnd : xmiSource
 				.getConnectionList()) {
 			association.addConnection(createAssociationEnd(xmiAEnd));
 		}
+
 		// initialize source ends of the association ends
 		if (association.getConnectionList().size() == 1) {
+			System.err.println("WARN: only one association end on association "
+					+ association.getId());
 			AssociationEnd ae = association.getConnectionList().get(0);
 			ae.setSourceEnd(ae);
+		} else if (association.getConnectionList().size() > 2) {
+			System.err.println("WARN: more than  association end on association "
+					+ association.getId());
 		} else if (association.getConnectionList().size() == 2) {
 			AssociationEnd ae1 = association.getConnectionList().get(0);
 			AssociationEnd ae2 = association.getConnectionList().get(1);
@@ -249,10 +258,14 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 			if (ae1.getType() instanceof ClassImpl) {
 				ClassImpl cI = (ClassImpl) ae1.getType();
 				cI.addAssociation(ae2);
+			} else {
+				System.err.println("WARN: unhandled association end type " + ae1.getType().getClass().getSimpleName());
 			}
 			if (ae2.getType() instanceof ClassImpl) {
 				ClassImpl cI = (ClassImpl) ae2.getType();
 				cI.addAssociation(ae1);
+			} else {
+				System.err.println("WARN: unhandled association end type " + ae2.getType().getClass().getSimpleName());
 			}
 		}
 		return association;
@@ -281,9 +294,17 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 			associationEnd.setChangeability(xmiSource.getChangeability()
 					.getName());
 		}
-		if (/* associationEnd.getTaggedValueMap().get("derived") != null || */
-		(xmiSource.getName() != null && xmiSource.getName().startsWith("/"))) {
+		if ((xmiSource.getName() != null && xmiSource.getName().startsWith("/"))) {
 			associationEnd.setDerived(true);
+			associationEnd.setName(associationEnd.getName().substring(1));
+		}
+		if(associationEnd.getTaggedValueMap().get("derived") != null) {
+			if(associationEnd.getTaggedValueMap().get("derived") != null) {
+				TaggedValue taggedValue = associationEnd.getTaggedValueMap().get("derived");
+				if(taggedValue.getValue().equals("true")) {
+					associationEnd.setDerived(true);				
+				}
+			}
 		}
 		if (xmiSource.getMultiplicity() != null) {
 			associationEnd.setMultiplicity(createMultiplicity(xmiSource
@@ -312,9 +333,21 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		org.soulspace.modelling.uml14.elements.Attribute xmiSource = (org.soulspace.modelling.uml14.elements.Attribute) xmiObject;
 
 		attribute = initStructuralFeature(attribute, xmiSource);
-		// TODO add initial value
-		// attribute.se
-		xmiSource.getInitialValue();
+
+		// FIXME handle expressions correctly in xmi and generator model
+		// FIXME expressions are no model elements
+		// attribute.setInitialValue(createExpression(xmiSource.getInitialValue()));
+
+		if ((xmiSource.getName() != null && xmiSource.getName().startsWith("/"))) {
+			attribute.setDerived(true);
+			attribute.setName(attribute.getName().substring(1));
+		}
+		if(attribute.getTaggedValueMap().get("derived") != null) {
+			TaggedValue taggedValue = attribute.getTaggedValueMap().get("derived");
+			if(taggedValue.getValue().equals("true")) {
+				attribute.setDerived(true);				
+			}
+		}
 		return attribute;
 	}
 
@@ -325,7 +358,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		callEvent = initEvent(callEvent, xmiSource);
 
 		callEvent.setOperation(createOperation(xmiSource.getOperation()));
-
+		
 		return callEvent;
 	}
 
