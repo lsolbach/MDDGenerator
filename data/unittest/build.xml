@@ -1,4 +1,4 @@
-<project name="AddressComponent" default="distribute">
+<project name="UserAccountComponent" default="distribute">
 
 	<property environment="env"/>
 	<property file="build.properties"/>
@@ -31,6 +31,7 @@
 		<delete>
 			<fileset dir="${generate.dir}"/>
 		</delete>
+		<mkdir dir="${generate.dir}/src"/>
 		
 		<mdsd destdir="${generate.dir}"
                     backupdir="${backup.dir}"
@@ -38,27 +39,133 @@
 					profiles="${mdsd.dir}/profiles/argouml/default-uml14.xmi,${mdsd.dir}/profiles/MDSDProfile.xmi"
 					modelFile="model/${ant.project.name}.xmi"
 			>
-				<!-- Plain java stuff -->
 			<classGenerator name="java/enumeration" 
 							imports="lib,model/lib,java/lib"
 							extension="java"
 				            subdir="src"
-							stereotype="enumeration">
-			</classGenerator>
+							stereotype="enumeration"/>
 			<generatorGroup>
+				<!-- domain interfaces -->
+				<classGenerator name="class-test" 
+								imports="lib,model/lib,java/lib,java/interface,common/lib,common/java/lib,domain/model/lib,domain/java/lib"
+								extension="txt"
+								subdir="tmp"
+								stereotype="entity"/>
 				<classGenerator name="domain/java/entity-interface" 
-								imports="lib,model/lib,java/lib,java/interface,common/java/lib,domain/model/lib,domain/java/lib"
+								imports="lib,model/lib,java/lib,java/interface,common/lib,common/java/lib,domain/model/lib,domain/java/lib"
 								extension="java"
 								subdir="src"
 								stereotype="entity"/>
+				<classGenerator name="domain/java/value-interface" 
+								imports="lib,model/lib,java/lib,java/interface,common/lib,common/java/lib,domain/model/lib,domain/java/lib"
+								extension="java"
+								subdir="src"
+								stereotype="value"/>
+				<classGenerator name="domain/java/factory-interface" 
+								imports="lib,model/lib,java/lib,java/interface,common/lib,common/java/lib,domain/model/lib,domain/java/lib"
+								extension="java"
+					            subdir="src"
+								stereotype="factory"/>
+				<classGenerator name="domain/java/repository-interface" 
+								imports="lib,model/lib,java/lib,java/interface,common/lib,common/java/lib,domain/model/lib,domain/java/lib"
+								extension="java"
+					            subdir="src"
+								stereotype="repository"/>
+				<classGenerator name="domain/java/service-interface" 
+								imports="lib,model/lib,java/lib,java/interface,common/lib,common/java/lib,common/java/interface,domain/model/lib,domain/java/lib"
+								extension="java"
+					            subdir="src"
+								stereotype="service"/>
 			</generatorGroup>
-			<packageGenerator name="domain/persistence/create-tables"
-							imports="lib,model/lib,persistence/db/lib,domain/model/lib,domain/persistence/lib,domain/persistence/ddl"
-							basename="create-tables"
-							extension="sql"
-							subdir="db"
-							stereotype="component">
-			</packageGenerator>
+			<generatorGroup>
+				<!-- domain classes -->
+				<classGenerator name="domain/java/entity-class" 
+								imports="lib,model/lib,java/lib,java/class,common/lib,common/java/lib,common/java/class,common/java/metadata,domain/model/lib,domain/java/lib"
+								namespaceSuffix="impl"
+								prefix="Abstract"
+								extension="java"
+					            subdir="src"
+								stereotype="entity">
+				</classGenerator>
+				<classGenerator name="domain/java/value-class" 
+								imports="lib,model/lib,java/lib,java/class,common/lib,common/java/lib,common/java/class,common/java/metadata,domain/model/lib,domain/java/lib"
+								namespaceSuffix="impl"
+								prefix="Abstract"
+								extension="java"
+					            subdir="src"
+								stereotype="value">
+				</classGenerator>
+				<classGenerator name="domain/java/factory-class" 
+								imports="lib,model/lib,java/lib,java/class,common/lib,common/java/lib,common/java/class,domain/model/lib,domain/java/lib"
+								namespaceSuffix="impl"
+								prefix="Abstract"
+								extension="java"
+					            subdir="src"
+								stereotype="factory">
+				</classGenerator>
+				<classGenerator name="domain/java/repository-class" 
+								imports="lib,model/lib,java/lib,java/class,common/lib,common/java/lib,common/java/class,domain/model/lib,domain/java/lib"
+								namespaceSuffix="impl"
+								prefix="Abstract"
+								extension="java"
+					            subdir="src"
+								stereotype="repository">
+				</classGenerator>
+				<classGenerator name="domain/java/service-class" 
+								imports="lib,model/lib,java/lib,java/class,common/lib,common/java/lib,common/java/class,domain/model/lib,domain/java/lib"
+								namespaceSuffix="impl"
+								prefix="Abstract"
+								extension="java"
+					            subdir="src"
+								stereotype="service">
+				</classGenerator>
+			</generatorGroup>
+			<generatorGroup>
+				<!-- spring configuration -->
+				<!--packageGenerator name="domain/config/spring-component-config"
+								imports="lib,model/lib,java/lib,common/lib,common/xml/lib,common/spring/xml-config,domain/model/lib,domain/config/xml-config"
+								useNameAsNamespace="true"
+								basename="component-config"
+								extension="xml"
+								subdir="src"
+								stereotype="component">
+				</packageGenerator-->
+			</generatorGroup>
+			<generatorGroup>
+				<!-- persistence -->
+				<classGenerator name="domain/persistence/hibernate-mapping"
+								imports="lib,model/lib,java/lib,common/lib,common/xml/lib,persistence/db/lib,domain/model/lib,domain/persistence/lib"
+								extension="hbn.xml"
+								subdir="src"
+								stereotype="entity">
+				</classGenerator>
+				<packageGenerator name="domain/persistence/persistence-xml"
+								imports="lib,model/lib,java/lib,common/lib,common/xml/lib,domain/persistence/persistence-hibernate-xml"
+								basename="persistence"
+								extension="xml"
+								namespaceReplacement="META-INF"
+								subdir="src"
+								stereotype="component">
+				</packageGenerator>
+				<packageGenerator name="domain/persistence/create-tables"
+								imports="lib,model/lib,persistence/db/lib,common/lib,domain/model/lib,domain/persistence/lib,domain/persistence/ddl"
+								basename="create-tables"
+								extension="sql"
+								subdir="db"
+								stereotype="component">
+				</packageGenerator>
+			</generatorGroup>
+			<generatorGroup>
+				<!-- test -->
+				<packageGenerator name="test/config/spring-test-config"
+								imports="lib,model/lib,java/lib,common/lib,domain/model/lib,common/xml/lib"
+								useNameAsNamespace="true"
+								basename="test-config"
+								extension="xml"
+								subdir="test"
+								stereotype="component">
+				</packageGenerator>
+			</generatorGroup>
 		</mdsd>
 		
 		<!-- create UML diagrams from generated .dot files -->

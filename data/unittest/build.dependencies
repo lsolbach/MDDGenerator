@@ -3,17 +3,19 @@
 		<package name="ArchitectureAspects" version="0.1.0" type="project">
 			<module name="ArchitectureAspects"/>
 		</package>
-		<package name="DomainAspects" version="0.1.0" type="project">
+		<package name="DomainAspects" version="0.5.0" type="project">
 			<module name="DomainAspects"/>
 		</package>
-		<package name="InfrastructureAspects" version="0.2.0" type="project">
+		<!--package name="InfrastructureAspects" version="0.2.0" type="project">
 			<module name="InfrastructureAspects"/>
+		</package-->
+	</dependency>
+	<dependency type="project">
+		<package name="AnnotationLibrary" version="0.3.0" type="project">
+			<module name="AnnotationLibrary"/>
 		</package>
 	</dependency>
 	<dependency type="runtime">
-		<package name="AnnotationLibrary" version="0.2.1" type="project">
-			<module name="AnnotationLibrary"/>
-		</package>
 		<package name="spring" version="3.0.5" type="lib">
 			<module name="org.springframework.core"/>
 			<module name="org.springframework.beans"/>
