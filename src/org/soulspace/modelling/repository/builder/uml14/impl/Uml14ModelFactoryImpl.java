@@ -39,12 +39,6 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		element = initElement(element, xmiSource);
 
 		element.setName(xmiSource.getName());
-		if (xmiSource.getNamespace() != null) {
-			element.setNamespace(buildNamespace(xmiSource.getNamespace()));
-		} else {
-			element.setNamespace("");
-		}
-
 		for (org.soulspace.modelling.uml14.elements.Stereotype xmiStereotype : xmiSource
 				.getStereotypeSet()) {
 			Stereotype st = createStereotype(xmiStereotype);
@@ -85,8 +79,17 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		namespace = initModelElement(namespace, xmiSource);
 		for (org.soulspace.modelling.uml14.elements.ModelElement xmiElement : xmiSource
 				.getOwnedElementSet()) {
-			namespace.addOwnedElement(createModelElement(xmiElement));
-			// FIXME trace addition of owned elements
+			ModelElement element = createModelElement(xmiElement);
+			if(element != null) {
+				element.setNamespace(buildNamespace(xmiSource));
+				if(element.getNamespace() != null && !element.getNamespace().equals("")) {
+					element.setQualifiedName(element.getNamespace() + "." + element.getName());
+				} else {
+					element.setQualifiedName(element.getName());
+				}
+				namespace.addOwnedElement(element);
+				// FIXME trace addition of owned elements
+			}
 		}
 		return namespace;
 	}
@@ -140,7 +143,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 	protected <T extends Classifier> T initClassifier(T c,
 			org.soulspace.modelling.uml14.elements.Classifier xmiSource) {
 		c = initNamespace(c, xmiSource);
-		
+
 		// for(org.soulspace.modelling.uml14.elements.StructuralFeature feature
 		// : xmiSource.getTypedFeatureSet()) {
 		//
@@ -255,14 +258,15 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 			ae2.setSourceEnd(ae1);
 
 			// FIXME generalize
-			if (ae1.getType() instanceof ClassImpl) {
-				ClassImpl cI = (ClassImpl) ae1.getType();
+			if (ae1.getType() instanceof Classifier) {
+//				Classifier cI = createClassifier(xmiObject)
+				Classifier cI = (Classifier) ae1.getType();
 				cI.addAssociation(ae2);
 			} else {
 				System.err.println("WARN: unhandled association end type " + ae1.getType().getClass().getSimpleName());
 			}
-			if (ae2.getType() instanceof ClassImpl) {
-				ClassImpl cI = (ClassImpl) ae2.getType();
+			if (ae2.getType() instanceof Classifier) {
+				Classifier cI = (Classifier) ae2.getType();
 				cI.addAssociation(ae1);
 			} else {
 				System.err.println("WARN: unhandled association end type " + ae2.getType().getClass().getSimpleName());
@@ -912,10 +916,12 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 				&& !(xmiSource.getNamespace() instanceof org.soulspace.modelling.uml14.elements.Model)) {
 			buildNamespace(xmiSource.getNamespace(), sb);
 		}
-		if (sb.length() > 0) {
-			sb.append(".");
+		if(xmiSource.getName() != null) {
+			if (sb.length() > 0) {
+				sb.append(".");
+			}
+			sb.append(xmiSource.getName());
 		}
-		sb.append(xmiSource.getName());
 	}
 
 	XmiObject getXmiSource(XmiObject xmiObject) {
