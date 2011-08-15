@@ -71,6 +71,17 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 			// element.addStateMachine();
 		}
 
+		for (org.soulspace.modelling.uml14.elements.Dependency xmiDependency : xmiSource
+				.getSupplierDependencySet()) {
+			element.addSupplierDependency(createDependency(xmiDependency));
+		}
+
+		for (org.soulspace.modelling.uml14.elements.Dependency xmiDependency : xmiSource
+				.getClientDependencySet()) {
+			element.addClientDependency(createDependency(xmiDependency));
+		}
+
+
 		return element;
 	}
 
@@ -148,16 +159,6 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		// : xmiSource.getTypedFeatureSet()) {
 		//
 		// }
-
-		for (org.soulspace.modelling.uml14.elements.Dependency xmiDependency : xmiSource
-				.getSupplierDependencySet()) {
-			c.addSupplierDependency(createDependency(xmiDependency));
-		}
-
-		for (org.soulspace.modelling.uml14.elements.Dependency xmiDependency : xmiSource
-				.getClientDependencySet()) {
-			c.addClientDependency(createDependency(xmiDependency));
-		}
 
 		return c;
 	}
@@ -414,13 +415,13 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 
 		for (org.soulspace.modelling.uml14.elements.ModelElement xmiClient : xmiSource
 				.getClientSet()) {
-			dependency.setClient((Classifier) createModelElement(xmiClient));
+			dependency.setClient(createModelElement(xmiClient));
 		}
 
 		for (org.soulspace.modelling.uml14.elements.ModelElement xmiSupplier : xmiSource
 				.getSupplierSet()) {
 			dependency
-					.setSupplier((Classifier) createModelElement(xmiSupplier));
+					.setSupplier(createModelElement(xmiSupplier));
 		}
 
 		return dependency;
@@ -653,10 +654,16 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		org.soulspace.modelling.uml14.elements.TaggedValue xmiSource = (org.soulspace.modelling.uml14.elements.TaggedValue) xmiObject;
 
 		taggedValue = initElement(taggedValue, xmiSource);
-		org.soulspace.modelling.uml14.elements.TagDefinition xmiTagDef = (org.soulspace.modelling.uml14.elements.TagDefinition) umlRepository
+		org.soulspace.modelling.uml14.elements.TagDefinition xmiTagDef = null;
+		if(xmiSource.getType() != null) {
+			xmiTagDef = 
+				(org.soulspace.modelling.uml14.elements.TagDefinition) umlRepository
 				.findByXmiId(xmiSource.getType().getRefId());
+		}
 		if (xmiTagDef != null) {
 			taggedValue.setName(xmiTagDef.getName());
+		} else {
+			System.err.println("WARN: unknown TagDefinition on TaggedValue " + xmiSource.getRefId());			
 		}
 		if (xmiSource.getDataValueList() != null
 				&& !xmiSource.getDataValueList().isEmpty()) {
