@@ -150,7 +150,8 @@ public class ClassImpl extends AbstractClass {
 					&& !ae.getType().getNamespace().startsWith("java.lang")
 					&& !referencedTypeList.contains(ae.getType())) {
 				referencedTypeList.add(ae.getType());
-				if (Integer.parseInt(ae.getMultiplicity().getHigh()) > 1) {
+				if (ae.getMultiplicity() != null &&
+						Integer.parseInt(ae.getMultiplicity().getHigh()) > 1) {
 					// TODO: Add java.util.Collection as type?
 				}
 			}
@@ -174,7 +175,9 @@ public class ClassImpl extends AbstractClass {
 
 		for (Dependency d : getDependencyList()) {
 			if (!referencedTypeList.contains(d.getSupplier())) {
-				referencedTypeList.add(d.getSupplier());
+				if(d.getSupplier() instanceof Classifier) {
+					referencedTypeList.add((Classifier) d.getSupplier());
+				}
 			}
 		}
 
