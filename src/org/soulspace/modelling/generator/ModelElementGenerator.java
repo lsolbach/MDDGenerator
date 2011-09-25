@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 
 import org.apache.oro.text.regex.MatchResult;
 import org.apache.tools.ant.BuildException;
+import org.soulspace.modelling.repository.elements.Model;
 import org.soulspace.modelling.repository.elements.ModelElement;
 import org.soulspace.template.TemplateEngine;
 import org.soulspace.template.datasource.impl.BeanDataSourceImpl;
@@ -81,16 +82,16 @@ public abstract class ModelElementGenerator {
 	/**
 	 * @return the basename
 	 */
-	public String getBasename() {
-		return genContext.getBasename();
+	public String getBaseName() {
+		return genContext.getBaseName();
 	}
 
 	/**
-	 * @param basename
+	 * @param baseName
 	 *            the basename to set
 	 */
-	public void setBasename(String basename) {
-		genContext.setBasename(basename);
+	public void setBaseName(String baseName) {
+		genContext.setBaseName(baseName);
 	}
 
 	/**
@@ -166,16 +167,16 @@ public abstract class ModelElementGenerator {
 	/**
 	 * @return Returns the namespaceReplacement.
 	 */
-	public String getNamespaceReplacement() {
-		return genContext.getNamespaceReplacement();
+	public String getBaseNamespace() {
+		return genContext.getBaseNamespace();
 	}
 
 	/**
-	 * @param namespaceReplacement
+	 * @param baseNamespace
 	 *            The namespaceReplacement to set.
 	 */
-	public void setNamespaceReplacement(String namespaceReplacement) {
-		genContext.setNamespaceReplacement(namespaceReplacement);
+	public void setBaseNamespace(String baseNamespace) {
+		genContext.setBaseNamespace(baseNamespace);
 	}
 
 	/**
@@ -503,7 +504,7 @@ public abstract class ModelElementGenerator {
 		}
 	}
 
-	// FIXME refactor to use JavaUtils instead of TemplateEngine StringHelper
+	// TODO refactor to use JavaUtils instead of TemplateEngine StringHelper
 	protected void createPackagePath(GenerationContext ctx,
 			ModelElement element) {
 		StringBuilder sb = new StringBuilder();
@@ -514,29 +515,7 @@ public abstract class ModelElementGenerator {
 			sb.append(genContext.getSubdir() + File.separatorChar);
 		}
 
-		if (StringHelper.isSet(genContext.getNamespaceReplacement())) {
-			sb.append(genContext.getNamespaceReplacement().replace('.',
-					File.separatorChar)
-					+ File.separatorChar);
-		} else {
-			if (StringHelper.isSet(genContext.getNamespacePrefix())) {
-				sb.append(genContext.getNamespacePrefix().replace('.',
-						File.separatorChar)
-						+ File.separatorChar);
-			}
-			sb.append(element.getNamespace()
-					.replace('.', File.separatorChar)
-					+ File.separatorChar);
-			if (genContext.getUseNameAsNamespace()) {
-				sb.append(element.getName().replace('.', File.separatorChar)
-						+ File.separatorChar);
-			}
-			if (StringHelper.isSet(genContext.getNamespaceSuffix())) {
-				sb.append(genContext.getNamespaceSuffix().replace('.',
-						File.separatorChar)
-						+ File.separatorChar);
-			}
-		}
+		appendNamespace(sb, element);
 
 		File file = new File(sb.toString());
 		if (!file.exists()) {
@@ -606,36 +585,54 @@ public abstract class ModelElementGenerator {
 			sb.append(genContext.getSubdir() + File.separatorChar);
 		}
 
-		if (StringHelper.isSet(genContext.getNamespaceReplacement())) {
-			sb.append(genContext.getNamespaceReplacement().replace('.',
+		appendNamespace(sb, element);
+		appendName(sb, element);
+
+		return sb.toString();
+	}
+
+	void appendNamespace(StringBuilder sb, ModelElement element) {
+		if (StringHelper.isSet(genContext.getNamespacePrefix())) {
+			sb.append(genContext.getNamespacePrefix().replace('.',
 					File.separatorChar)
 					+ File.separatorChar);
-		} else {
-			if (StringHelper.isSet(genContext.getNamespacePrefix())) {
-				sb.append(genContext.getNamespacePrefix().replace('.',
+		}
+		if (StringHelper.isSet(genContext.getBaseNamespace())) {
+			if(genContext.getBaseNamespace().startsWith("[")) {
+				sb.append(getNameFromModel(element, genContext.getBaseNamespace()));
+			} else {
+				sb.append(genContext.getBaseNamespace().replace('.',
 						File.separatorChar)
-						+ File.separatorChar);
+						+ File.separatorChar);				
 			}
-			sb.append(element.getNamespace().replace('.', File.separatorChar)
+		} else {
+			sb.append(element.getNamespace()
+					.replace('.', File.separatorChar)
 					+ File.separatorChar);
 			if (genContext.getUseNameAsNamespace()) {
 				sb.append(element.getName().replace('.', File.separatorChar)
 						+ File.separatorChar);
 			}
-			if (StringHelper.isSet(genContext.getNamespaceSuffix())) {
-				sb.append(genContext.getNamespaceSuffix().replace('.',
-						File.separatorChar)
-						+ File.separatorChar);
-			}
 		}
-
+		if (StringHelper.isSet(genContext.getNamespaceSuffix())) {
+			sb.append(genContext.getNamespaceSuffix().replace('.',
+					File.separatorChar)
+					+ File.separatorChar);
+		}		
+	}
+	
+	void appendName(StringBuilder sb, ModelElement element) {
 		if (StringHelper.isSet(genContext.getPrefix())) {
 			sb.append(genContext.getPrefix());
 		}
-		if (!StringHelper.isSet(genContext.getBasename())) {
+		if (!StringHelper.isSet(genContext.getBaseName())) {
 			sb.append(element.getName());
 		} else {
-			sb.append(genContext.getBasename());
+			if(genContext.getBaseName().startsWith("[")) {
+				sb.append(getNameFromModel(element, genContext.getBaseName()));
+			} else {
+				sb.append(genContext.getBaseName());
+			}
 		}
 		if (StringHelper.isSet(genContext.getSuffix())) {
 			sb.append(genContext.getSuffix());
@@ -645,8 +642,20 @@ public abstract class ModelElementGenerator {
 			sb.append(".");
 			sb.append(genContext.getExtension());
 		}
-
-		return sb.toString();
+	}
+	
+	private String getNameFromModel(ModelElement element,
+			String name) {
+		if(name.equals("[MODEL_NAME]")) {
+			ModelElement modelCandidate = element;
+			while(modelCandidate != null && !(modelCandidate instanceof Model)) {
+				modelCandidate = (ModelElement) modelCandidate.getParentElement();
+			}
+			if(modelCandidate != null) {
+				return modelCandidate.getName();
+			}
+		}
+		return name;
 	}
 
 	protected boolean writeFile(String filename, String content) {

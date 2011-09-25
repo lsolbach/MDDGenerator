@@ -57,9 +57,8 @@
 								subdir="src"
 								extension="java"
 								namespaceReplacement="org.soulspace.modelling.generator"
-								namespaceIncludes="org.soulspace.modelling.repository.elements"
 								useNameAsNamespace="true"
-								stereotype="NONE"
+								stereotype="model elements"
 			/>
 			<packageGenerator 	name="generation-context"
                                 imports="lib,model/lib,java/lib,common"
@@ -67,9 +66,8 @@
 								subdir="src"
 								extension="java"
 								namespaceReplacement="org.soulspace.modelling.generator"
-								namespaceIncludes="org.soulspace.modelling.repository.elements"
 								useNameAsNamespace="true"
-								stereotype="NONE"
+								stereotype="model elements"
 			/>
 			<packageGenerator 	name="generator-task"
                                 imports="lib,model/lib,java/lib,common"
@@ -77,9 +75,8 @@
 								subdir="src"
 								extension="java"
 								namespaceReplacement="org.soulspace.modelling.generator.ant"
-								namespaceIncludes="org.soulspace.modelling.repository.elements"
 								useNameAsNamespace="true"
-								stereotype="NONE"
+								stereotype="model elements"
 			/>
 		</soulmda>
 	</target>

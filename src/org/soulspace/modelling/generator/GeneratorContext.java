@@ -12,7 +12,7 @@ public class GeneratorContext {
 
 	private String name = "";
 
-	private String basename = "";
+	private String baseName = "";
 
 	private String imports = "";
 
@@ -30,7 +30,7 @@ public class GeneratorContext {
 
 	private String userSection = "";
 
-	private String namespaceReplacement = "";
+	private String baseNamespace = "";
 
 	private String namespacePrefix = "";
 
@@ -68,16 +68,16 @@ public class GeneratorContext {
 	/**
 	 * @return the basename
 	 */
-	public String getBasename() {
-		return basename;
+	public String getBaseName() {
+		return baseName;
 	}
 
 	/**
 	 * @param basename
 	 *            the basename to set
 	 */
-	public void setBasename(String basename) {
-		this.basename = basename;
+	public void setBaseName(String basename) {
+		this.baseName = basename;
 	}
 
 	/**
@@ -176,16 +176,16 @@ public class GeneratorContext {
 	/**
 	 * @return Returns the namespaceReplacement.
 	 */
-	public String getNamespaceReplacement() {
-		return namespaceReplacement;
+	public String getBaseNamespace() {
+		return baseNamespace;
 	}
 
 	/**
-	 * @param namespaceReplacement
+	 * @param baseNamespace
 	 *            The namespaceReplacement to set.
 	 */
-	public void setNamespaceReplacement(String namespaceReplacement) {
-		this.namespaceReplacement = namespaceReplacement;
+	public void setBaseNamespace(String baseNamespace) {
+		this.baseNamespace = baseNamespace;
 	}
 
 	/**
