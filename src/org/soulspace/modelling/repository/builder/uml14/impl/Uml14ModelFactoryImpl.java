@@ -25,7 +25,16 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 	//
 	protected <T extends Element> T initElement(T element,
 			org.soulspace.modelling.base.XmiObject xmiSource) {
-		element.setId(xmiSource.getXmiId());
+		if(element == null || xmiSource == null) {
+			if(xmiSource != null) {
+				System.out.println("ERROR: model element is null " + xmiSource);
+			} else if(element != null) {
+				System.out.println("ERROR: xmi element is null " + element);
+			} else {
+				System.out.println("ERROR: element and xmi element are null!");				
+			}
+		}
+		element.setId(xmiSource.getXmiId());			
 		element.setIsProfileElement(xmiSource.getProfileElement());
 		if(xmiSource.getParentElement() != null) {
 			element.setParentElement(createElement(xmiSource.getParentElement()));
@@ -40,44 +49,44 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 
 		element.setName(xmiSource.getName());
 		for (org.soulspace.modelling.uml14.elements.Stereotype xmiStereotype : xmiSource
-				.getStereotypeSet()) {
+				.getStereotypeList()) {
 			Stereotype st = createStereotype(xmiStereotype);
 			element.addStereotype(st.getName(), st);
 		}
 
 		for (org.soulspace.modelling.uml14.elements.TaggedValue xmiTaggedValue : xmiSource
-				.getTaggedValueSet()) {
+				.getTaggedValueList()) {
 			TaggedValue tv = createTaggedValue(xmiTaggedValue);
 			element.addTaggedValue(tv.getName(), tv);
 		}
 
 		for (org.soulspace.modelling.uml14.elements.Comment xmiComment : xmiSource
-				.getCommentSet()) {
+				.getCommentList()) {
 			element.addComment(createComment(xmiComment));
 		}
 
 		for (org.soulspace.modelling.uml14.elements.Constraint xmiConstraint : xmiSource
-				.getConstraintSet()) {
+				.getConstraintList()) {
 			element.addConstraint(createConstraint(xmiConstraint));
 		}
 
 		for (org.soulspace.modelling.uml14.elements.Component xmiComponent : xmiSource
-				.getContainerSet()) {
+				.getContainerList()) {
 
 		}
 
 		for (org.soulspace.modelling.uml14.elements.StateMachine xmiStateMachine : xmiSource
-				.getBehaviorSet()) {
+				.getBehaviorList()) {
 			// element.addStateMachine();
 		}
 
 		for (org.soulspace.modelling.uml14.elements.Dependency xmiDependency : xmiSource
-				.getSupplierDependencySet()) {
+				.getSupplierDependencyList()) {
 			element.addSupplierDependency(createDependency(xmiDependency));
 		}
 
 		for (org.soulspace.modelling.uml14.elements.Dependency xmiDependency : xmiSource
-				.getClientDependencySet()) {
+				.getClientDependencyList()) {
 			element.addClientDependency(createDependency(xmiDependency));
 		}
 
@@ -89,7 +98,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 			org.soulspace.modelling.uml14.elements.Namespace xmiSource) {
 		namespace = initModelElement(namespace, xmiSource);
 		for (org.soulspace.modelling.uml14.elements.ModelElement xmiElement : xmiSource
-				.getOwnedElementSet()) {
+				.getOwnedElementList()) {
 			ModelElement element = createModelElement(xmiElement);
 			if(element != null) {
 				element.setNamespace(buildNamespace(xmiSource));
@@ -187,11 +196,11 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		stateVertex = initModelElement(stateVertex, xmiSource);
 
 		for (org.soulspace.modelling.uml14.elements.Transition xmiTrans : xmiSource
-				.getIncomingSet()) {
+				.getIncomingList()) {
 			stateVertex.addIncomingTransition(createTransition(xmiTrans));
 		}
 		for (org.soulspace.modelling.uml14.elements.Transition xmiTrans : xmiSource
-				.getOutgoingSet()) {
+				.getOutgoingList()) {
 			stateVertex.addOutgoingTransition(createTransition(xmiTrans));
 		}
 
@@ -217,7 +226,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 			state.setExitAction(createAction(xmiSource.getExit()));
 		}
 
-		for(org.soulspace.modelling.uml14.elements.Transition xmiTrans : xmiSource.getInternalTransitionSet()) {
+		for(org.soulspace.modelling.uml14.elements.Transition xmiTrans : xmiSource.getInternalTransitionList()) {
 			state.addInternalTransition(createTransition(xmiTrans));
 		}
 
@@ -414,12 +423,12 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		dependency = initModelElement(dependency, xmiSource);
 
 		for (org.soulspace.modelling.uml14.elements.ModelElement xmiClient : xmiSource
-				.getClientSet()) {
+				.getClientList()) {
 			dependency.setClient(createModelElement(xmiClient));
 		}
 
 		for (org.soulspace.modelling.uml14.elements.ModelElement xmiSupplier : xmiSource
-				.getSupplierSet()) {
+				.getSupplierList()) {
 			dependency
 					.setSupplier(createModelElement(xmiSupplier));
 		}
@@ -500,7 +509,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 
 		multiplicity = initElement(multiplicity, xmiSource);
 
-		for (MultiplicityRange xmiRange : xmiSource.getRangeSet()) {
+		for (MultiplicityRange xmiRange : xmiSource.getRangeList()) {
 			multiplicity.setLow(Integer.toString(xmiRange.getLower()));
 			multiplicity.setHigh(Integer.toString(xmiRange.getUpper()));
 		}
@@ -573,7 +582,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 
 		stateMachine = initModelElement(stateMachine, xmiSource);
 		for (org.soulspace.modelling.uml14.elements.Transition xmiTrans : xmiSource
-				.getTransitionsSet()) {
+				.getTransitionsList()) {
 			stateMachine.addTransition(createTransition(xmiTrans));
 		}
 		if(xmiSource.getTop() != null) {
@@ -614,7 +623,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 
 		compositeState = initModelElement(compositeState, xmiSource);
 
-		for(org.soulspace.modelling.uml14.elements.StateVertex xmiStateVertex : xmiSource.getSubvertexSet()) {
+		for(org.soulspace.modelling.uml14.elements.StateVertex xmiStateVertex : xmiSource.getSubvertexList()) {
 			compositeState.addSubvertex(createStateVertex(xmiStateVertex));
 		}
 		
@@ -723,11 +732,11 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		useCase = initClassifier(useCase, xmiSource);
 
 		for (org.soulspace.modelling.uml14.elements.ExtensionPoint xmiExtPoint : xmiSource
-				.getExtensionPointSet()) {
+				.getExtensionPointList()) {
 			useCase.addExtensionPoint(createExtensionPoint(xmiExtPoint));
 		}
 		for (org.soulspace.modelling.uml14.elements.Include xmiInclude : xmiSource
-				.getIncludeSet()) {
+				.getIncludeList()) {
 			createInclude(xmiInclude);
 			// useCase.addInclude();
 			// include is a dependency so supplier and client denominate the
