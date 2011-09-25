@@ -100,4 +100,28 @@ numeric isReferenceAttribute(map attr) {
 	|| attr:Type:Name eq 'LocationReference'
 	|| attr:Type:Name.endsWith('Expression')
 }
+
+?><?!--
+Use lists for the unordered collections too
+so that the insertion order of the elements
+is stable across generations
+--?><?
+
+string associationCollectionType(map asso) {
+	string type = super(asso)
+	if(type eq 'Set') {
+		type = 'List'
+	}
+	type
+}
+
+string associationCollectionImplementation(map asso) {
+	string type = associationCollectionType(asso)
+	if(type eq 'Set' || type eq 'SortedSet') {
+		'ArrayList'
+	} else {
+		super(asso)
+	}
+}
+
 ?>

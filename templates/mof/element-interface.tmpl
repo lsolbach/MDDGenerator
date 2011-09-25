@@ -44,7 +44,7 @@ string properties() {
 
 string associations() {
 	map assoMap
-	foreach asso | isAccessibleAssociation(asso) <- element:Associations {
+	foreach asso | isAccessibleAssociation(asso) <- Associations {
 		assoMap.put(asso:Name, asso)
 	}
 	list keyList = assoMap.keyList()
