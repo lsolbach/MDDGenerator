@@ -11,15 +11,20 @@ list repositoryElementList() {
 	elementList
 }
 
-list factoryElementList() {
-	list elementList
-	foreach package <- Packages {
-		foreach element
-				| !isAbstract(element) && !element:StereotypeMap
-				<- package:Classes {
-			elementList.add(element)
-		}	
+string associationCollectionType(map asso) {
+	string type = super(asso)
+	if(type eq 'Set') {
+		'SortedSet'
 	}
-	elementList
 }
+
+string associationCollectionImplementation(map asso) {
+	string type = associationCollectionType(asso)
+	if(type eq 'Set' || type eq 'SortedSet') {
+		'TreeSet'
+	} else {
+		super(asso)
+	}
+}
+
 ?>

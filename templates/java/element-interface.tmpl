@@ -17,3 +17,13 @@ typeAnnotations()?>
 // Operations
 <?operations()?>
 }
+<?
+string extensions() {
+	string interfaces = super()
+	if(interfaces) {
+		interfaces + ', Comparable<Element>'
+	} else {
+		'extends Comparable<Element>'
+	}
+}
+?>

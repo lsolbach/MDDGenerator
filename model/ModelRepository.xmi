@@ -1,8 +1,8 @@
 <?xml version = '1.0' encoding = 'UTF-8' ?>
-<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Wed Aug 10 19:53:31 CEST 2011'>
+<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Sun Aug 21 15:30:20 CEST 2011'>
   <XMI.header>    <XMI.documentation>
       <XMI.exporter>ArgoUML (using Netbeans XMI Writer version 1.0)</XMI.exporter>
-      <XMI.exporterVersion>0.32(6) revised on $Date: 2011/08/15 21:36:10 $ </XMI.exporterVersion>
+      <XMI.exporterVersion>0.32(6) revised on $Date: 2011/09/25 22:03:45 $ </XMI.exporterVersion>
     </XMI.documentation>
     <XMI.metamodel xmi.name="UML" xmi.version="1.4"/></XMI.header>
   <XMI.content>
@@ -45,6 +45,9 @@
                         <UML:Package xmi.id = '127-0-0-1-3b779086:115fbcd84ea:-8000:0000000000000780'
                           name = 'elements' isSpecification = 'false' isRoot = 'false' isLeaf = 'false'
                           isAbstract = 'false'>
+                          <UML:ModelElement.stereotype>
+                            <UML:Stereotype xmi.idref = '127-0-1-1-619d1fe2:131e7664d27:-8000:00000000000013D1'/>
+                          </UML:ModelElement.stereotype>
                           <UML:Namespace.ownedElement>
                             <UML:Class xmi.id = '127-0-0-1-3b779086:115fbcd84ea:-8000:0000000000000781'
                               name = 'Element' visibility = 'public' isSpecification = 'false' isRoot = 'false'
@@ -4466,6 +4469,11 @@
             </UML:Multiplicity>
           </UML:TagDefinition.multiplicity>
         </UML:TagDefinition>
+        <UML:Stereotype xmi.id = '127-0-1-1-619d1fe2:131e7664d27:-8000:00000000000013D1'
+          name = 'model elements' isSpecification = 'false' isRoot = 'false' isLeaf = 'false'
+          isAbstract = 'false'>
+          <UML:Stereotype.baseClass>Package</UML:Stereotype.baseClass>
+        </UML:Stereotype>
       </UML:Namespace.ownedElement>
     </UML:Model>
   </XMI.content>

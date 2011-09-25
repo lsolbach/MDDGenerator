@@ -36,6 +36,7 @@ operations()
 	// Object methods<?
 equals()
 hashcode()
+compareTo(This)
 ?>
 }
 <?
@@ -46,14 +47,20 @@ numeric isAccessibleProperty(map attr) {
 string extension() {
 }
 
-string elementAccessors() {
-?>
+string elementAccessors() {?>
 	public String getElementType() {
 		return "<?Name?>";
 	}
 	
 	public Element getThis() {
 		return this;
+	}
+<?
+}
+
+string compareTo(map element) {?>
+	public int compareTo(Element e) {
+		return getId().compareTo(e.getId());
 	}
 <?
 }
