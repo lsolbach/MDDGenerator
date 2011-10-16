@@ -1,11 +1,18 @@
+/*
+ * Java bean TagDefinitionImpl
+ * Implementation of interface TagDefinition.
+ * Template:  java/element-impl-class
+ * Imports:   lib,model/lib,java/lib,java/class
+ * Timestamp: Wed Sep 28 00:15:51 CEST 2011
+ */
+
 package org.soulspace.modelling.repository.elements.impl;
 
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import org.soulspace.modelling.repository.elements.*;
 
-public class GeneralizationImpl extends AbstractGeneralization {
+public class TagDefinitionImpl extends AbstractTagDefinition {
 
 	Set<TaggedValue> taggedValueSet = null;
 	Set<Stereotype> stereotypeSet = null;
