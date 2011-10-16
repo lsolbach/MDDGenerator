@@ -290,8 +290,9 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 			AssociationClass associationClass, XmiObject xmiObject) {
 		org.soulspace.modelling.uml14.elements.AssociationClass xmiSource = (org.soulspace.modelling.uml14.elements.AssociationClass) xmiObject;
 
-		associationClass = initClassifier(associationClass, xmiSource);
-
+		associationClass = (AssociationClass) initAssociation(associationClass, xmiSource);
+		associationClass = (AssociationClass) initClass(associationClass, xmiSource);
+		
 		return associationClass;
 	}
 
@@ -316,7 +317,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 			if(associationEnd.getTaggedValueMap().get("derived") != null) {
 				TaggedValue taggedValue = associationEnd.getTaggedValueMap().get("derived");
 				if(taggedValue.getValue().equals("true")) {
-					associationEnd.setDerived(true);				
+					associationEnd.setDerived(true);	
 				}
 			}
 		}
@@ -658,6 +659,20 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 	}
 
 	@Override
+	protected TagDefinition initTagDefinition(TagDefinition tagDefinition,
+			XmiObject xmiObject) {
+		org.soulspace.modelling.uml14.elements.TagDefinition xmiSource = (org.soulspace.modelling.uml14.elements.TagDefinition) xmiObject;
+
+		tagDefinition = initModelElement(tagDefinition, xmiSource);
+		if (xmiSource.getMultiplicity() != null) {
+			tagDefinition.setMultiplicity(createMultiplicity(xmiSource
+					.getMultiplicity()));
+		}
+
+		return tagDefinition;
+	}
+
+	@Override
 	protected TaggedValue initTaggedValue(TaggedValue taggedValue,
 			XmiObject xmiObject) {
 		org.soulspace.modelling.uml14.elements.TaggedValue xmiSource = (org.soulspace.modelling.uml14.elements.TaggedValue) xmiObject;
@@ -669,6 +684,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 				(org.soulspace.modelling.uml14.elements.TagDefinition) umlRepository
 				.findByXmiId(xmiSource.getType().getRefId());
 		}
+		taggedValue.setType(createTagDefinition(xmiSource.getType()));
 		if (xmiTagDef != null) {
 			taggedValue.setName(xmiTagDef.getName());
 		} else {
