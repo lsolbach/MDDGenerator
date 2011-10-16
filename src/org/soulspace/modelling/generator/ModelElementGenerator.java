@@ -606,9 +606,11 @@ public abstract class ModelElementGenerator {
 						+ File.separatorChar);				
 			}
 		} else {
-			sb.append(element.getNamespace()
-					.replace('.', File.separatorChar)
-					+ File.separatorChar);
+			if(element.getNamespace() != null) {
+				sb.append(element.getNamespace()
+						.replace('.', File.separatorChar)
+						+ File.separatorChar);
+			}
 			if (genContext.getUseNameAsNamespace()) {
 				sb.append(element.getName().replace('.', File.separatorChar)
 						+ File.separatorChar);

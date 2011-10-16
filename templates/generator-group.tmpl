@@ -5,11 +5,20 @@ import java.util.List;
 
 public class <?name()?> {
 
+	private String description = "";
 	private List<GeneratorGroup> generatorGroups = new ArrayList<GeneratorGroup>();
 <?join(mapFiltered(property, isConcreteModelElement, Classes), lineFeed())?>
 
 	public <?name()?>() {
 		super();	
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public void addGeneratorGroup(GeneratorGroup group) {
