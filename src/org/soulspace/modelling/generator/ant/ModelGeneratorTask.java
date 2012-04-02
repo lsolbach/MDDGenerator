@@ -20,42 +20,42 @@ public class ModelGeneratorTask extends AbstractGeneratorTask {
 	}
 
 	public void setDestDir(File destDir) {
-		ctx.setDestDir(destDir);
+		generationContext.setDestDir(destDir);
 	}
 
 	public void setBackupDir(File backupDir) {
-		ctx.setBackupDir(backupDir);
+		generationContext.setBackupDir(backupDir);
 	}
 
 	public void setTemplateDir(File templateDir) {
-		ctx.setTemplateDir(templateDir);
+		generationContext.setTemplateDir(templateDir);
 	}
 
 	public void setTemplateDirs(String templateDirs) {
 		String[] dirs = templateDirs.split(",");
-		ctx.setTemplateDirs(CollectionUtils
+		generationContext.setTemplateDirs(CollectionUtils
 				.asArrayList(dirs));
 	}
 	
 	public void setModelFile(File modelFile) {
-		ctx.setModelFile(modelFile);
+		generationContext.setModelFile(modelFile);
 	}
 
 	public void setModelFactory(String modelFactory) {
-		ctx.setModelFactory(modelFactory);
+		generationContext.setModelFactory(modelFactory);
 	}
 
 	public void setProfiles(String profiles) {
-		ctx.setProfiles(profiles);
+		generationContext.setProfiles(profiles);
 	}
 
 	public void addGeneratorGroup(GeneratorGroup group) {
-		ctx.getMainGroup().addGeneratorGroup(group);
+		generationContext.getMainGroup().addGeneratorGroup(group);
 	}	
 
 	public void execute() throws BuildException {
 		try {
-			ctx.callGenerators(ctx, ctx.getMainGroup(), null);
+			generationContext.callGenerators(generationContext, generationContext.getMainGroup(), null);
 		} catch (Exception e) {
 			throw new BuildException("error while generating!", e);
 		}

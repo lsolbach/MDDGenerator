@@ -5,19 +5,28 @@ import org.soulspace.modelling.generator.*;
 
 public abstract class AbstractGeneratorTask extends Task {
 
-	protected GenerationContext ctx;
+	protected GenerationContext generationContext;
 
 	public AbstractGeneratorTask() {
 		super();
-		ctx = new GenerationContext();
+		generationContext = new GenerationContext();
 	}
+	
+	public void setGenerationContext(GenerationContext generationContext) {
+		this.generationContext = generationContext;
+	}
+	
+	public GenerationContext getGenerationContext() {
+		return generationContext;
+	}
+	
 	<?delegates(This)?>
 }
 <?
 string delegates(map package) {
 	foreach element | isConcreteModelElement(element) <- package:Classes {?>
 	public void add<?element:Name?>Generator(<?element:Name?>Generator g) {
-		ctx.getMainGroup().add<?element:Name?>Generator(g);
+		generationContext.getMainGroup().add<?element:Name?>Generator(g);
 	}
 	<?
 	}

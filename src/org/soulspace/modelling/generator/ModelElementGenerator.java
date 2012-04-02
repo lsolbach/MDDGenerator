@@ -36,11 +36,8 @@ import org.soulspace.util.CollectionUtils;
 public abstract class ModelElementGenerator {
 
 	protected GeneratorContext genContext;
-
 	protected TemplateEngine engine;
-
 	protected BeanDataSourceImpl dataSource;
-
 	protected Pattern pattern;
 
 	/**
@@ -308,7 +305,7 @@ public abstract class ModelElementGenerator {
 		String[] importTemplateNames = null;
 
 		try {
-			if (isSet(genContext.getImports())) {
+			if(isSet(genContext.getImports())) {
 				importTemplateNames = genContext.getImports().split(",");
 				File[] templateFiles = new File[importTemplateNames.length + 1];
 				for (int i = 0; i < importTemplateNames.length; i++) {
@@ -322,7 +319,7 @@ public abstract class ModelElementGenerator {
 				engine.loadTemplate(locateFile(templateDirs, genContext
 						.getName(), ".tmpl"));
 			}
-		} catch (Exception e) {
+		} catch(Exception e) {
 			engine = null;
 			System.err.println("Error creating a template engine for template "
 					+ genContext.getName());
@@ -386,10 +383,6 @@ public abstract class ModelElementGenerator {
 					return false;
 				}
 			}
-		}
-		// TODO remove
-		if (element.getStereotypeMap().get("external") != null) {
-			return false;
 		}
 		if (!isSet(genContext.getStereotype())) {
 			return true;
@@ -514,13 +507,9 @@ public abstract class ModelElementGenerator {
 		if (StringHelper.isSet(genContext.getSubdir())) {
 			sb.append(genContext.getSubdir() + File.separatorChar);
 		}
-
 		appendNamespace(sb, element);
 
-		File file = new File(sb.toString());
-		if (!file.exists()) {
-			file.mkdirs();
-		}
+		createPackagePath(sb.toString());
 	}
 
 	protected String getPath(String prefix, String filename, String suffix,
@@ -578,7 +567,7 @@ public abstract class ModelElementGenerator {
 		} else {
 			if (ctx.getBackupDir() != null) {
 				sb.append(ctx.getBackupDir().getAbsolutePath()
-								+ File.separator);
+						+ File.separator);
 			}
 		}
 		if (StringHelper.isSet(genContext.getSubdir())) {
@@ -656,14 +645,26 @@ public abstract class ModelElementGenerator {
 			if(modelCandidate != null) {
 				return modelCandidate.getName();
 			}
+		} else if(name.equals("[ELEMENT_NAME]")) {
+			if(element != null && element.getName() != null) {
+				return element.getName();
+			}
+		} else if(name.equals("[ELEMENT_ID]")) {
+			if(element != null && element.getName() != null) {
+				return element.getId();
+			}	
 		}
 		return name;
 	}
 
 	protected boolean writeFile(String filename, String content) {
-		File file = new File(filename);
 		PrintWriter pw;
+		File file = new File(filename);
+		File path = file.getParentFile();
 		try {
+			if(!path.exists()) {
+				path.mkdirs();
+			}
 			pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(
 					file), genContext.getEncoding()));
 			pw.print(content);
