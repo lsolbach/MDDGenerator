@@ -649,8 +649,16 @@ public abstract class ModelElementGenerator {
 			if(element != null && element.getName() != null) {
 				return element.getName();
 			}
+		} else if(name.equals("[ELEMENT_NAMESPACE]")) {
+			if(element != null && element.getNamespace() != null) {
+				return element.getNamespace();
+			}
+		} else if(name.equals("[ELEMENT_QNAME]")) {
+			if(element != null && element.getQualifiedName() != null) {
+				return element.getQualifiedName();
+			}
 		} else if(name.equals("[ELEMENT_ID]")) {
-			if(element != null && element.getName() != null) {
+			if(element != null && element.getId() != null) {
 				return element.getId();
 			}	
 		}
