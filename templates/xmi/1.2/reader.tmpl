@@ -48,8 +48,18 @@ public class <?name()?> extends DefaultHandler {
 		}
 	}
 
+	public Uml14RepositoryImpl getXmiRepository() {
+		return xmiRepository;
+	}
+
 	public void loadProfile(File file) throws SAXException, IOException {
 		parseXmi(file, true);
+	}
+
+	public void loadProfiles(File[] files) throws SAXException, IOException {
+		for(File file : files) {
+			parseXmi(file, true);
+		}
 	}
 
 	public void loadModel(File file) throws SAXException, IOException {

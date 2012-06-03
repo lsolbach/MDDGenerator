@@ -1,5 +1,5 @@
 <?xml version = '1.0' encoding = 'UTF-8' ?>
-<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Wed Feb 09 23:34:52 CET 2011'>
+<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Wed Sep 28 00:45:21 CEST 2011'>
   <XMI.header>    <XMI.documentation>
       <XMI.exporter>ArgoUML (using Netbeans XMI Writer version 1.0)</XMI.exporter>
       <XMI.exporterVersion>0.32(6) revised on $Date$ </XMI.exporterVersion>
@@ -6728,7 +6728,7 @@
                     </UML:Class>
                     <UML:Class xmi.id = '127-0-0-1-7e948835:12056f226d2:-8000:0000000000001408'
                       name = 'StateVertex' visibility = 'public' isSpecification = 'false' isRoot = 'false'
-                      isLeaf = 'false' isAbstract = 'false' isActive = 'false'>
+                      isLeaf = 'false' isAbstract = 'true' isActive = 'false'>
                       <UML:GeneralizableElement.generalization>
                         <UML:Generalization xmi.idref = '127-0-0-1-7e948835:12056f226d2:-8000:000000000000140B'/>
                       </UML:GeneralizableElement.generalization>
