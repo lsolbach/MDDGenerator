@@ -90,7 +90,6 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 			element.addClientDependency(createDependency(xmiDependency));
 		}
 
-
 		return element;
 	}
 
@@ -102,6 +101,11 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 			ModelElement element = createModelElement(xmiElement);
 			if(element != null) {
 				element.setNamespace(buildNamespace(xmiSource));
+//				if(element.getName() == null) {
+//					System.out.println("Name is null for element of type " + element.getElementType() + " with id " + element.getId());
+//				} else if(element.getNamespace() == null) {
+//					System.out.println("Namespace is null for element " + element.getName());
+//				}
 				if(element.getNamespace() != null && !element.getNamespace().equals("")) {
 					element.setQualifiedName(element.getNamespace() + "." + element.getName());
 				} else {
@@ -371,8 +375,9 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		org.soulspace.modelling.uml14.elements.CallEvent xmiSource = (org.soulspace.modelling.uml14.elements.CallEvent) xmiObject;
 
 		callEvent = initEvent(callEvent, xmiSource);
-
-		callEvent.setOperation(createOperation(xmiSource.getOperation()));
+		if(xmiSource.getOperation() != null) {
+			callEvent.setOperation(createOperation(xmiSource.getOperation()));
+		}
 		
 		return callEvent;
 	}
@@ -382,7 +387,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		org.soulspace.modelling.uml14.elements.Class xmiSource = (org.soulspace.modelling.uml14.elements.Class) xmiObject;
 
 		aClass = initClassifier(aClass, xmiSource);
-
+		
 		for (org.soulspace.modelling.uml14.elements.Feature xmiFeature : xmiSource
 				.getFeatureList()) {
 			if (xmiFeature instanceof org.soulspace.modelling.uml14.elements.Attribute) {
@@ -394,6 +399,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 				aClass.addOperation(op);
 			}
 		}
+		aClass.setIsAbstract(xmiSource.getIsAbstract());
 		aClass.setVisibility(xmiSource.getVisibility().getName());
 		return aClass;
 	}
@@ -473,6 +479,18 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 
 		generalization = initElement(generalization, xmiSource);
 
+		ModelElement parent = createModelElement(xmiSource.getParent());
+		ModelElement child = createModelElement(xmiSource.getChild());
+
+		if(parent instanceof Class && child instanceof Class) {
+			((Class) parent).addSubClass((Class) child);
+			((Class) child).addSuperClass((Class) parent);
+		} else if(parent instanceof Actor && child instanceof Actor) {
+			((Actor) parent).setSubActor((Actor) child);
+			((Actor) child).setSuperActor((Actor) parent);
+		}
+		// TODO check if other relevant generalizations have to be added
+		
 		return generalization;
 	}
 
@@ -481,7 +499,11 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		org.soulspace.modelling.uml14.elements.Include xmiSource = (org.soulspace.modelling.uml14.elements.Include) xmiObject;
 
 		include = initElement(include, xmiSource);
-
+		// FIXME handle includes
+		UseCase base = (UseCase) createModelElement(xmiSource.getBase());
+		UseCase addition = (UseCase) createModelElement(xmiSource.getAddition());
+		base.addInclude(addition);
+		
 		return include;
 	}
 
@@ -600,6 +622,12 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 			XmiObject xmiObject) {
 		org.soulspace.modelling.uml14.elements.Stereotype xmiSource = (org.soulspace.modelling.uml14.elements.Stereotype) xmiObject;
 		stereotype = initModelElement(stereotype, xmiSource);
+		for(org.soulspace.modelling.uml14.elements.TagDefinition xmiTagDefinition : xmiSource.getDefinedTagList()) {
+			stereotype.addDefinedTag(createTagDefinition(xmiTagDefinition));
+		}
+		for(String baseClass : xmiSource.getBaseClassList()) {
+			stereotype.addBaseClass(baseClass);
+		}
 		return stereotype;
 	}
 
@@ -754,11 +782,12 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		for (org.soulspace.modelling.uml14.elements.Include xmiInclude : xmiSource
 				.getIncludeList()) {
 			createInclude(xmiInclude);
-			// useCase.addInclude();
-			// include is a dependency so supplier and client denominate the
-			// participating use cases
 		}
-
+		for(org.soulspace.modelling.uml14.elements.Extend xmiExtend : xmiSource.getExtendList()) {
+			// TODO handle extends in initExtend()? (see initInclude())
+			createExtend(xmiExtend);
+		}
+			
 		return useCase;
 	}
 
