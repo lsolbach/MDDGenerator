@@ -5,8 +5,6 @@ import java.util.TreeSet;
 
 import org.soulspace.modelling.repository.elements.AbstractActor;
 import org.soulspace.modelling.repository.elements.Actor;
-import org.soulspace.modelling.repository.elements.AssociationEnd;
-import org.soulspace.modelling.repository.elements.Element;
 import org.soulspace.modelling.repository.elements.Stereotype;
 import org.soulspace.modelling.repository.elements.TaggedValue;
 

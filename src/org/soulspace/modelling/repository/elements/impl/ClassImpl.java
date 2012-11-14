@@ -154,7 +154,7 @@ public class ClassImpl extends AbstractClass {
 		for (Class c : getSuperClassList()) {
 			allReferencedTypeList = addUnique(allReferencedTypeList, c
 					.getAllReferencedTypeList());
-			// allReferencedTypes.addAll(c.getAllReferencedTypes());
+			// allReferencedTypeList.addAll(c.getAllReferencedTypes());
 		}
 		allReferencedTypeList = addUnique(allReferencedTypeList, getReferencedTypeList());
 
