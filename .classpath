@@ -12,9 +12,9 @@
 	<classpathentry kind="lib" path="lib/runtime/XmiRepository2.jar" sourcepath="/XmiRepository2"/>
 	<classpathentry kind="lib" path="lib/dev/ant.jar"/>
 	<classpathentry kind="lib" path="lib/dev/junit.jar"/>
-	<classpathentry kind="lib" path="lib/runtime/jakarta-oro.jar"/>
 	<classpathentry kind="con" path="org.eclipse.ajdt.core.ASPECTJRT_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/dev/ant-testutil.jar"/>
 	<classpathentry kind="lib" path="lib/dev/ant-launcher.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/oro.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
