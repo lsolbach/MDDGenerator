@@ -1,4 +1,6 @@
-bin/
-build/
-dist/
-lib/
+/bin/
+/build/
+/dist/
+/lib/
+/generated/
+/backup/
