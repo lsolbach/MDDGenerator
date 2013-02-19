@@ -4,3 +4,8 @@
 /lib/
 /generated/
 /backup/
+/model/*.xmi
+/model/*.todo
+/model/*.argo
+/model/*.pgml
+/model/*.profile
