@@ -1,5 +1,5 @@
 [
- :name "UmlModelBuilder"
+ :name "UML14ModelBuilder"
  :project "org.soulspace.modelling"
  :type "library"
  :version "0.2.0"

@@ -1,4 +1,4 @@
-<project name="UmlModelBuilder" default="distribute">
+<project name="UML14ModelBuilder" default="distribute">
 
 	<property environment="env"/>
 	<property file="build.properties"/>
