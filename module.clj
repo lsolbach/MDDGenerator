@@ -1,5 +1,5 @@
 [
- :name "XmiRepository2"
+ :name "UML14Repository"
  :project "org.soulspace.modelling"
  :type "library"
  :version "0.2.0"
