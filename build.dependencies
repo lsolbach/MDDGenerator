@@ -17,14 +17,14 @@
 		<package name="TemplateEngine" version="1.0.0rc7" type="project">
 			<module name="TemplateEngine"/>
 		</package>
-		<package name="XmiRepository2" version="0.2.0" type="project">
-			<module name="XmiRepository2"/>
+		<package name="UML14Repository" version="0.2.0" type="project">
+			<module name="UML14Repository"/>
 		</package>
 		<package name="ModelRepository2" version="0.2.0" type="project">
 			<module name="ModelRepository2"/>
 		</package>
-		<package name="UmlModelBuilder" version="0.2.0" type="project">
-			<module name="UmlModelBuilder"/>
+		<package name="UML14ModelBuilder" version="0.2.0" type="project">
+			<module name="UML14ModelBuilder"/>
 		</package>
 		<package name="JavaUtilLibrary" version="0.1.0" type="project">
 			<module name="JavaUtilLibrary"/>

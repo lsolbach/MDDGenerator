@@ -2,22 +2,22 @@
 	
 	<property environment="env"/>
 	<property file="build.properties"/>
-	<property name="common.build.dir" value="${env.COMMON_BUILD_HOME}"/>
+	<property name="global.build.dir" value="${env.GLOBAL_BUILD_HOME}"/>
 	
-	<!-- import common build files -->
-	<import file="${common.build.dir}/ant/common.properties.xml"/>
-	<import file="${common.build.dir}/ant/common.build.xml"/>
+	<!-- import global build files -->
+	<import file="${global.build.dir}/ant/global.properties.xml"/>
+	<import file="${global.build.dir}/ant/global.build.xml"/>
 	
 	<path id="source.path">
 		<pathelement location="${generate.dir}/src"/>
-		<path refid="common.source.path"/>
+		<path refid="global.source.path"/>
 	</path>
 
     <target name="generate-local" depends="generate-model"/>
 	
 	<target name="check-generate-required">
 		<!--uptodate property="generateModel.notRequired" targetfile="${generate.dir}/src/org/soulspace/modelling/repository/builder/ModelFactory.java" >
-		    <srcfiles dir="${basedir}/../ModelRepository2/model" includes="ModelRepository.xmi"/>
+		    <srcfiles dir="${basedir}/../ModelRepository2/model" includes="ModelRepository2.xmi"/>
 		</uptodate-->
 	</target>	
 		
@@ -38,7 +38,7 @@
 		<soulmda destdir="${generate.dir}"
                     backupdir="${backup.dir}"
                     templateDirs="../MdaTemplates/std-templates,../MdaTemplates/templates,templates"
-                    modelFile="../ModelRepository2/model/ModelRepository.xmi"
+                    modelFile="../ModelRepository2/model/ModelRepository2.xmi"
 					profiles="../MdaTemplates/profiles/argouml/default-uml14.xmi"
 			>
 			<classGenerator 	name="generator-class"
