@@ -8,7 +8,7 @@
  :description "Generator framework for model driven software development. Contains generators and ant tasks."
  :license ["Eclipse Public License 1.0" "http://www.eclipse.org/legal/epl-v10.html"]
  :plugins ["global" "deps" "java" "package"]
- :dependencies [["org.soulspace" "TemplateEngine" "1.0.0rc7"]
+ :dependencies [["org.soulspace" "TemplateEngine" "1.0.0"]
                 ["org.soulspace.modelling" "UML14Repository" "0.2.0"]
                 ["org.soulspace.modelling" "ModelRepository2" "0.2.0"]
                 ["org.soulspace.modelling" "UML14ModelBuilder" "0.2.0"]
