@@ -8,6 +8,9 @@
 	<import file="${global.build.dir}/ant/global.properties.xml" />
 	<import file="${global.build.dir}/ant/global.build.xml" />
 
+	<property name="generate.dir" location="${project.work.dir}/generated"/>
+	<property name="backup.dir" location="${project.work.dir}/backup"/>
+
 	<path id="source.path">
 		<pathelement location="${generate.dir}/src" />
 		<path refid="global.source.path" />
@@ -26,6 +29,8 @@
 	</target>
 
 	<target name="generate-model" unless="generateModel.notRequired">
+		<mkdir dir="${generate.dir}"/>
+		<mkdir dir="${backup.dir}"/>		
 		<unzip src="model/UML14Repository.zargo" dest="model" overwrite="true">
 			<patternset includes="UML14Repository.xmi" />
 		</unzip>
