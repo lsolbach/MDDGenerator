@@ -695,7 +695,7 @@ string tab() {
 	'	'
 }
 
-/* TODO use times */
+/* TODO use times? */
 string tabs(numeric tabs) {
 	numeric tabCount = 0
 	while(tabCount < tabs) {
@@ -708,7 +708,7 @@ string space() {
 	' '
 }
 
-/* TODO use times */
+/* TODO use times? */
 string spaces(numeric spaces) {
 	numeric spaceCount = 0
 	while(spaceCount < spaces) {
