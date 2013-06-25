@@ -1,0 +1,23 @@
+<?!--
+	- generic template for java classes java/class
+	- requires includes lib, model/lib, java/lib, java/class
+	- (C) 2011 Ludger Solbach
+   --?><?
+fileComment(This)
+packageDeclaration(This)?>
+
+<?
+imports(This)
+?>
+<?
+javaDoc(This)
+typeAnnotations(getTypeAnnotationList(This))?>
+<?typeModifiers(This)?> class <?typeName(This)?> <?extension(This)?> <?implementations(This)?> {
+<?
+staticFields(This)
+staticInitializer(This)
+memberFields(This)
+constructors(This)
+operations(This)
+?>
+}

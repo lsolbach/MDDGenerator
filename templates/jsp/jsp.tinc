@@ -1,0 +1,75 @@
+<?!--
+ * base include for jsps 
+ * provides empty implementations of the required methods
+ *
+ * ©2010,2011 Ludger Solbach
+--?><?
+string declaration(map element) {
+?><%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<?
+}
+
+string imports(map element) {
+
+}
+
+string tagLibs(map element) {
+
+}
+
+string html(map element) {
+
+}
+
+string head(map element) {
+
+}
+
+string body(map element) {
+
+}
+
+string value(map element) {
+	if(isAttribute(element)) {
+		attributeValue(element)
+	} else if(isAssociationEnd(element)) {
+		associationValue(element)
+	} else if(isClass(element)) {
+		classValue(element)
+	}
+}
+
+string classValue(map class) {
+
+}
+
+string attributeValue(map attr) {
+
+}
+
+string associationValue(map asso) {
+
+}
+
+string options(map element) {
+	if(isAttribute(element)) {
+		attributeOptions(element)
+	} else if(isAssociationEnd(element)) {
+		associationOptions(element)
+	} else if(isClass(element)) {
+		classOptions(element)
+	}
+}
+
+string classOptions(map attr) {
+
+}
+
+string attributeOptions(map attr) {
+
+}
+
+string associationOptions(map attr) {
+
+}
+?>

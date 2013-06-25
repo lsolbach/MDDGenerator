@@ -1,0 +1,9 @@
+<?!--
+    - include for java bean classes java/bean-class
+   --?><?
+string operations(map element) {
+	propertyAccessors(element)
+	associationAccessors(element)
+	super(element)
+}
+?>

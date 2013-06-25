@@ -1,0 +1,119 @@
+<?
+numeric isPointcut(map element) {
+	0
+}
+
+numeric isIntertype(map element) {
+	0
+}
+
+numeric isAdvice(map element) {
+	isBeforeAdvice(element) || isAfterAdvice(element) || isAroundAdvice(element)
+}
+
+numeric isBeforeAdvice(map element) {
+	0
+}
+
+numeric isAroundAdvice(map element) {
+	0
+}
+
+numeric isAfterAdvice(map element) {
+	0
+}
+
+string aspectType(map element) {
+
+}
+
+string propertyField(map element) {
+	if(!isIntertype(element)) {
+		super(element)
+	}
+}
+
+string operation(map element) {
+	if(!isIntertype(element) && !isPointcut(element) && !isAdvice(element)) {
+		super(element)
+	}
+} 
+
+string intertypeDeclarations(map element) {
+	intertypeFields(element)
+	intertypeMethods(element)
+}
+
+string intertypeFields(map element) {
+	foreach attr | isIntertype(attr) <- element:AttributeList {
+		intertypeField(attr)
+	}
+}
+
+string intertypeField(map element) {
+	
+}
+
+string intertypeMethods(map element) {
+	foreach op | isIntertype(op) <- element:OperationList {
+		intertypeMethod(op)
+	}
+}
+
+string intertypeMethod(map element) {
+
+}
+
+string pointcuts(map element) {
+	foreach op | isPointcut(op) <- element:OperationList {
+		pointcut(op)
+	}
+}
+
+string pointcut(map element) {
+
+}
+
+string advices(map element) {
+	foreach op | isAdvice(op) <- element:AllOperationList {
+		if(isBeforeAdvice(op)) {
+			beforeAdvice(op)
+		} else if(isAroundAdvice(op)) {
+			aroundAdvice(op)
+		} else if(isAfterAdvice(op)) {
+			afterAdvice(op)
+		}
+	}
+}
+
+string beforeAdvice(map element) {
+
+}
+
+string aroundAdvice(map element) {
+
+}
+
+string afterAdvice(map element) {
+
+}
+
+string javaNameForName(string name) {
+	string javaName = super(name)
+	if(javaName eq 'package'
+		|| javaName eq 'aspect'
+		|| javaName eq 'pointcut'
+		|| javaName eq 'after'
+		|| javaName eq 'before'
+		|| javaName eq 'around'
+		|| javaName eq 'returning'
+		|| javaName eq 'declare'
+		|| javaName eq 'error'
+		|| javaName eq 'warning'
+		) {
+		'a' + javaName.firstUpper() 
+	} else {
+		javaName
+	}
+}
+?>

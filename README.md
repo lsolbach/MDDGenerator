@@ -23,5 +23,5 @@ History
 
 Version 1.0.0 (25.06.2013)
 --------------------------
-* moved standard templates from the generator config into this project
-* Initial git import
+* moved standard templates from the generator config into this project to make them reusable
+* initial git import

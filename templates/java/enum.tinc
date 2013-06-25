@@ -1,0 +1,27 @@
+<?
+string fileComment(map element) {
+
+}
+
+string packageDeclaration(map element) {?>
+package <?namespace(element)?>;<?
+}
+
+list getTypeAnnotationList(map element) {
+	list annotationList
+	annotationList
+}
+
+string typeModifiers(map element) {
+	visibility(element)
+}
+
+string attributes(map element) {
+	/* TODO append empty string??? */
+	join(mapFn(name, filter(isStatic, element:AttributeList)), ', ' + lineFeed() + tab()) + ''
+}
+
+numeric isStatic(map element) {
+	element:OwnerScope eq 'classifier'
+}
+?>

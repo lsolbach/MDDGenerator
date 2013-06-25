@@ -1,0 +1,21 @@
+<?
+string declareXml(map element) {
+	declareXml('UTF-8')
+}
+
+string declareXml() {
+	declareXml('UTF-8')
+}
+
+string declareXml(string encoding) {
+?><?beginXmlProcInst()?>xml version="1.0" encoding="<?encoding?>"<?endXmlProcInst()?><?
+}
+
+string beginXmlProcInst() {
+	'<' + '?'
+}
+
+string endXmlProcInst() {
+	'?' + '>'
+}
+?>

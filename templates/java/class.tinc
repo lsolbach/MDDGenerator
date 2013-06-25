@@ -1,0 +1,533 @@
+<?!--
+ * java/class
+ * Requires includes lib, model/lib, java/lib
+ * 
+ * Methods for java class generation
+ * Unspecific to any UML profile or design DSL
+ *
+ * ©2010-2012 Ludger Solbach
+--?><?
+
+string fileComment(map element) {
+?>/*
+ * Class <?name(This)?>
+<? generationInfo(' * ')?>
+ */<?
+}
+
+string packageDeclaration(map element) {?>
+package <?namespace(This)?>;<?
+}
+
+map getImportMap(map element) {
+	map importMap = super(element)
+	if(namespace(element) ne element:Namespace) {
+		add(importMap, element:Namespace + '.*')
+	}
+	importMap
+}
+
+list getTypeAnnotationList() {
+	list annotationList
+	annotationList
+}
+
+string typeModifiers(map element) {
+	visibility(element) + ' ' + abstract(element)
+}
+
+string implementations(map element) {
+	list implementationList = getImplementationList(element)
+	if(implementationList) {
+	'implements ' + join(implementationList, ', ')
+	}
+}
+
+list getImplementationList(map element) {
+	list implementationList
+	implementationList.add(element:Name)
+	implementationList
+}
+
+string extendType(map type) {
+	if(type && !isAbstract(type)) {
+		'extends ' + name(type)
+	}
+}
+
+string extension(map element) {
+	if(element:SuperClassList) {
+		extendType(element:SuperClassList[0])
+	}
+}
+
+/* TODO handle classifier/static fields correctly in all the methods working with properties and associations */
+
+string staticFields(map element) {}
+
+string staticInitialization(map element) {}
+
+string constructors(map element) {
+	defaultConstructor(element)
+	constructor(element)
+}
+
+string constructor(map element) {
+	list fieldList = filter(isInstanceField, getPropertyFieldList(element) + getAssociationFieldList(element))
+	list mandatoryFieldList	= filter(isMandatory, fieldList)
+	
+	if(fieldList) {
+		constructor(element, fieldList)
+		if(mandatoryFieldList && mandatoryFieldList ne fieldList) {
+			constructor(element, mandatoryFieldList)
+		}
+	}
+}
+
+string constructor(map element, list fieldList) {
+	memberAnnotations(getConstructorAnnotationList(element))?>
+	<?constructorModifiers(element)?> <?name(element)?>(<?constructorParameters(fieldList)?>) {<?
+		constructorBody(element, fieldList)
+?>
+	}
+<?	
+}
+
+string constructorModifiers(map element) {
+	'public'
+}
+
+string constructorBody(map element, list fieldList) {
+	foreach field <- fieldList {
+		constructorFieldInitialisation(field)		
+	}
+	constructorPostInitialisation(element, fieldList)
+}
+
+string constructorFieldInitialisation(map field) {?>
+		this.<?javaName(field)?> = <?javaName(field)?>;<?
+}
+
+string constructorPostInitialisation(map element, list fieldList) { }
+
+string defaultConstructor(map element) {?>
+	<?constructorModifiers(element)?> <?name(element)?>() {
+		super();
+	}
+<?
+}
+
+string fieldConstructors(map element) {
+	list fieldList = filter(isInstanceProperty, getPropertyFieldList(element) + getAssociationFieldList(element))
+	fieldConstructors(element fieldList)
+}
+
+string fieldConstructors(map element, list fieldList) {
+	if(fieldList) {
+		constructor(element, fieldList)
+		list mandatoryFieldList = filter(isMandatory, fieldList)
+		if(mandatoryFieldList && mandatoryFieldList ne fieldList) {
+			constructor(element, mandatoryFieldList)
+		}
+	}
+}
+
+string propertiesConstructor(map element) {
+	list fieldList = filter(isInstanceField, getPropertyFieldList(element))
+	list mandatoryFieldList	= filter(isMandatory, fieldList)
+
+	if(fieldList) {
+		constructor(element, fieldList)
+		if(mandatoryFieldList && mandatoryFieldList ne fieldList) {
+			constructor(element, mandatoryFieldList)
+		}
+	}
+}
+
+string associationsConstructor(map element) {
+	list fieldList = getAssociationFieldList(element)
+	list mandatoryFieldList	= filter(isMandatory, fieldList)
+
+	if(fieldList) {
+		constructor(element, fieldList)
+		if(mandatoryFieldList && mandatoryFieldList ne fieldList) {
+			constructor(element, mandatoryFieldList)
+		}
+	}
+}
+
+string memberFields(map element) {
+	propertyFields(This)
+	associationFields(This)
+}
+
+string propertyFields(map element) {
+	foreach attr | !isDerived(attr) <- element:AllAttributeList {
+		propertyField(attr)
+	}
+}
+
+string propertyField(map attr) {
+	memberAnnotations(getPropertyFieldAnnotationList(attr))
+	if(!isMany(attr)) {?>
+	<?propertyFieldModifiers(attr)?> <?propertyType(attr)?> <?propertyName(attr)?>;
+<?
+	} else {?>
+	<?propertyFieldModifiers(attr)?> <?propertyType(attr)?> <?propertyName(attr)?> = new <?propertyTypeImplementation(attr)?>();
+<?
+	}
+}
+
+list getPropertyFieldAnnotationList(map attr) {
+	list annotationList
+	annotationList
+}
+
+string propertyFieldModifiers(map attr) {
+	'private'
+}
+
+string propertyInitialisation(map attr) {
+	if(isMany(attr)) {
+		'= new ' + propertyTypeImplementation(attr) + '()'
+	} else {
+		'= null'
+	}
+}
+
+string propertyGetMethod(map attr) {
+	javaDoc(attr, 1)
+	memberAnnotations(getPropertyGetMethodAnnotationList(attr))
+	if(isDerived(attr)) {?>
+	<?propertyGetMethodModifiers(attr)?> <?propertyType(attr)?> get<?propertyMethodBase(attr)?>() {
+		return doGet<?attr:Name.firstUpper()?>();
+	}
+	protected abstract <?propertyType(attr)?> doGet<?propertyMethodBase(attr)?>();
+	
+<?
+	} else {?>
+	<?propertyGetMethodModifiers(attr)?> <?propertyType(attr)?> get<?propertyMethodBase(attr)?>() {
+		return <?propertyName(attr)?>;
+	}
+<?
+	}
+}
+
+string propertyGetMethodModifiers(map attr) {
+	visibility(attr) + ' synchronized'
+}
+
+string propertySetMethod(map attr) {
+	javaDoc(attr, 1)
+	memberAnnotations(getPropertySetMethodAnnotationList(attr))?>
+	<?propertySetMethodModifiers(attr)?> void set<?propertyMethodBase(attr)?>(<?propertyType(attr)?> <?propertyName(attr)?>) {
+		this.<?propertyName(attr)?> = <?propertyName(attr)?>;
+	}
+<?
+}
+
+string propertySetMethodModifiers(map attr) {
+	visibility(attr) + ' synchronized'
+}
+
+string propertyAddMethod(map attr) {
+	javaDoc(attr, 1)
+	memberAnnotations(getPropertyAddMethodAnnotationList(attr))?>
+	<?propertyAddMethodModifiers(attr)?> synchronized void add<?attr:Name.firstUpper()?>(<?javaType(attr)?> <?javaName(attr)?>) {
+		<?propertyName(attr)?>.add(<?javaName(attr)?>);
+	}
+<?
+}
+
+string propertyAddMethodModifiers(map attr) {
+	visibility(attr) + ' synchronized'
+}
+
+string propertyRemoveMethod(map attr) {
+	javaDoc(attr, 1)
+	memberAnnotations(getPropertyRemoveMethodAnnotationList(attr))?>
+	<?propertyRemoveMethodModifiers(attr)?> void remove<?attr:Name.firstUpper()?>(<?javaType(attr)?> <?javaName(attr)?>) {
+		<?propertyName(attr)?>.remove(<?javaName(attr)?>);
+	}
+<?
+}
+
+string propertyRemoveMethodModifiers(map attr) {
+	visibility(attr) + ' synchronized'
+}
+
+string associationFields(map element) {
+	foreach asso | isAccessibleAssociation(asso) && !isDerived(asso) <- element:AllAssociationList {
+		associationField(asso)
+	}
+}
+
+string associationField(map asso) {
+	memberAnnotations(getAssociationFieldAnnotationList(asso))?>
+	<?associationFieldModifiers(asso)?> <?associationType(asso)?> <?associationName(asso)?> <?associationInitialisation(asso)?>;
+<?
+}
+
+list getAssociationFieldAnnotationList(map asso) {
+	list annotationList
+	annotationList
+}
+
+string associationFieldModifiers(map asso) {
+	'private'
+}
+
+string associationInitialisation(map asso) {
+	if(isMany(asso) || isQualified(asso)) {
+		'= new ' + associationTypeImplementation(asso) + '()'
+	} else {
+		'= null'
+	}
+}
+
+string associationGetMethod(map asso) {
+	javaDoc(asso, 1)
+	memberAnnotations(getAssociationGetMethodAnnotations(asso))
+	if(isDerived(asso)) {?>
+	<?associationGetMethodModifiers(asso)?> <?associationType(asso)?> get<?associationMethodBase(asso)?>() {
+		return doGet<?associationMethodBase(asso)?>();
+	}
+	protected abstract <?associationType(asso)?> doGet<?associationMethodBase(asso)?>();
+<?
+	} else {?>
+	<?associationGetMethodModifiers(asso)?> <?associationType(asso)?> get<?associationMethodBase(asso)?>() {
+		<?associationGetMethodBody(asso)?>
+	}
+<?
+	}
+}
+
+string associationGetMethodModifiers(map asso) {
+	visibility(asso) + ' synchronized'
+}
+
+string associationGetMethodBody(map asso) {
+	'return ' + associationName(asso) + ';'
+}
+
+string associationReturn(map asso) {
+	string collectionType = associationCollectionType(asso)
+	if(!isMany(asso) && !isQualified(asso)) {
+		associationName(asso)
+	} else if(isQualified(asso)) {
+		list qualifiers = asso:SourceEnd:Qualifiers
+	} else if(isMany(asso)) {
+		if(collectionType eq 'List') {
+			'Collections.unmodifiableList(' + associationName(asso) + ')'		
+		} else if(collectionType eq 'Set') {
+			'Collections.unmodifiableSet(' + associationName(asso) + ')'
+		} else if(collectionType eq 'Map') {
+			'Collections.unmodifiableMap(' + associationName(asso) + ')'
+		} else {
+			'Collections.unmodifiableMap(' + associationName(asso) + ')'
+		}
+	}
+}
+
+string associationQualifiedGetMethod(map asso) {
+	javaDoc(asso, 1)
+	/* memberAnnotations(getAssociationGetMethodAnnotationList(asso)) */
+	if(isDerived(asso)) {?>
+	<?associationGetMethodModifiers(asso)?> <?javaType(asso)?> get<?asso:Name.firstUpper()?>(<?qualifierParameters(asso)?>) {
+		return doGet<?asso:Name.firstUpper()?>(<?qualifierArguments(asso)?>);
+	}
+	protected abstract <?javaType(asso)?> doGet<?asso:Name.firstUpper()?>(<?qualifierParameters(asso)?>);
+	<?} else {?>
+	<?associationGetMethodModifiers(asso)?> <?javaType(asso)?> get<?asso:Name.firstUpper()?>(<?qualifierParameters(asso)?>) {
+		<?associationQualifiedGetMethodBody(asso)?>
+	}
+<?
+	}
+}
+
+string associationQualifiedGetMethodBody(map asso) {
+	'return ' + associationName(asso) + '.get(' + qualifierParameters(asso) + ');'
+}
+
+string associationSetMethod(map asso) {
+	javaDoc(asso, 1)
+	memberAnnotations(getAssociationSetMethodAnnotationList(asso))?>
+	<?associationSetMethodModifiers(asso)?> void set<?associationMethodBase(asso)?>(<?associationType(asso)?> <?associationName(asso)?>) {
+		<?associationSetMethodBody(asso)?>
+	}
+<?
+}
+
+string associationSetMethodModifiers(map asso) {
+	visibility(asso) + ' synchronized'
+}
+
+string associationSetMethodBody(map asso) {
+	'this.' + associationName(asso)+ ' = ' + associationName(asso) + ';'
+}
+
+string associationAddMethod(map asso) {
+	javaDoc(asso, 1)
+	memberAnnotations(getAssociationAddMethodAnnotationList(asso))
+	if(!isQualified(asso)) {?>
+	<?associationAddMethodModifiers(asso)?> void add<?asso:Name.firstUpper()?>(<?javaType(asso)?> <?javaName(asso)?>) {
+		<?associationAddMethodBody(asso)?>
+	}
+<?
+	} else {?>
+	<?associationAddMethodModifiers(asso)?> void add<?asso:Name.firstUpper()?>(<?javaType(asso:SourceEnd:Qualifiers[0])?> <?javaName(asso:SourceEnd:Qualifiers[0])?>, <?javaType(asso)?> <?javaName(asso)?>) {
+		<?associationQualifiedAddMethodBody(asso)?>
+	}
+<?
+	}
+}
+
+string associationAddMethodModifiers(map asso) {
+	visibility(asso) + ' synchronized'
+}
+
+string associationAddMethodBody(map asso) {
+	associationName(asso) + '.add(' + javaName(asso) + ');'
+}
+
+string associationQualifiedAddMethodBody(map asso) {
+	associationName(asso) + '.put(' + javaName(asso:SourceEnd:Qualifiers[0]) + ', ' + javaName(asso)+ ');'
+}
+
+string associationRemoveMethod(map asso) {
+	javaDoc(asso, 1)
+	memberAnnotations(getAssociationRemoveMethodAnnotationList(asso))?>
+	<?associationRemoveMethodModifiers(asso)?> void remove<?asso:Name.firstUpper()?>(<?javaType(asso)?> <?javaName(asso)?>) {
+		<?associationRemoveMethodBody(asso)?>
+	}
+<?
+}
+
+string associationRemoveMethodModifiers(map asso) {
+	visibility(asso) + ' synchronized'
+}
+
+string associationRemoveMethodBody(map asso) {
+	associationName(asso) + '.remove(' + javaName(asso) + ');'
+}
+
+string operation(map op) {
+	javaDoc(op, 1)
+	memberAnnotations(getOperationMethodAnnotationList(op))
+	operationMethod(op) + ' {'
+	operationMethodBody(op)
+	'	}'
+	operationMethodDelegateSignature(op)
+}
+
+string operationMethod(map op) {?>
+	<?operationMethodModifiers(op)?> <?returnType(op)?> <?op:Name?>(<?operationParameters(op)?>)<?
+}
+
+string operationMethodModifiers(map op) {
+	visibility(op)
+}
+
+string operationMethodBody(map op) {
+	operationMethodDelegate(op)
+}
+
+string operationMethodDelegate(map op) {
+	if(returnType(op) ne 'void') {?>
+		return do<?op:Name.firstUpper()?>(<?operationArguments(op)?>);
+<?
+	} else {?>
+		do<?op:Name.firstUpper()?>(<?operationArguments(op)?>);
+<?
+	}	
+}
+
+string operationMethodDelegateSignature(map op) {?>
+	protected abstract <?returnType(op)?> do<?op:Name.firstUpper()?>(<?operationParameters(op)?>);
+<?
+}
+
+string operationMethodDelegateImplementation(map op) {?>
+	protected <?returnType(op)?> do<?op:Name.firstUpper()?>(<?operationParameters(op)?>) {
+		// TODO implement me
+	}
+<?
+}
+
+string equals(map element) {?>
+	public boolean equals(java.lang.Object obj) {
+	  	if(this == obj) return true;
+ 	 	if(!(obj instanceof <?name(element)?>)) return false;
+  	
+	  	<?name(element)?> other = (<?name(element)?>) obj;
+
+	  	if(getClass().getSuperclass() != null && getClass().getSuperclass() != java.lang.Object.class) {
+	  	  if(!super.equals(other)) return false;
+	    }<?
+	foreach attr | !isDerived(attr) <- AllAttributeList {
+		if(isPrimitive(attr:Type)) {?>
+		if(get<?propertyMethodBase(attr)?>() != other.get<?propertyMethodBase(attr)?>()) return false;<?
+		} else {?>
+		if(get<?propertyMethodBase(attr)?>().equals(other.get<?propertyMethodBase(attr)?>())) return false;<?
+		}
+	}?>
+		return true;
+	}
+<?
+}
+
+string hashcode(map element) {?>
+	public int hashCode() {
+		int result = 17;
+		if(getClass().getSuperclass() != null && getClass().getSuperclass() != java.lang.Object.class) {
+			result = 29 * result + super.hashCode();
+		}<?
+	foreach attr | !isDerived(attr) <- AllAttributeList {
+		if((javaType(attr) eq 'byte')
+			|| (javaType(attr) eq 'char')
+			|| (javaType(attr) eq 'short')
+			|| (javaType(attr) eq 'int')) {?>
+		result = 29 * result + <?attr:Name?>;<?
+		} else if(javaType(attr) eq 'long') {?>
+		result = 29 * result + (int) (<?attr:Name?> ^ (<?attr:Name?> >>> 32));<?
+		} else if(javaType(attr) eq 'float') {?>
+		result = 29 * result + Float.floatToIntBits(<?attr:Name?>);<?
+		} else if(javaType(attr) eq 'double') {?>
+		result = 29 * result + Double.doubleToIntBits(<?attr:Name?>);<?
+		} else if(javaType(attr) eq 'boolean') {?>
+		result = 29 * result + (<?attr:Name + '?1:0'?>);<? 
+		} else {?>
+  		if(<?propertyName(attr)?> != null) {
+			result = 29 * result + <?propertyName(attr)?>.hashCode();
+		}<?
+  		  }
+  	  }?>
+		return result;
+	}
+<?
+}
+
+string toString(map element) {?>
+	public String toString() {
+		StringBuilder sb = new StringBuilder(64);
+		sb.append("<?element:Name?>[");<?
+		join(mapFiltered(propertyAppend, isAppendable, element:AttributeList), commaAppend())?>
+		sb.append("]");
+		return sb.toString();
+	}
+<?
+}
+
+/* TODO still needed with join? */
+numeric isAppendable(map attr) {
+	!isDerived(attr)
+}
+
+string propertyAppend(map attr) {?>
+		sb.append("<?javaName(attr)?>: " + <?javaName(attr)?>);<?
+}
+
+string commaAppend() {?>
+		sb.append(", ");<?
+}
+?>

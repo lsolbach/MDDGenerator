@@ -1,0 +1,34 @@
+<?!--
+    - include for java bean classes java/bean-class
+   --?><?
+map getImportMap(map element) {
+	map importMap = super(element)
+	importMap.put('java.io.Serializable', 'java.io.Serializable')
+	importMap
+}
+
+list getImplementationList(map element) {
+	list implementationList = super(element)
+	implementationList.add('Serializable')
+	implementationList
+}
+
+string staticFields(map element) {
+	super(element)?>
+	private static final long serialVersionUID = 1L;<?
+}
+
+string memberFields(map element) {
+	propertyFields(This)
+	associationFields(This)
+}
+
+string operations(map element) {
+	propertyAccessors(This)
+	associationAccessors(This)
+	super(element)
+	equals(element)
+	hashcode(element)
+	toString(element)
+}
+?>

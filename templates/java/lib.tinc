@@ -1,0 +1,578 @@
+<?!--
+ * java/lib
+ * Standard functions for the generation of java code
+ * unspecific to any UML profile, design DSL or target language
+ * ©2010-2012 Ludger Solbach
+--?><?
+string fileComment(map element) {
+
+}
+
+string javaDoc(map element) {
+	javaDoc(element, 0)
+}
+
+string javaDoc(map element, numeric tabs) {
+	if(hasDocumentation(element)) {?>
+<?tabs(tabs)?>/**
+<?tabs(tabs)?> * <?documentation(element)?>
+<?tabs(tabs)?> */<?
+	}
+}
+
+string qualifiedName(map element) {
+	string namespace = namespace(element)
+	if(namespace) {
+		namespace + '.'
+	}
+	name(element)
+}
+
+string implementationNamespace(map element) {
+	string result = element:Namespace
+	if(!result.endsWith('.impl')) {
+		result = result + '.impl'
+	}
+	result
+}
+
+string implementationName(map element) {
+	string result = element:Name
+	if(!result.endsWith('Impl')) {
+		result = result + 'Impl'
+	}
+	result
+}
+
+string qualifiedImplementationName(map element) {
+	string result = implementationNamespace(element)
+	if(result) {
+		result = result + '.'
+	}
+	result + implementationName(element)
+}
+
+string qualifiedImplementationName(map element, string prefix, string suffix) {
+	string result = implementationNamespace(element)
+	if(result) {
+		result + '.'
+	}
+	prefix + implementationName(element) + suffix
+}
+
+string imports(map element) {
+	map importMap = getImportMap(This)
+	foreach importType <- importMap.keyList() {
+		importQualifiedName(importType)
+	}
+}
+
+string importQualifiedName(string qualifiedName) {
+	if(!qualifiedName.startsWith('java.lang.')
+	 && qualifiedName ne 'String'
+	 && qualifiedName ne 'Integer'
+	 && qualifiedName ne 'Boolean') {
+		lineFeed()
+		'import ' + qualifiedName + ';'
+	}
+}
+
+string importImplementation(map type) {
+	if(type:Namespace) {
+ 		lineFeed()
+ 	    'import ' + type:Namespace + '.impl.' + type:Name + 'Impl' + ';'
+	}
+}
+
+map getImportMap(map element) {
+	map importMap = getPropertyImports(element) + getOperationImports(element)
+	add(importMap, 'java.util.*')
+	importMap
+}
+
+map getPropertyImports(map element) {
+	map importMap
+	foreach attr <- element:AttributeList {
+		importMap.put(attr:Type:QualifiedName, attr:Type)		
+	}
+	foreach asso | isNavigable(asso) <- element:AllAssociationList {
+		importMap.put(asso:Type:QualifiedName, asso:Type)		
+	}
+	importMap
+}
+
+map getOperationImports(map element) {
+	map importMap
+	foreach op <- element:AllOperationList {
+		foreach param <- op:ParameterList {
+			importMap.put(param:Type:QualifiedName, param:Type)		
+		}
+	}
+	importMap
+}
+
+string abstract(map element) {
+	if(isAbstract(element)) {
+		' abstract'
+	}
+}
+
+string typeName(map element) {
+	name(element)
+}
+
+string constructorParameters(list fieldList) {
+	join(mapFn(constructorParameter, fieldList), ', ')
+}
+
+string constructorParameter(map field) {
+	parameterAnnotations(getConstructorParameterAnnotationList(field)) + ' ' + javaType(field) + ' ' + javaName(field)
+} 
+
+list getConstructorAnnotationList(map element) {
+	list annotationList
+	annotationList
+}
+
+list getConstructorParameterAnnotationList(map element) {
+	list annotationList
+	annotationList
+}
+
+string constructorArguments(list fieldList) {
+	join(mapFn(javaName, fieldList), ', ')
+}
+
+string staticInitializer() {
+	staticInitializer(This)
+}
+
+string staticInitializer(map element) {
+
+}
+
+string dependencies(map element) {
+
+}
+
+list propertyList(map element) {
+	element:AllAttributes
+}
+
+list associationList(map element) {
+	element:AllAssociations
+}
+
+list operationList(map element) {
+	element:AllOperations
+}
+
+string propertyAccessors(map element) {
+	foreach attr | isAccessibleProperty(attr) <- element:AllAttributeList {
+		propertyAccessor(attr)
+	}
+}
+
+string propertyAccessor(map attr) {
+	propertyGetMethod(attr)
+	if(isChangeable(attr)) {
+		propertySetMethod(attr)
+		if(isMany(attr)) {
+			propertyAddMethod(attr)
+			propertyRemoveMethod(attr)
+		}
+	}
+}
+
+list getPropertyGetMethodAnnotationList(map attr) {
+	list annotationList
+	annotationList
+}
+
+list getPropertySetMethodAnnotationList(map attr) {
+	list annotationList
+	annotationList
+}
+
+list getPropertyAddMethodAnnotationList(map attr) {
+	list annotationList
+	annotationList
+}
+
+list getPropertyRemoveMethodAnnotationList(map attr) {
+	list annotationList
+	annotationList
+}
+
+string propertyName(map attr) {
+	if(isMany(attr)) {
+		javaName(attr) + propertyCollectionType(attr)
+	} else {
+		javaName(attr)
+	}
+}
+
+string propertyMethodBase(map attr) {
+	if(isMany(attr)) {
+		attr:Name.firstUpper() + propertyCollectionType(attr)		
+	} else {
+		attr:Name.firstUpper()
+	}
+}
+
+string propertyCollectionType(map attr) {
+	if(isMany(attr)) {
+		'List'
+	}
+}
+
+string propertyCollectionImplementation(map attr) {
+	if(isMany(attr)) {
+		'ArrayList'
+	}
+}
+
+string propertyType(map attr) {
+	if(!isMany(attr)) {
+		javaType(attr)
+	} else {
+		propertyCollectionType(attr) + '<' + javaType(attr)+ '>'
+	}
+}
+
+string propertyTypeImplementation(map attr) {
+	if(!isMany(attr)) {
+		javaType(attr)
+	} else {
+		propertyCollectionImplementation(attr) + '<' + javaType(attr)+ '>'
+	}
+}
+
+string associationAccessors(map element) {
+	foreach asso | isAccessibleAssociation(asso) <- element:AllAssociationList {
+		associationAccessor(asso)
+	}
+}
+
+string associationAccessor(map asso) {
+	associationGetMethod(asso)
+	if(isQualified(asso)) {
+		associationQualifiedGetMethod(asso)
+	}
+	if(isChangeable(asso)) {
+		associationSetMethod(asso)
+		if(isMany(asso) || isQualified(asso)) {
+			associationAddMethod(asso)
+			associationRemoveMethod(asso)
+		}
+	}
+}
+
+list getAssociationGetMethodAnnotationList(map asso) {
+	list annotationList
+	annotationList
+}
+
+list getAssociationSetMethodAnnotationList(map asso) {
+	list annotationList
+	annotationList
+}
+
+list getAssociationAddMethodAnnotationList(map asso) {
+	list annotationList
+	annotationList
+}
+
+list getAssociationRemoveMethodAnnotationList(map asso) {
+	list annotationList
+	annotationList
+}
+
+string associationName(map asso) {
+	string roleName = javaName(asso)
+	if(!roleName) {
+		roleName = javaName(asso:Type)
+	}
+	if(isMany(asso) || isQualified(asso)) {
+		roleName + associationCollectionType(asso)		
+	} else {
+		roleName
+	}
+}
+
+string associationMethodBase(map asso) {
+	if(isMany(asso) || isQualified(asso)) {
+		asso:Name.firstUpper() + associationCollectionType(asso)		
+	} else {
+		asso:Name.firstUpper()
+	}
+}
+
+string associationCollectionType(map asso) {
+	if(isMany(asso)) {
+		if(isOrdered(asso)) {
+			'List'
+		} else {
+			'Set'
+		}
+	} else if(isQualified(asso)) {
+		list qualifiers = asso:SourceEnd:QualifierList
+		if(qualifiers.size() == 1) {
+			if(isPrimitive(qualifiers[0]:Type)) {
+				'List'
+			} else {
+				'Map'
+			}
+		} else {
+			'Map'
+		}
+	}
+}
+
+string associationCollectionImplementation(map asso) {
+	string type = associationCollectionType(asso)
+	if(type eq 'List') {
+		'ArrayList'
+	} else if(type eq 'Set') {
+		'HashSet'
+	} else if(type eq 'Map') {
+		'HashMap'
+	} else if(type eq 'Collection') {
+		'ArrayList'
+	} else {
+		'// FIXME unknown collection type' 
+	}
+}
+
+string associationType(map asso) {
+	if(!isMany(asso) && !isQualified(asso)) {
+		javaType(asso)
+	} else if(isQualified(asso)) {
+		associationCollectionType(asso) + '<' + javaType(asso:SourceEnd:QualifierList[0]) + ', ' + javaType(asso)+ '>'
+	} else {
+		associationCollectionType(asso) + '<' + javaType(asso)+ '>'
+	}
+}
+
+string associationTypeImplementation(map asso) {
+	if(!isMany(asso) && !isQualified(asso)) {
+		javaType(asso)
+	} else if(isQualified(asso)) {
+		associationCollectionImplementation(asso) + '<' + javaType(asso:SourceEnd:QualifierList[0]) + ', ' + javaType(asso)+ '>'
+	} else {
+		associationCollectionImplementation(asso) + '<' + javaType(asso)+ '>'
+	}
+}
+
+string parameters(list fieldList) {
+	join(mapFn(parameter, fieldList), ', ')
+}
+
+string parameter(map field) {
+	parameterAnnotations(field) + ' ' + javaType(field) + ' ' + javaName(field)
+}
+
+string parameterAnnotations(map element) {
+	
+}
+
+list getParameterAnnotationList(map element) {
+	list annotationList
+	annotationList
+}
+
+string arguments(list fieldList) {
+	join(mapFn(javaName, fieldList), ', ')
+}
+
+string qualifierParameters(map asso) {
+	join(mapFn(qualifierParameter, getQualifierList(asso)), ', ')
+}
+
+string qualifierParameter(map qualifier) {
+	javaType(qualifier) + ' ' + javaName(qualifier)
+}
+
+string qualifierArguments(map asso) {
+	join(mapFn(javaName, getQualifierList(asso)), ', ')
+}
+
+string operations(map element) {
+	foreach op <- element:AllOperationList {
+		operation(op)
+	}
+}
+
+string operationArguments(map op) {
+	join(mapFiltered(javaName, isInputParameter, op:ParameterList), ', ')
+}
+
+string operationParameters(map op) {
+	join(mapFiltered(operationParameter, isInputParameter, op:ParameterList), ', ')
+}
+
+string operationParameter(map param) {
+	operationParameterAnnotation(arg) + ' ' + javaType(arg) + ' ' + javaName(arg)
+}
+
+string operationParameterAnnotation(map param) {
+}
+
+list getOperationMethodAnnotationList(map asso) {
+	list annotationList
+	annotationList
+}
+
+list getOperationParameterAnnotationList(map param) {
+	list annotationList
+	annotationList
+}
+
+string returnType(map op) {
+	numeric found = 0
+	foreach param | param:Kind eq 'return' <- op:ParameterList {
+		found = 1
+		javaType(param)
+	}
+	if(!found) {
+		'void'
+	}
+}
+
+/* annotation rendering */
+string typeAnnotations(list annotationList) {
+	join(annotationList, lineFeed())
+}
+
+string memberAnnotations(list annotationList) {
+	join(annotationList, lineFeed() + tab())
+}
+
+string parameterAnnotations(list annotationList) {
+	join(annotationList, ' ')
+}
+
+string javaName(map element) {
+	javaNameForName(element:Name.firstLower())
+}
+
+/* TODO when list and map literals are implemented */
+/* list keywordList = ('abstract', 'assert', 'boolean', ...) */
+/* if(contains(keywordList, name)) {...}*/
+string javaNameForName(string name) {
+	/* TODO check for new java 7 keywords */
+	if(name eq 'abstract' || name eq 'assert' || name eq 'boolean'
+		|| name eq 'break' || name eq 'byte' || name eq 'case'
+		|| name eq 'catch' || name eq 'char' || name eq 'class'
+		|| name eq 'const' || name eq 'continue' || name eq 'default'
+		|| name eq 'do' || name eq 'double' || name eq 'else'
+		|| name eq 'enum' || name eq 'extends' || name eq 'final'
+		|| name eq 'finally' || name eq 'float' || name eq 'for'
+		|| name eq 'goto' || name eq 'if' || name eq 'implements'
+		|| name eq 'import' || name eq 'instanceof' || name eq 'int'
+		|| name eq 'interface' || name eq 'long' || name eq 'native'
+		|| name eq 'package' || name eq 'private' || name eq 'protected'
+		|| name eq 'public' || name eq 'return' || name eq 'short'
+		|| name eq 'static' || name eq 'strictfp' || name eq 'super'
+		|| name eq 'switch' || name eq 'synchronized' || name eq 'this'
+		|| name eq 'throw' || name eq 'throws' || name eq 'transient'
+		|| name eq 'try' || name eq 'void' || name eq 'volatile'
+		|| name eq 'while'
+		) {
+		'a' + name.firstUpper()	
+	} else {
+		name.firstLower()
+	}
+}
+
+string javaType(map element) {
+	if(element:Type) {
+		if(isAttribute(element) && isMany(element)) {
+			javaTypeForType(createDataType('common.types', 'Array'), element:Type:Name)
+		}
+		if(hasStereotype(element, 'typed')) {
+			javaTypeForType(element:Type, taggedValue(element, 'type'))
+		} else {
+			javaTypeForType(element:Type)
+		}
+	} else {
+		'void'
+	}
+}
+
+string javaTypeForType(map type) {
+	javaTypeForType(type, '')
+}
+
+string javaTypeForType(map type, string generic) {
+	if(type:Namespace eq '') {
+		javaTypeForUmlType(type)
+	} else if(type:Name eq 'Array') {
+		generic + '[]'
+	} else if(generic) {
+		type:Name + '<' + generic + '>'
+	} else {
+		type:Name
+	}
+}
+
+string javaTypeForUmlType(map type) {
+	if(type:Name eq 'Boolean') {
+		'boolean'
+	} else if(type:Name eq 'Integer') {
+		'int'
+	} else if(type:Name eq 'UnlimitedInteger') {
+		'int'
+	} else if(type:Name eq 'String') {
+		'String'
+	} else if(type:Name eq 'Name') {
+		'String'
+	} else {
+		type:Name
+	}
+}
+
+numeric isPrimitive(map type) {
+	string typename
+	if(type:Namespace eq '') {
+		typename = javaTypeForUmlType(type)
+	} else {
+		typename = type:Name
+	}
+	typename eq 'boolean'
+}
+	
+numeric isPrimitive(map type) {
+	string typename
+	if(type:Namespace eq '') {
+		typename = javaTypeForUmlType(type)
+	} else {
+		typename = type:Name
+	}
+	
+	typename eq 'int'
+		|| typename eq 'long'
+		|| typename eq 'short'
+		|| typename eq 'char'
+		|| typename eq 'byte'
+		|| typename eq 'boolean'
+		|| typename eq 'float'
+		|| typename eq 'double'
+}
+
+numeric isCollection(map type) {
+	type:QualifiedName eq 'java.util.Collection'
+      || type:QualifiedName eq 'java.util.List'
+      || type:QualifiedName eq 'java.util.ArrayList'
+      || type:QualifiedName eq 'java.util.LinkedList'
+      || type:QualifiedName eq 'java.util.Set'
+      || type:QualifiedName eq 'java.util.HashSet'
+      || type:QualifiedName eq 'java.util.TreeSet'
+}
+
+numeric isMap(map type) {
+	type:QualifiedName eq 'java.util.Map'
+      || type:QualifiedName eq 'java.util.HashMap'
+      || type:QualifiedName eq 'java.util.Hashtable'
+}
+?>

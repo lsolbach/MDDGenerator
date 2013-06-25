@@ -1,0 +1,115 @@
+<?!--
+ * template include java/interface
+ * requires includes lib, model/lib, java/lib 
+ * base methods for java interface generation
+ * (C) 2010 Ludger Solbach
+--?><?
+string packageDeclaration(map element) {?>
+package <?namespace(element)?>;<?
+}
+
+list getTypeAnnotationList(map element) {
+	list annotationList
+}
+
+string typeModifiers(map element) {
+	visibility(element)
+}
+
+string extensions(map element) {
+	extensions(element:SuperClassList)
+}
+
+string extensions(list extensionList) {
+	list nameList
+	foreach ext | !isAbstract(ext) <- extensionList {
+		nameList.add(name(ext))
+	}
+	if(nameList) {
+		'extends ' + join(nameList, lineFeed() + tabs(3))
+	}
+}
+
+string staticFields(map element) {
+
+}
+
+string propertyGetMethod(map attr) {
+	javaDoc(attr, 1)
+	memberAnnotations(getPropertyGetMethodAnnotationList(attr))?>
+	<?propertyType(attr)?> get<?propertyMethodBase(attr)?>();
+<?
+}
+
+string propertySetMethod(map attr) {
+	javaDoc(attr, 1)
+	memberAnnotations(getPropertySetMethodAnnotationList(attr))?>
+	void set<?propertyMethodBase(attr)?>(<?propertyType(attr)?> <?propertyName(attr)?>);
+<?
+}
+
+string propertyAddMethod(map attr) {
+	javaDoc(attr, 1)
+	memberAnnotations(getPropertyAddMethodAnnotationList(attr))?>
+	void add<?attr:Name.firstUpper()?>(<?javaType(attr)?> <?javaName(attr)?>);
+<?
+}
+
+string propertyRemoveMethod(map attr) {
+	javaDoc(attr, 1)
+	memberAnnotations(getPropertyAddMethodAnnotationList(attr))?>
+	void remove<?attr:Name.firstUpper()?>(<?javaType(attr)?> <?javaName(attr)?>);
+<?
+}
+
+string associationGetMethod(map asso) {
+	javaDoc(asso, 1)
+	memberAnnotations(getAssociationGetMethodAnnotationList(asso))?>
+	<?associationType(asso)?> get<?associationMethodBase(asso)?>();
+<?
+}
+
+string associationQualifiedGetMethod(map asso) {?>
+	<?javaType(asso)?> get<?asso:Name.firstUpper()?>(<?associationQualifierParameterss(asso)?>);
+<?
+}
+
+string associationSetMethod(map asso) {
+	javaDoc(asso, 1)
+	memberAnnotations(getAssociationSetMethodAnnotationList(asso))?>
+	void set<?associationMethodBase(asso)?>(<?associationType(asso)?> <?associationName(asso)?>);
+<?
+}
+
+string associationAddMethod(map asso) {
+	javaDoc(asso, 1)
+	memberAnnotations(getAssociationAddMethodAnnotationList(asso))
+	if(!isQualified(asso)) {?>
+	void add<?asso:Name.firstUpper()?>(<?javaType(asso)?> <?javaName(asso)?>);
+<?
+	} else {?>
+	void add<?asso:Name.firstUpper()?>(<?javaType(asso:SourceEnd:Qualifiers[0])?> <?javaName(asso:SourceEnd:Qualifiers[0])?>, <?javaType(asso)?> <?javaName(asso)?>);
+<?
+	}
+}
+
+string associationRemoveMethod(map asso) {
+	javaDoc(asso, 1)
+	memberAnnotations(getAssociationRemoveMethodAnnotationList(asso))?>
+	void remove<?asso:Name.firstUpper()?>(<?javaType(asso)?> <?javaName(asso)?>);
+<?
+}
+
+string operation(map op) {
+	if(op:Visibility eq 'public') {
+		javaDoc(op, 1)
+		memberAnnotations(getOperationMethodAnnotationList(op))
+		operationMethod(op)
+	}
+}
+
+string operationMethod(map op) {?>
+	<?returnType(op)?> <?op:Name?>(<?operationParameters(op)?>);<?
+}
+
+?>
