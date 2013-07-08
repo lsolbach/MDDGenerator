@@ -378,7 +378,7 @@ list getOperationList(map element) {
 }
 
 list getDependencyList(map element) {
-	element:clientDependencySet
+	element:ClientDependencySet
 }
 
 map getDependencySupplier(map dependency) {
