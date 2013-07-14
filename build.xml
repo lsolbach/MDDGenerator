@@ -47,7 +47,8 @@
 		<!--
 		  - Generator
 		  -->
-		<soulmda destdir="${generate.dir}" backupdir="${backup.dir}" templateDirs="templates,../MdaTemplates/std-templates" modelFile="model/uml1.4.xmi" profiles="profiles/default-uml14.xmi">
+<!--
+		<soulmda destdir="${generate.dir}" backupdir="${backup.dir}" templateDirs="templates,../MdaStandardTemplateLibrary/templates" modelFile="model/uml1.4.xmi" profiles="profiles/default-uml14.xmi">
 			<classGenerator name="mof/element-interface" imports="lib,model/lib,java/lib,java/interface,base" subdir="src" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.elements" stereotype="NONE" />
 			<classGenerator name="mof/element-class" imports="lib,model/lib,java/lib,java/class,base" subdir="src" prefix="Abstract" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.elements.impl" stereotype="NONE" />
 			<classGenerator name="mof/element-concrete-class" imports="lib,model/lib,java/lib,java/class,base" subdir="src" suffix="Impl" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.elements.impl" stereotype="NONE" />
@@ -58,6 +59,19 @@
 			<modelGenerator name="xmi/1.2/reader" imports="lib,model/lib,java/lib,java/class,base" subdir="src" baseName="Xmi12ReaderImpl" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.impl" />
 			<modelGenerator name="xmi/1.2/writer" imports="lib,model/lib,java/lib,java/class,base" subdir="src" baseName="Xmi12WriterImpl" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.impl" />
 		</soulmda>
+-->
+		<mdsd destdir="${generate.dir}" backupdir="${backup.dir}" templateDirs="lib/generator/templates,templates" modelFile="model/uml1.4.xmi" profiles="profiles/default-uml14.xmi">
+			<classGenerator name="uml14/mof/element-interface" imports="lib,model/lib,java/lib,java/interface,uml14/lib" subdir="src" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.elements" stereotype="NONE" />
+			<classGenerator name="uml14/mof/element-class" imports="lib,model/lib,java/lib,java/class,uml14/lib" subdir="src" prefix="Abstract" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.elements.impl" stereotype="NONE" />
+			<classGenerator name="uml14/mof/element-concrete-class" imports="lib,model/lib,java/lib,java/class,uml14/lib" subdir="src" suffix="Impl" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.elements.impl" stereotype="NONE" />
+			<classGenerator name="uml14/mof/enum" imports="lib,model/lib,java/lib,java/class,uml14/lib" subdir="src" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.types" stereotype="enumeration" />
+			<classGenerator name="uml14/mof/primitive" imports="lib,model/lib,java/lib,java/class,uml14/lib" subdir="src" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.primitives" stereotype="primitive" />
+			<modelGenerator name="uml14/mof/repository" imports="lib,model/lib,java/lib,java/class,uml14/lib" subdir="src" baseName="Uml14RepositoryImpl" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.impl" />
+			<modelGenerator name="uml14/xmi/1.2/schema" imports="lib,model/lib" subdir="uml" basename="uml14_xmi12" extension="xsd" />
+			<modelGenerator name="uml14/xmi/1.2/reader" imports="lib,model/lib,java/lib,java/class,uml14/lib" subdir="src" baseName="Xmi12ReaderImpl" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.impl" />
+			<modelGenerator name="uml14/xmi/1.2/writer" imports="lib,model/lib,java/lib,java/class,uml14/lib" subdir="src" baseName="Xmi12WriterImpl" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.impl" />
+		</mdsd>
+
 	</target>
 
 	<!--target name="test-local" depends="test-xmiloader"/-->
