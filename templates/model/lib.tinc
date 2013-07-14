@@ -51,6 +51,8 @@ string visibility(map element) {
 	element:Visibility
 }
 
+/* model checks */
+
 numeric isModelElement(map element) {
 	!element:ProfileElement
 }
@@ -365,6 +367,14 @@ list getStateMachineList(map package) {
 	filter(isStateMachine, package:OwnedElementSet)
 }
 
+list getSuperClassList(map element) {
+	element:SuperClassList	
+}
+
+list getSubClassList(map element) {
+	element:SubClassList	
+}
+
 list getAttributeList(map element) {
 	element:AllAttributeList
 }
@@ -456,7 +466,7 @@ list getQualifierList(map asso) {
 	asso:SourceEnd:QualifierList
 }
 
-/* Profile elements */
+/* profile elements */
 numeric hasStereotypes(map element) {
 	element:StereotypeMap
 }

@@ -56,8 +56,8 @@ string extendType(map type) {
 }
 
 string extension(map element) {
-	if(element:SuperClassList) {
-		extendType(element:SuperClassList[0])
+	if(getSuperClassList(element)) {
+		extendType(first(getSuperClassList(element)))
 	}
 }
 

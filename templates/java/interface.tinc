@@ -17,7 +17,7 @@ string typeModifiers(map element) {
 }
 
 string extensions(map element) {
-	extensions(element:SuperClassList)
+	extensions(getSuperClassList(element))
 }
 
 string extensions(list extensionList) {
