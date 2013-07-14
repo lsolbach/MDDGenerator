@@ -43,9 +43,10 @@
 		<!--
 		  - Generator
 		  -->
+<!--
 		<soulmda destdir="${generate.dir}"
                     backupdir="${backup.dir}"
-                    templateDirs="templates,../MdaTemplates/std-templates"
+                    templateDirs="templates_old,../MdaStandardTemplateLibrary/templates"
                     modelFile="../ModelRepository2/model/ModelRepository2.xmi"
 					profiles="../ModelRepository2/data/argouml/profiles/default-uml14.xmi">
 			<modelGenerator 	name="java/factory-interface"
@@ -64,6 +65,28 @@
 								namespaceReplacement="org.soulspace.modelling.repository.builder.impl"
 								stereotype ="NONE"/>
 		</soulmda>
+-->
+		<mdsd destdir="${generate.dir}"
+                    backupdir="${backup.dir}"
+                    templateDirs="lib/generator/templates,templates"
+                    modelFile="../ModelRepository2/model/ModelRepository2.xmi"
+					profiles="../ModelRepository2/data/argouml/profiles/default-uml14.xmi">
+			<modelGenerator 	name="modelbuilder/java/factory-interface"
+                                imports="lib,model/lib,java/lib,java/interface,modelbuilder/java/lib"
+								basename="ModelFactory"
+								subdir="src"
+								extension="java"
+								namespaceReplacement="org.soulspace.modelling.repository.builder"
+								stereotype="NONE"/>
+			<modelGenerator 	name="modelbuilder/java/factory-class"
+                                imports="lib,model/lib,java/lib,java/class,modelbuilder/java/lib"
+								subdir="src"
+								basename="ModelFactory"
+								prefix="Abstract"
+								extension="java"
+								namespaceReplacement="org.soulspace.modelling.repository.builder.impl"
+								stereotype ="NONE"/>
+		</mdsd>
 	</target>
-	
+
 </project>

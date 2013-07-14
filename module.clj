@@ -8,6 +8,7 @@
  :plugins ["global" "deps" "java" "package"]
  :dependencies [["org.soulspace.modelling" "XmiRepository2" "0.2.0"]
                 ["org.soulspace.modelling" "ModelRepository2" "0.2.0"]
+                ["org.soulspace.modelling" "MDDTemplateLibrary" "1.0.0" "generator" "MDDTemplateLibrary" "zip"]
                 ["junit" "junit" "3.8.1" "dev"]]
  :debug "true"
  ]
