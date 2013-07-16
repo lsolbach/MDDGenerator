@@ -42,40 +42,34 @@
 		  -->
 		<soulmda destdir="${generate.dir}"
                     backupdir="${backup.dir}"
-                    templateDirs="templates,../MdaTemplates/std-templates"
+                    templateDirs="templates_old,../MdaStandardTemplateLibrary/templates"
                     modelFile="model/ModelRepository2.xmi"
-					profiles="data/argouml/profiles/default-uml14.xmi"
-			>
-
+					profiles="data/argouml/profiles/default-uml14.xmi">
 			<classGenerator 	name="java/element-interface"
                                 imports="lib,model/lib,java/lib,java/interface"
 								subdir="src"
 								extension="java"
-								stereotype="NONE"
-			/>
+								stereotype="NONE"/>
 			<classGenerator 	name="java/element-class"
                                 imports="lib,model/lib,java/lib,java/class"
 								subdir="src"
 								prefix="Abstract"
 								extension="java"
-								stereotype ="NONE"
-			/>
+								stereotype ="NONE"/>
 			<classGenerator 	name="java/element-impl-class"
                                 imports="lib,model/lib,java/lib,java/class"
 								subdir="tmp"
 								suffix="Impl"
 								extension="java"
 								namespaceSuffix="impl"
-								stereotype ="NONE"
-			/>
+								stereotype ="NONE"/>
 			<modelGenerator 	name="java/repository-interface"
                                 imports="lib,model/lib,java/lib,java/interface,java/base"
 								basename="ModelRepository"
 								subdir="src"
 								extension="java"
 								namespaceReplacement="org.soulspace.modelling.repository"
-								stereotype="NONE"
-			/>
+								stereotype="NONE"/>
 			<modelGenerator 	name="java/repository-class"
                                 imports="lib,model/lib,java/lib,java/class,java/base"
 								subdir="src"
@@ -83,9 +77,49 @@
 								suffix="Impl"
 								extension="java"
 								namespaceReplacement="org.soulspace.modelling.repository.impl"
-								stereotype ="NONE"
-			/>
+								stereotype ="NONE"/>
 		</soulmda>
+<!--
+		<mdsd destdir="${generate.dir}"
+                    backupdir="${backup.dir}"
+                    templateDirs="lib/generator/templates,templates"
+                    modelFile="model/ModelRepository2.xmi"
+					profiles="data/argouml/profiles/default-uml14.xmi">
+			<classGenerator 	name="mdd/java/element-interface"
+                                imports="lib,model/lib,java/lib,java/interface"
+								subdir="src"
+								extension="java"
+								stereotype="NONE"/>
+			<classGenerator 	name="mdd/java/element-class"
+                                imports="lib,model/lib,java/lib,java/class"
+								subdir="src"
+								prefix="Abstract"
+								extension="java"
+								stereotype ="NONE"/>
+			<classGenerator 	name="mdd/java/element-impl-class"
+                                imports="lib,model/lib,java/lib,java/class"
+								subdir="tmp"
+								suffix="Impl"
+								extension="java"
+								namespaceSuffix="impl"
+								stereotype ="NONE"/>
+			<modelGenerator 	name="mdd/java/repository-interface"
+                                imports="lib,model/lib,java/lib,java/interface,mdd/java/lib"
+								basename="ModelRepository"
+								subdir="src"
+								extension="java"
+								namespaceReplacement="org.soulspace.modelling.repository"
+								stereotype="NONE"/>
+			<modelGenerator 	name="mdd/java/repository-class"
+                                imports="lib,model/lib,java/lib,java/class,mdd/java/lib"
+								subdir="src"
+								basename="ModelRepository"
+								suffix="Impl"
+								extension="java"
+								namespaceReplacement="org.soulspace.modelling.repository.impl"
+								stereotype ="NONE"/>
+		</mdsd>
+-->
 	</target>
 	
 </project>

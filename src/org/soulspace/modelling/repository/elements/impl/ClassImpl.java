@@ -150,6 +150,7 @@ public class ClassImpl extends AbstractClass {
 
 	@Override
 	protected List<Classifier> doGetAllReferencedTypeList() {
+		// TODO check for cycles
 		List<Classifier> allReferencedTypeList = new ArrayList<Classifier>();
 		for (Class c : getSuperClassList()) {
 			allReferencedTypeList = addUnique(allReferencedTypeList, c
@@ -163,6 +164,7 @@ public class ClassImpl extends AbstractClass {
 
 	@Override
 	protected List<Classifier> doGetReferencedTypeList() {
+		// TODO check for cycles
 		List<Classifier> referencedTypeList = new ArrayList<Classifier>();
 
 		for (Attribute a : getAttributeList()) {

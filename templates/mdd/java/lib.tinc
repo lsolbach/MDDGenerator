@@ -1,0 +1,29 @@
+<?
+list getRepositoryElementList(map model) {
+	list elementList
+	foreach package <- getPackageList(model) {
+		foreach element
+				| !isAbstract(element) && isInstanceOf(element, 'Element') && !element:StereotypeMap 
+				<- getClassList(package) {
+			elementList.add(element)
+		}	
+	}
+	elementList
+}
+
+string associationCollectionType(map asso) {
+	string type = super(asso)
+	if(type eq 'Set') {
+		'SortedSet'
+	}
+}
+
+string associationCollectionImplementation(map asso) {
+	string type = associationCollectionType(asso)
+	if(type eq 'Set' || type eq 'SortedSet') {
+		'TreeSet'
+	} else {
+		super(asso)
+	}
+}
+?>
