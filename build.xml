@@ -43,7 +43,6 @@
 		<!--
 		  - Generator
 		  -->
-<!--
 		<soulmda destdir="${generate.dir}"
                     backupdir="${backup.dir}"
                     templateDirs="templates_old,../MdaStandardTemplateLibrary/templates"
@@ -65,7 +64,7 @@
 								namespaceReplacement="org.soulspace.modelling.repository.builder.impl"
 								stereotype ="NONE"/>
 		</soulmda>
--->
+<!--
 		<mdsd destdir="${generate.dir}"
                     backupdir="${backup.dir}"
                     templateDirs="lib/generator/templates,templates"
@@ -87,6 +86,7 @@
 								namespaceReplacement="org.soulspace.modelling.repository.builder.impl"
 								stereotype ="NONE"/>
 		</mdsd>
+-->
 	</target>
 
 </project>

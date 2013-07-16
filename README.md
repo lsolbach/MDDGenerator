@@ -11,6 +11,6 @@ License
 
 Copyright
 ---------
-© 2004-2012 Ludger Solbach
+© 2004-2013 Ludger Solbach
 
 
