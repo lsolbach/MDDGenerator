@@ -59,6 +59,7 @@
 			<modelGenerator name="xmi/1.2/writer" imports="lib,model/lib,java/lib,java/class,base" subdir="src" baseName="Xmi12WriterImpl" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.impl" />
 		</soulmda>
 <!--
+		TODO use ArgoUMLProfileLibrary
 		<mdsd destdir="${generate.dir}" backupdir="${backup.dir}" templateDirs="lib/generator/templates,templates" modelFile="model/uml1.4.xmi" profiles="profiles/default-uml14.xmi">
 			<classGenerator name="uml14/mof/element-interface" imports="lib,model/lib,java/lib,java/interface,uml14/lib" subdir="src" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.elements" stereotype="NONE" />
 			<classGenerator name="uml14/mof/element-class" imports="lib,model/lib,java/lib,java/class,uml14/lib" subdir="src" prefix="Abstract" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.elements.impl" stereotype="NONE" />
