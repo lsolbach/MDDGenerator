@@ -24,6 +24,7 @@
 	<target name="generate-local" depends="generate-model"/>
 
 	<target name="generate-model">
+		
 		<unzip src="model/ModelRepository2.zargo" dest="model" overwrite="true">
 			<patternset includes="ModelRepository2.xmi" excludes="*.pgml"/>
 		</unzip>
@@ -80,6 +81,7 @@
 								stereotype ="NONE"/>
 		</soulmda>
 <!--
+		TODO use ArgoUMLProfileLibrary
 		<mdsd destdir="${generate.dir}"
                     backupdir="${backup.dir}"
                     templateDirs="lib/generator/templates,templates"
