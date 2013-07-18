@@ -65,6 +65,7 @@
 								stereotype ="NONE"/>
 		</soulmda>
 <!--
+		TODO use ArgoUMLProfileLibrary
 		<mdsd destdir="${generate.dir}"
                     backupdir="${backup.dir}"
                     templateDirs="lib/generator/templates,templates"
