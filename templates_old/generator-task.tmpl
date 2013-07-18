@@ -1,0 +1,35 @@
+package <?namespace()?>;
+
+import org.apache.tools.ant.Task;
+import org.soulspace.modelling.generator.*;
+
+public abstract class AbstractGeneratorTask extends Task {
+
+	protected GenerationContext generationContext;
+
+	public AbstractGeneratorTask() {
+		super();
+		generationContext = new GenerationContext();
+	}
+	
+	public void setGenerationContext(GenerationContext generationContext) {
+		this.generationContext = generationContext;
+	}
+	
+	public GenerationContext getGenerationContext() {
+		return generationContext;
+	}
+	
+	<?delegates(This)?>
+}
+<?
+string delegates(map package) {
+	foreach element | isConcreteModelElement(element) <- package:Classes {?>
+	public void add<?element:Name?>Generator(<?element:Name?>Generator g) {
+		generationContext.getMainGroup().add<?element:Name?>Generator(g);
+	}
+	<?
+	}
+}
+
+?>

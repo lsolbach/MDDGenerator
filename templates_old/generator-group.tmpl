@@ -1,0 +1,49 @@
+package <?namespace()?>;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class <?name()?> {
+
+	private String description = "";
+	private List<GeneratorGroup> generatorGroups = new ArrayList<GeneratorGroup>();
+<?join(mapFiltered(property, isConcreteModelElement, Classes), lineFeed())?>
+
+	public <?name()?>() {
+		super();	
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void addGeneratorGroup(GeneratorGroup group) {
+		generatorGroups.add(group);
+	}
+	
+	public List<GeneratorGroup> getGeneratorGroups() {
+		return generatorGroups;
+	}
+<?join(mapFiltered(accessors, isConcreteModelElement, Classes), lineFeed())?>
+}
+<?
+
+string property(map element) {?>
+	private List<<?element:Name?>Generator> <?element:Name.firstLower()?>Generators = new ArrayList<<?element:Name?>Generator>();<?
+}
+
+string accessors(map element) {?>
+	public void add<?element:Name?>Generator(<?element:Name?>Generator g) {
+		<?element:Name.firstLower()?>Generators.add(g);
+	}
+
+	public List<<?element:Name?>Generator> get<?element:Name?>Generators() {
+		return <?element:Name.firstLower()?>Generators;
+	}
+<?
+}
+?>
