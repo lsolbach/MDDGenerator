@@ -1,4 +1,4 @@
-package <?namespace()?>;
+package <?namespace(This)?>;
 
 import org.soulspace.modelling.repository.ModelRepository;
 import org.soulspace.modelling.repository.elements.*;
@@ -21,13 +21,13 @@ public abstract class AbstractGenerationContext {
 		this.mainGroup = mainGroup;
 	}
 
-<?join(mapFiltered(addMethod, isConcreteModelElement, Classes), lineFeed())?>
+<?join(mapFiltered(addMethod, isConcreteModelElement, getClassList(This)), lineFeed())?>
 
 	public void callGenerators(GenerationContext ctx, GeneratorGroup gg, BeanDataSourceImpl ds) {
 		if(ds == null) {
 			ds = new BeanDataSourceImpl(getRepository());
 		}
-<?join(mapFiltered(callGenerator, isConcreteModelElement, Classes), lineFeed())?>
+<?join(mapFiltered(callGenerator, isConcreteModelElement, getClassList(This)), lineFeed())?>
 		for(GeneratorGroup genGroup : gg.getGeneratorGroups()) {
 			callGenerators(ctx, genGroup, ds);
 		}

@@ -1,4 +1,4 @@
-package <?namespace()?>;
+package <?namespace(This)?>;
 
 import org.apache.tools.ant.Task;
 import org.soulspace.modelling.generator.*;
@@ -24,7 +24,7 @@ public abstract class AbstractGeneratorTask extends Task {
 }
 <?
 string delegates(map package) {
-	foreach element | isConcreteModelElement(element) <- package:Classes {?>
+	foreach element | isConcreteModelElement(element) <- getClassList(package) {?>
 	public void add<?element:Name?>Generator(<?element:Name?>Generator g) {
 		generationContext.getMainGroup().add<?element:Name?>Generator(g);
 	}

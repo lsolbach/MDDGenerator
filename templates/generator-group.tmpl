@@ -1,13 +1,13 @@
-package <?namespace()?>;
+package <?namespace(This)?>;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class <?name()?> {
+public class <?name(This)?> {
 
 	private String description = "";
 	private List<GeneratorGroup> generatorGroups = new ArrayList<GeneratorGroup>();
-<?join(mapFiltered(property, isConcreteModelElement, Classes), lineFeed())?>
+<?join(mapFiltered(property, isConcreteModelElement, getClassList(This)), lineFeed())?>
 
 	public <?name()?>() {
 		super();	
@@ -28,7 +28,7 @@ public class <?name()?> {
 	public List<GeneratorGroup> getGeneratorGroups() {
 		return generatorGroups;
 	}
-<?join(mapFiltered(accessors, isConcreteModelElement, Classes), lineFeed())?>
+<?join(mapFiltered(accessors, isConcreteModelElement, getClassList(This)), lineFeed())?>
 }
 <?
 
