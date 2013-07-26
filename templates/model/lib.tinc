@@ -7,6 +7,41 @@
  * ©2010-2012 Ludger Solbach
 --?><?
 
+/* returns generation information */
+string generationInfo() {
+	generationInfo('')
+}
+
+/* returns generation information */
+string generationInfo(string prefix) {
+	/* TODO tracing: Classifier Type and XMIId, Model and Profiles (generator and template versions) */
+	prefix + 'Classifier: ' + This:ElementType + ' ' + This:Id.replace('--', '__') + lineFeed()
+	prefix + 'Template:   ' + generatorValue('Name') + lineFeed()
+	prefix + 'Imports:    ' + generatorValue('Imports') + lineFeed()
+	prefix + 'Timestamp:  ' + generatorValue('Timestamp')
+}
+
+numeric hasGeneratorValue(string name) {
+	GenContext[name] ne ''	
+}
+
+string generatorValue(string name) {
+	if(GenContext[name]) {
+		GenContext[name]
+	}
+}
+
+numeric hasGeneratorParam(string name) {
+	GenContext:ParamMap[name] ne ''
+}
+
+string generatorParam(string name) {
+	if(GenContext:ParamMap[name]) {
+		GenContext:ParamMap[name]:Value
+	}
+}
+
+
 /* model checks */
 
 numeric isInstanceOf(map element, string typeName) {
@@ -23,12 +58,49 @@ numeric isInstanceOf(map element, string typeName) {
 	result
 }
 
+/* returns the namespace of an element according to the generator context */
 string namespace(map element) {
-	element:Namespace
+	if(hasGeneratorValue('NamespacePrefix')) {
+		generatorValue('NamespacePrefix') '.'
+	}
+	if(hasGeneratorValue('BaseNamespace')) {
+		if(generatorValue('BaseNamespace').startsWith('[')) {
+			if(generatorValue('BaseNamespace') eq '[MODEL_NAME]') {
+				modelName(element)
+			}
+		} else {
+			generatorValue('BaseNamespace')
+		}
+	} else {
+		element:Namespace
+	}
+	if(generatorValue('UseNameAsNamespace')) {
+		'.' element:Name
+	}
+	if(hasGeneratorValue('NamespaceSuffix')) {
+		'.' generatorValue('NamespaceSuffix')
+	}
 }
 
+/* returns the name of an element according to the generator context */
 string name(map element) {
-	element:Name
+	if(hasGeneratorValue('Prefix')) {
+		generatorValue('Prefix')
+	}
+	if(hasGeneratorValue('BaseName')) {
+		if(generatorValue('BaseName').startsWith('[')) {
+			if(generatorValue('BaseName') eq '[MODEL_NAME]') {
+				modelName(element)
+			}
+		} else {
+			generatorValue('BaseName')
+		}
+	} else {
+		element:Name
+	}
+	if(hasGeneratorValue('Suffix')) {
+		generatorValue('Suffix')
+	}
 }
 
 string qualifiedName(map element) {

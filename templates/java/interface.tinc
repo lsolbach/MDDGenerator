@@ -8,25 +8,22 @@ string packageDeclaration(map element) {?>
 package <?namespace(element)?>;<?
 }
 
-list getTypeAnnotationList(map element) {
-	list annotationList
-}
-
 string typeModifiers(map element) {
 	visibility(element)
 }
 
-string extensions(map element) {
-	extensions(getSuperClassList(element))
+list getExtensionList(map element) {
+	list extensionList
+	foreach superClass <- getSuperClassList(element) {
+		extensionList.add(superClass:Name)
+	}
+	extensionList
 }
 
-string extensions(list extensionList) {
-	list nameList
-	foreach ext | !isAbstract(ext) <- extensionList {
-		nameList.add(name(ext))
-	}
-	if(nameList) {
-		'extends ' + join(nameList, lineFeed() + tabs(3))
+string extensions(map element) {
+	list extensionList = getExtensionList(element)
+	if(extensionList) {
+		'extends ' + join(extensionList, ', ')
 	}
 }
 

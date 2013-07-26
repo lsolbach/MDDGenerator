@@ -27,11 +27,6 @@ map getImportMap(map element) {
 	importMap
 }
 
-list getTypeAnnotationList() {
-	list annotationList
-	annotationList
-}
-
 string typeModifiers(map element) {
 	visibility(element) + ' ' + abstract(element)
 }
@@ -287,7 +282,7 @@ string associationInitialisation(map asso) {
 
 string associationGetMethod(map asso) {
 	javaDoc(asso, 1)
-	memberAnnotations(getAssociationGetMethodAnnotations(asso))
+	memberAnnotations(getAssociationGetMethodAnnotationList(asso))
 	if(isDerived(asso)) {?>
 	<?associationGetMethodModifiers(asso)?> <?associationType(asso)?> get<?associationMethodBase(asso)?>() {
 		return doGet<?associationMethodBase(asso)?>();
@@ -331,7 +326,7 @@ string associationReturn(map asso) {
 
 string associationQualifiedGetMethod(map asso) {
 	javaDoc(asso, 1)
-	/* memberAnnotations(getAssociationGetMethodAnnotationList(asso)) */
+	memberAnnotations(getAssociationQualifiedGetMethodAnnotationList(asso))
 	if(isDerived(asso)) {?>
 	<?associationGetMethodModifiers(asso)?> <?javaType(asso)?> get<?asso:Name.firstUpper()?>(<?qualifierParameters(asso)?>) {
 		return doGet<?asso:Name.firstUpper()?>(<?qualifierArguments(asso)?>);

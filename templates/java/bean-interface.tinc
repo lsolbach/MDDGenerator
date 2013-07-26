@@ -1,5 +1,5 @@
 <?!--
-    - include for java bean classes java/bean-class
+    - include for java bean interfaces java/bean-interface
    --?><?
 string operations(map element) {
 	propertyAccessors(element)

@@ -1,0 +1,13 @@
+<?!--
+ * common/java/impl-class
+ *
+ * ©2010-2012 Ludger Solbach
+--?><?
+string constructorBody(map element, list fieldList) {?>
+		super(<?constructorParameters(fieldList)?>);<?
+}
+
+string operation(map op) {
+	operationDelegateImplementation(op)
+}
+?>

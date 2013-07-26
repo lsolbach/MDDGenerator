@@ -111,6 +111,29 @@ map getOperationImports(map element) {
 	importMap
 }
 
+/* type annotations */
+
+/* default implementation returns empty type annotation list */
+list getTypeAnnotationList(map element) {
+	list annotationList
+	annotationList
+}
+
+/* render type annotations for element */
+string typeAnnotations(map element) {
+	list typeAnnotationList = getTypeAnnotationList(element)
+	typeAnnotations(typeAnnotationList)
+}
+
+/* render type annotation list */
+string typeAnnotations(list annotationList) {
+	join(annotationList, lineFeed())
+}
+
+string typeModifiers(map element) {
+	visibility(element)
+}
+
 string abstract(map element) {
 	if(isAbstract(element)) {
 		' abstract'
@@ -269,6 +292,11 @@ string associationAccessor(map asso) {
 }
 
 list getAssociationGetMethodAnnotationList(map asso) {
+	list annotationList
+	annotationList
+}
+
+list getAssociationQualifiedGetMethodAnnotationList(map asso) {
 	list annotationList
 	annotationList
 }
@@ -440,10 +468,6 @@ string returnType(map op) {
 }
 
 /* annotation rendering */
-string typeAnnotations(list annotationList) {
-	join(annotationList, lineFeed())
-}
-
 string memberAnnotations(list annotationList) {
 	join(annotationList, lineFeed() + tab())
 }
