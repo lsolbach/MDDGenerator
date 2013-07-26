@@ -14,36 +14,6 @@ public class AssociationClassImpl extends ClassImpl implements AssociationClass 
 
 	private List<AssociationEnd> connectionList = new ArrayList<AssociationEnd>();
 	
-	@Override
-	protected List<AssociationEnd> doGetAllAssociationList() {
-		return super.doGetAllAssociationList();
-	}
-
-	@Override
-	protected List<Attribute> doGetAllAttributeList() {
-		return super.doGetAllAttributeList();
-	}
-
-	@Override
-	protected List<Dependency> doGetAllDependencyList() {
-		return super.doGetAllDependencyList();
-	}
-
-	@Override
-	protected List<Operation> doGetAllOperationList() {
-		return super.doGetAllOperationList();
-	}
-
-	@Override
-	protected List<Classifier> doGetAllReferencedTypeList() {
-		return super.getAllReferencedTypeList();
-	}
-
-	@Override
-	protected List<Classifier> doGetReferencedTypeList() {
-		return super.doGetReferencedTypeList();
-	}
-
 	public List<AssociationEnd> getConnectionList() {
 		return connectionList;
 	}
