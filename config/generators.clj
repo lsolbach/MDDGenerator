@@ -1,28 +1,28 @@
-{:std-generators
+{:standard-generators
  [{:element "Class"
-   :template "uml14/mof/element-interface"
-   :includes ["lib" "model/lib" "java/lib" "java/interface" "uml14/lib"]
+   :template "java/interface"
+   :includes ["lib" "model/lib" "java/lib" "java/interface" "java/bean-interface" "uml14/lib" "uml14/mof/element-interface"]
    :subdir "src"
    :extension "java"
-   :namespaceReplacement "org.soulspace.modelling.uml14.elements"
+   :baseNamespace "org.soulspace.modelling.uml14.elements"
    :stereotypes "NONE"
    }
   {:element "Class"
-   :template "uml14/mof/element-class"
-   :includes ["lib" "model/lib" "java/lib" "java/class" "uml14/lib"]
+   :template "java/class"
+   :includes ["lib" "model/lib" "java/lib" "java/class" "java/bean-class" "uml14/lib" "uml14/mof/element-class"]
    :subdir "src"
    :prefix "Abstract"
    :extension "java"
-   :namespaceReplacement "org.soulspace.modelling.uml14.elements.impl"
+   :baseNamespace "org.soulspace.modelling.uml14.elements.impl"
    :stereotypes "NONE"
    }
   {:element "Class"
-   :template "uml14/mof/element-concrete-class"
-   :includes ["lib" "model/lib" "java/lib" "java/class" "uml14/lib"]
+   :template "java/class"
+   :includes ["lib" "model/lib" "java/lib" "java/class" "java/impl-class" "uml14/lib" "uml14/mof/element-concrete-class"]
    :subdir "src"
    :suffix "Impl"
    :extension "java"
-   :namespaceReplacement "org.soulspace.modelling.uml14.elements.impl"
+   :baseNamespace "org.soulspace.modelling.uml14.elements.impl"
    :stereotypes "NONE"
    }
   {:element "Class"
@@ -30,7 +30,7 @@
    :includes ["lib" "model/lib" "java/lib" "java/class" "uml14/lib"]
    :subdir "src"
    :extension "java"
-   :namespaceReplacement "org.soulspace.modelling.uml14.types"
+   :baseNamespace "org.soulspace.modelling.uml14.types"
    :stereotypes "enumeration"
    }
   {:element "Class"
@@ -38,7 +38,7 @@
    :includes ["lib" "model/lib" "java/lib" "java/class" "uml14/lib"]
    :subdir "src"
    :extension "java"
-   :namespaceReplacement "org.soulspace.modelling.uml14.primitives"
+   :baseNamespace "org.soulspace.modelling.uml14.primitives"
    :stereotypes "primitive"
    }
   {:element "Model"
@@ -47,7 +47,7 @@
    :subdir "src"
    :baseName "Uml14RepositoryImpl"
    :extension "java"
-   :namespaceReplacement "org.soulspace.modelling.uml14.impl"
+   :baseNamespace "org.soulspace.modelling.uml14.impl"
    }
   {:element "Model"
    :template "uml14/xmi/1.2/schema"
@@ -62,7 +62,7 @@
    :subdir "src"
    :baseName "Xmi12ReaderImpl"
    :extension "java"
-   :namespaceReplacement "org.soulspace.modelling.uml14.impl"
+   :baseNamespace "org.soulspace.modelling.uml14.impl"
    }
   {:element "Model"
    :template "uml14/xmi/1.2/writer"
@@ -70,20 +70,20 @@
    :subdir "src"
    :baseName "Xmi12WriterImpl"
    :extension "java"
-   :namespaceReplacement "org.soulspace.modelling.uml14.impl"
+   :baseNamespace "org.soulspace.modelling.uml14.impl"
    }
   {:element "Model"
    :template "uml14/xmi/1.2/clj-dsl"
    :includes ["lib" "model/lib"]
    :subdir "clj"
-   :basename "xmi12"
+   :baseName "xmi12"
    :extension "clj"
    }
   {:element "Model"
    :template "uml14/xmi/1.2/clj-uml14-dsl"
    :includes ["lib" "model/lib"]
    :subdir "clj"
-   :basename "uml14"
+   :baseName "uml14"
    :extension "clj"
    }]
  }

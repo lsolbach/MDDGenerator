@@ -15,18 +15,31 @@ string importJavaOverrides(map element) {
 	}
 }
 
-string importJavaOverrides() {
-	importJavaOverrides(This)
+string imports(map element) {
+	super(element)
+	importJavaOverrides(element)
 }
 
-string javaTypeForType(map type, string generic) {
-	if(type:Namespace eq 'uml.Foundations.Data Types') {
-		javaTypeForUmlType(type)
-	} else if(generic) {
-		type:Name + '<' + generic + '>'
-	} else {
-		type:Name
+/* add the properties of association classes to ModelElement */
+map additionalPropertyMap(map element) {
+	map attrMap
+	if(isInstanceOf(element, 'ModelElement')) {
+		map assoClassMap
+		/* FIXME getAllAssociationList? */
+		foreach asso
+				| asso:Association:ElementType eq 'AssociationClass'
+				<- element:AllAssociationList {
+			assoClassMap.put(asso:Association:Name, asso:Association)
+		}	
+		list keyList = assoClassMap.keyList()
+		foreach assoClassKey <- keyList {
+			map element = assoClassMap[assoClassKey]
+			foreach attr <- element:AttributeList {
+				attrMap.put(attr:Name, attr)
+			}
+		}
 	}
+	attrMap
 }
 
 /* INFO: these associations have overloaded types in the UML 1.4 model and can not be transformed to java in a clean way. */
@@ -48,9 +61,45 @@ numeric isAccessibleAssociation(map asso) {
 	super(asso) && !isDerived(asso)
 }
 
+string javaType(map element) {
+	if(isAttribute(element) && isMany(element)) {
+		javaTypeForType(element:Type)	
+	} else {
+		super(element)
+	}
+}
+
+string javaTypeForType(map type, string generic) {
+	if(type:Namespace eq 'uml.Foundations.DataTypes') {
+		javaTypeForUmlType(type)
+	} else if(generic) {
+		type:Name + '<' + generic + '>'
+	} else {
+		type:Name
+	}
+}
+
+/* Use lists for the unordered collections too so that the insertion order of the elements is stable across generations */
+string associationCollectionType(map asso) {
+	string type = super(asso)
+	if(type eq 'Set') {
+		type = 'List'
+	}
+	type
+}
+
+/* Use lists for the unordered collections too so that the insertion order of the elements is stable across generations */
+string associationCollectionImplementation(map asso) {
+	string type = associationCollectionType(asso)
+	if(type eq 'Set' || type eq 'SortedSet') {
+		'ArrayList'
+	} else {
+		super(asso)
+	}
+}
 numeric isPrimitive(map type) {
 	string typename
-	if(type:Namespace eq 'uml.Foundations.Data Types') {
+	if(type:Namespace eq 'uml.Foundations.DataTypes') {
 		typename = javaTypeForUmlType(type)
 	} else {
 		typename = type:Name
@@ -66,59 +115,11 @@ numeric isPrimitive(map type) {
       || typename eq 'double'
 }
 
-string annotations() {
-'@SuppressWarnings("unused")'
-}
-
-
-map additionalPropertyMap() {
-	additionalPropertyMap(This)
-}
-
-map additionalPropertyMap(map element) {
-	map attrMap
-	if(isInstanceOf(element, 'ModelElement')) {
-		map assoClassMap
-		/* FIXME getAllAssociationList? */
-		foreach asso
-				| asso:Association:ElementType eq 'AssociationClass'
-				<- element:AllAssociations {
-			assoClassMap.put(asso:Association:Name, asso:Association)
-		}	
-		list keyList = assoClassMap.keyList()
-		foreach assoClassKey <- keyList {
-			map element = assoClassMap[assoClassKey]
-			foreach attr <- element:Attributes {
-				attrMap.put(attr:Name, attr)
-			}
-		}
-	}
-	attrMap
-}
-
 numeric isReferenceAttribute(map attr) {
 	attr:Type:Name eq 'Multiplicity'
 	|| attr:Type:Name eq 'Geometry'
 	|| attr:Type:Name eq 'LocationReference'
 	|| attr:Type:Name.endsWith('Expression')
-}
-
-/* Use lists for the unordered collections too so that the insertion order of the elements is stable across generations */
-string associationCollectionType(map asso) {
-	string type = super(asso)
-	if(type eq 'Set') {
-		type = 'List'
-	}
-	type
-}
-
-string associationCollectionImplementation(map asso) {
-	string type = associationCollectionType(asso)
-	if(type eq 'Set' || type eq 'SortedSet') {
-		'ArrayList'
-	} else {
-		super(asso)
-	}
 }
 
 ?>

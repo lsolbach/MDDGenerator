@@ -1,0 +1,10 @@
+<?
+
+map getImportMap(map element) {
+	map importMap
+	add(importMap, 'java.util.*')
+	add(importMap, 'org.soulspace.modelling.base.AbstractXmiObject')
+	importMap
+}
+
+?>

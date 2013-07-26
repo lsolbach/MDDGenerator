@@ -241,7 +241,7 @@ numeric asElement(map type) {
 
 numeric asAttribute(map attr) {
 	if(!isMany(attr) && (hasStereotype(attr, 'enumeration')
-		|| hasStereotype(attr, ,'primitive'))) {
+		|| hasStereotype(attr, 'primitive'))) {
 		1
 	} else {
 		0

@@ -1,0 +1,13 @@
+<?
+
+list getTypeAnnotationList(map element) {
+	list typeAnnotationList = super(element)
+	typeAnnotationList.add('@SuppressWarnings("unused")')
+	typeAnnotationList
+}
+
+string extension(map element) {
+	'extends Abstract' + Name
+}
+
+?>

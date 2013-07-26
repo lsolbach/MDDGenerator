@@ -1,5 +1,5 @@
 <?xml version = '1.0' encoding = 'UTF-8' ?>
-<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Tue Mar 05 06:43:05 CET 2013'>
+<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Fri Jul 26 16:07:14 CEST 2013'>
   <XMI.header>    <XMI.documentation>
       <XMI.exporter>ArgoUML (using Netbeans XMI Writer version 1.0)</XMI.exporter>
       <XMI.exporterVersion>0.34(6) revised on $Date: 2010-01-11 22:20:14 +0100 (Mon, 11 Jan 2010) $ </XMI.exporterVersion>
@@ -2428,7 +2428,7 @@
                   </UML:Namespace.ownedElement>
                 </UML:Package>
                 <UML:Package xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:0000000000000EF0'
-                  name = 'Data Types' isSpecification = 'false' isRoot = 'false' isLeaf = 'false'
+                  name = 'DataTypes' isSpecification = 'false' isRoot = 'false' isLeaf = 'false'
                   isAbstract = 'false'>
                   <UML:Namespace.ownedElement>
                     <UML:Class xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:0000000000000F13'
@@ -3256,7 +3256,7 @@
                   </UML:Namespace.ownedElement>
                 </UML:Package>
                 <UML:Package xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:0000000000000EF1'
-                  name = 'Extension Mechanisms' isSpecification = 'false' isRoot = 'false'
+                  name = 'ExtensionMechanisms' isSpecification = 'false' isRoot = 'false'
                   isLeaf = 'false' isAbstract = 'false'>
                   <UML:ModelElement.clientDependency>
                     <UML:Dependency xmi.idref = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:0000000000001076'/>
@@ -3521,14 +3521,14 @@
               </UML:Namespace.ownedElement>
             </UML:Package>
             <UML:Package xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:0000000000001022'
-              name = 'Behavioral Elements' isSpecification = 'false' isRoot = 'false'
-              isLeaf = 'false' isAbstract = 'false'>
+              name = 'BehavioralElements' isSpecification = 'false' isRoot = 'false' isLeaf = 'false'
+              isAbstract = 'false'>
               <UML:ModelElement.clientDependency>
                 <UML:Dependency xmi.idref = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:0000000000001072'/>
               </UML:ModelElement.clientDependency>
               <UML:Namespace.ownedElement>
                 <UML:Package xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:0000000000001023'
-                  name = 'Common Behavior' isSpecification = 'false' isRoot = 'false' isLeaf = 'false'
+                  name = 'CommonBehavior' isSpecification = 'false' isRoot = 'false' isLeaf = 'false'
                   isAbstract = 'false'>
                   <UML:Namespace.ownedElement>
                     <UML:Class xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:000000000000102C'
@@ -6309,7 +6309,7 @@
                   </UML:Namespace.ownedElement>
                 </UML:Package>
                 <UML:Package xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:0000000000001026'
-                  name = 'Use Cases' isSpecification = 'false' isRoot = 'false' isLeaf = 'false'
+                  name = 'UseCases' isSpecification = 'false' isRoot = 'false' isLeaf = 'false'
                   isAbstract = 'false'>
                   <UML:ModelElement.clientDependency>
                     <UML:Dependency xmi.idref = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:0000000000001027'/>
@@ -6704,7 +6704,7 @@
                   </UML:Namespace.ownedElement>
                 </UML:Package>
                 <UML:Package xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:0000000000001028'
-                  name = 'State Machines' isSpecification = 'false' isRoot = 'false' isLeaf = 'false'
+                  name = 'StateMachines' isSpecification = 'false' isRoot = 'false' isLeaf = 'false'
                   isAbstract = 'false'>
                   <UML:ModelElement.clientDependency>
                     <UML:Dependency xmi.idref = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:0000000000001029'/>
@@ -7624,7 +7624,7 @@
                   </UML:Namespace.ownedElement>
                 </UML:Package>
                 <UML:Package xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:000000000000102A'
-                  name = 'Activity Graphs' isSpecification = 'false' isRoot = 'false' isLeaf = 'false'
+                  name = 'ActivityGraphs' isSpecification = 'false' isRoot = 'false' isLeaf = 'false'
                   isAbstract = 'false'>
                   <UML:ModelElement.clientDependency>
                     <UML:Dependency xmi.idref = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:000000000000102B'/>
@@ -7940,7 +7940,7 @@
               </UML:Namespace.ownedElement>
             </UML:Package>
             <UML:Package xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:0000000000001073'
-              name = 'Model Management' isSpecification = 'false' isRoot = 'false' isLeaf = 'false'
+              name = 'ModelManagement' isSpecification = 'false' isRoot = 'false' isLeaf = 'false'
               isAbstract = 'false'>
               <UML:ModelElement.clientDependency>
                 <UML:Dependency xmi.idref = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:0000000000001074'/>

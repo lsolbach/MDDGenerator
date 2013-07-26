@@ -1,0 +1,93 @@
+<?
+list elementList = getElementList(This)
+
+string fileComment(map element) {
+?>/**
+ * UML 1.4 repository class <?name(This)?>.
+<?generationInfo(' * ')?>
+ */
+<?
+}
+
+map getImportMap(map element) {
+	map importMap
+	add(importMap, 'java.util.*')
+	add(importMap, 'org.soulspace.modelling.base.*')
+	add(importMap, 'org.soulspace.modelling.uml14.elements.*')
+	add(importMap, 'org.soulspace.modelling.uml14.elements.Class')
+	add(importMap, 'org.soulspace.modelling.uml14.elements.Exception')
+	add(importMap, 'org.soulspace.modelling.uml14.elements.Object')
+	add(importMap, 'org.soulspace.modelling.uml14.elements.Package')
+	add(importMap, 'org.soulspace.modelling.uml14.types.*')
+	importMap
+}
+
+list getImplementationList(map element) {
+	list implementationList
+	implementationList.add('UMLRepository')
+	implementationList
+}
+
+string memberFields(map element) {
+?>
+	private Map<String, XmiObject> xmiIdMap = new HashMap<String, XmiObject>();
+
+	<?properties(elementList)?>
+<?
+}
+
+
+string constructors(map element) {
+	defaultConstructor(element)
+}
+
+string operations(map element) {
+?>
+	public XmiObject findByXmiId(String xmiId) {
+		return xmiIdMap.get(xmiId);
+	}
+
+	<?accessors(elementList)?>
+<?
+}
+
+string properties(list elementList) {
+	foreach element <- elementList {?>
+	private List<<?element:Name?>> <?element:Name.firstLower()?>List = new ArrayList<<?element:Name?>>();<?
+	}
+}
+
+string accessors(list elementList) {
+	foreach element <- elementList {
+?>
+	public List<<?element:Name?>> get<?element:Name?>List() {
+		return <?element:Name.firstLower()?>List;
+	}
+
+	public void set<?element:Name?>List(List<<?element:Name?>> <?element:Name.firstLower()?>List) {
+		this.<?element:Name.firstLower()?>List = <?element:Name.firstLower()?>List;
+	}
+
+	public void add<?element:Name?>(<?element:Name?> element) {
+		<?element:Name.firstLower()?>List.add(element);
+		xmiIdMap.put(element.getXmiId(), element);
+	}
+
+	public void remove<?element:Name?>(<?element:Name?> element) {
+		<?element:Name.firstLower()?>List.remove(element);
+		xmiIdMap.remove(element.getXmiId());
+	}
+<?
+	}
+}
+
+list getElementList(map model) {
+	list elementList
+	foreach package <- getPackageList(model) {
+		foreach element | !isAbstract(element) && !element:Stereotypes <- getClassList(package) {
+			elementList.add(element)
+		}	
+	}
+	elementList
+}
+?>
