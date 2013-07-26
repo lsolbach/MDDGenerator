@@ -400,7 +400,13 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 			}
 		}
 		aClass.setIsAbstract(xmiSource.getIsAbstract());
-		aClass.setVisibility(xmiSource.getVisibility().getName());
+		if(xmiSource.getVisibility() != null) {
+			aClass.setVisibility(xmiSource.getVisibility().getName());
+		} else {
+			System.err.println("WARN: visibility is null for class " +  xmiSource.getName() + " - " +  xmiSource.getXmiId());
+			System.err.println("WARN:   maybe a required profile is missing.");
+			aClass.setVisibility("public"); // default
+		}
 		return aClass;
 	}
 

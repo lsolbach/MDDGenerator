@@ -5,6 +5,6 @@
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/runtime/ModelRepository2.jar" sourcepath="/ModelRepository2"/>
-	<classpathentry kind="lib" path="lib/runtime/UML14Repository.jar"/>
+	<classpathentry kind="lib" path="lib/runtime/UML14Repository.jar" sourcepath="/UML14Repository"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
