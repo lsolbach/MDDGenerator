@@ -14,6 +14,10 @@ public class AssociationClassImpl extends ClassImpl implements AssociationClass 
 
 	private List<AssociationEnd> connectionList = new ArrayList<AssociationEnd>();
 	
+	public String getElementType() {
+		return "AssociationClass";
+	}
+	
 	public List<AssociationEnd> getConnectionList() {
 		return connectionList;
 	}
