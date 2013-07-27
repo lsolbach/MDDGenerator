@@ -157,7 +157,7 @@ string memberFields(map element) {
 }
 
 string propertyFields(map element) {
-	foreach attr | !isDerived(attr) <- element:AllAttributeList {
+	foreach attr | !isDerived(attr) <- getAttributeList(element) {
 		propertyField(attr)
 	}
 }
@@ -228,7 +228,7 @@ string propertySetMethodModifiers(map attr) {
 string propertyAddMethod(map attr) {
 	javaDoc(attr, 1)
 	memberAnnotations(getPropertyAddMethodAnnotationList(attr))?>
-	<?propertyAddMethodModifiers(attr)?> synchronized void add<?attr:Name.firstUpper()?>(<?javaType(attr)?> <?javaName(attr)?>) {
+	<?propertyAddMethodModifiers(attr)?> void add<?attr:Name.firstUpper()?>(<?javaType(attr)?> <?javaName(attr)?>) {
 		<?propertyName(attr)?>.add(<?javaName(attr)?>);
 	}
 <?
@@ -252,7 +252,7 @@ string propertyRemoveMethodModifiers(map attr) {
 }
 
 string associationFields(map element) {
-	foreach asso | isAccessibleAssociation(asso) && !isDerived(asso) <- element:AllAssociationList {
+	foreach asso | isAccessibleAssociation(asso) && !isDerived(asso) <- getAssociationList(element) {
 		associationField(asso)
 	}
 }
@@ -459,7 +459,7 @@ string equals(map element) {?>
 	  	if(getClass().getSuperclass() != null && getClass().getSuperclass() != java.lang.Object.class) {
 	  	  if(!super.equals(other)) return false;
 	    }<?
-	foreach attr | !isDerived(attr) <- AllAttributeList {
+	foreach attr | !isDerived(attr) <- getAttributeList(element) {
 		if(isPrimitive(attr:Type)) {?>
 		if(get<?propertyMethodBase(attr)?>() != other.get<?propertyMethodBase(attr)?>()) return false;<?
 		} else {?>
@@ -477,7 +477,7 @@ string hashcode(map element) {?>
 		if(getClass().getSuperclass() != null && getClass().getSuperclass() != java.lang.Object.class) {
 			result = 29 * result + super.hashCode();
 		}<?
-	foreach attr | !isDerived(attr) <- AllAttributeList {
+	foreach attr | !isDerived(attr) <- getAttributeList(element) {
 		if((javaType(attr) eq 'byte')
 			|| (javaType(attr) eq 'char')
 			|| (javaType(attr) eq 'short')
@@ -506,7 +506,7 @@ string toString(map element) {?>
 	public String toString() {
 		StringBuilder sb = new StringBuilder(64);
 		sb.append("<?element:Name?>[");<?
-		join(mapFiltered(propertyAppend, isAppendable, element:AttributeList), commaAppend())?>
+		join(mapFiltered(propertyAppend, isAppendable, getAttributeList(element)), commaAppend())?>
 		sb.append("]");
 		return sb.toString();
 	}
@@ -519,7 +519,7 @@ numeric isAppendable(map attr) {
 }
 
 string propertyAppend(map attr) {?>
-		sb.append("<?javaName(attr)?>: " + <?javaName(attr)?>);<?
+		sb.append("<?javaName(attr)?>: " + <?propertyName(attr)?>);<?
 }
 
 string commaAppend() {?>

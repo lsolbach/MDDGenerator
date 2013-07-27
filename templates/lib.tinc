@@ -339,6 +339,14 @@ list keyList(map elementMap) {
 	elementMap.keyList()
 }
 
+list valueList(map elementMap) {
+	list resultList
+	foreach key <- elementMap.keyList() {
+		resultList.add(elementMap[key])
+	}
+	resultList
+}
+
 /* returns a new empty list */
 list newList() {
 	list newList
@@ -468,7 +476,7 @@ list mapFn(method m, list elementList) {
 
 /* map function for maps, applies the function m to every value of the map of elements and returns the resulting map */
 map mapMap(method m, map elementMap) {
-	list resultMap
+	map resultMap
 	foreach key <- elementMap.keyList() {
 		resultMap.put(key, m(elementMap[key]))
 	}

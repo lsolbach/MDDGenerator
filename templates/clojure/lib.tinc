@@ -1,0 +1,102 @@
+<?
+string docString(map element) {
+	docString(element, '')
+}
+
+string docString(map element, string prefix) {
+	if(hasDocumentation(element)) {
+	prefix + '"' + documentation(element) + '"'
+	}
+}
+
+string cljNamespace(map element) {?>
+(ns <?qualifiedName(element)?><?requires(element)?><?refers(element)?><?uses(element)?><?imports(element)?><?genClass(element)?>)
+<?
+}
+
+string requires(map element) {
+	list nsList /* TODO initialize */
+	if(nsList) {?>
+  (:require <?/* TODO render uses*/?>)<?
+	}}
+
+string refers(map element) {
+	list nsList /* TODO initialize */
+	if(nsList) {?>
+  (:refer <?/* TODO render uses*/?>)<?
+	}
+}
+
+string uses(map element) {
+	list nsList /* TODO initialize */
+	if(nsList) {?>
+  (:use <?/* TODO render uses*/?>)<?
+	}
+}
+
+string imports(map element) {
+	list nsList /* TODO initialize */
+	if(nsList) {?>
+  (:import <?/* TODO render uses*/?>)<?
+	}}
+
+string genClass(map element) {
+	if(hasTaggedValue(element, 'genClass')) {?>
+  (:gen-class)<?
+	}
+}
+
+/* TODO handle functions with multiple parameter lists */
+string function(map element) {?>
+(defn <?element:Name?> [<?functionParameters(element)?>]<?
+	docString(element, lineFeed() + spaces(2))
+	/* TODO generate delegate? */
+	?>
+  )
+<?
+}
+
+string deftype(map element) {?>
+(deftype <?name(element)?> [<?fields(element)?>]<?
+	docString(element, lineFeed() + spaces(2))?>
+  )
+<?
+}
+
+string defprotocol(map element) {?>
+(defprotocol <?
+	name(element)
+ 	docString(element, lineFeed() + spaces(2))?>
+ 	<?join(mapFn(protocolFunction, getOperationList(element)), lineFeed() + spaces(2))?>
+  )
+<?
+}
+
+string protocolFunction(map element) {?>
+  (<?element:Name?> [<?functionParameters(element)?>]<?docString(element, ' ')?>)
+<?
+}
+
+string defrecord(map element) {?>
+(defrecord <?name(element)?> [<?fields(element)?>]<?
+	docString(element, lineFeed() + spaces(2))?>
+  )
+<?
+}
+
+string recordFunction(map element) {?>
+  (<?element:Name?> [<?functionParameters(element)?>]<?docString(element, ' ')?>
+ 	<?recordFunctionDelegate(element)?>
+    )
+<?
+}
+
+string recordFunctionDelegate(map element) {?>
+  (<?delegateName(element)?> <?functionParameters(element)?>)
+<?
+}
+
+string delegateName(map element) {
+	'do-' + element:Name
+}
+?>

@@ -3,7 +3,7 @@
    --?><?
 map getImportMap(map element) {
 	map importMap = super(element)
-	importMap.put('java.io.Serializable', 'java.io.Serializable')
+	add(importMap, 'java.io.Serializable')
 	importMap
 }
 

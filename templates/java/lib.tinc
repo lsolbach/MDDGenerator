@@ -178,20 +178,8 @@ string dependencies(map element) {
 
 }
 
-list propertyList(map element) {
-	element:AllAttributes
-}
-
-list associationList(map element) {
-	element:AllAssociations
-}
-
-list operationList(map element) {
-	element:AllOperations
-}
-
 string propertyAccessors(map element) {
-	foreach attr | isAccessibleProperty(attr) <- element:AllAttributeList {
+	foreach attr | isAccessibleProperty(attr) <- getAttributeList(element) {
 		propertyAccessor(attr)
 	}
 }
@@ -272,7 +260,7 @@ string propertyTypeImplementation(map attr) {
 }
 
 string associationAccessors(map element) {
-	foreach asso | isAccessibleAssociation(asso) <- element:AllAssociationList {
+	foreach asso | isAccessibleAssociation(asso) <- getAssociationList(element) {
 		associationAccessor(asso)
 	}
 }
@@ -423,12 +411,6 @@ string qualifierParameter(map qualifier) {
 
 string qualifierArguments(map asso) {
 	join(mapFn(javaName, getQualifierList(asso)), ', ')
-}
-
-string operations(map element) {
-	foreach op <- element:AllOperationList {
-		operation(op)
-	}
 }
 
 string operationArguments(map op) {

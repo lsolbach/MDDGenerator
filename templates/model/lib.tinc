@@ -16,16 +16,16 @@ string generationInfo() {
 string generationInfo(string prefix) {
 	/* TODO tracing: Classifier Type and XMIId, Model and Profiles (generator and template versions) */
 	prefix + 'Classifier: ' + This:ElementType + ' ' + This:Id.replace('--', '__') + lineFeed()
-	prefix + 'Template:   ' + generatorValue('Name') + lineFeed()
-	prefix + 'Imports:    ' + generatorValue('Imports') + lineFeed()
+	prefix + 'Template:   ' + generatorValue('Template') + lineFeed()
+	prefix + 'Includes:   ' + join(generatorValue('Includes'), ', ') + lineFeed()
 	prefix + 'Timestamp:  ' + generatorValue('Timestamp')
 }
 
 numeric hasGeneratorValue(string name) {
-	GenContext[name] ne ''	
+	GenContext[name] ne ''
 }
 
-string generatorValue(string name) {
+any generatorValue(string name) {
 	if(GenContext[name]) {
 		GenContext[name]
 	}
@@ -43,20 +43,6 @@ string generatorParam(string name) {
 
 
 /* model checks */
-
-numeric isInstanceOf(map element, string typeName) {
-	numeric result = 0
-	if(element:ElementType eq typeName) {
-		result = 1
-	} else if(!element:SuperClassSet) {
-		result = 0
-	} else {
-		foreach superClass <- element:SuperClassList {
-			result = result || isInstanceOf(superClass, typeName)
-		}
-	}
-	result
-}
 
 /* returns the namespace of an element according to the generator context */
 string namespace(map element) {
@@ -131,6 +117,34 @@ numeric isModelElement(map element) {
 
 numeric isProfileElement(map element) {
 	element:ProfileElement
+}
+
+numeric isInstanceOf(map element, string typeName) {
+	numeric result = 0
+	if(element:ElementType eq typeName) {
+		result = 1
+	} else if(!element:SuperClassList) {
+		result = 0
+	} else {
+		foreach superClass <- element:SuperClassList {
+			result = result || isInstanceOf(superClass, typeName)
+		}
+	}
+	result
+}
+
+numeric isAssignableTo(map element, string typeName) {
+	numeric result = 0
+	if(element:Name eq typeName) {
+		result = 1
+	} else if(!element:SuperClassList) {
+		result = 0
+	} else {
+		foreach superClass <- element:SuperClassList {
+			result = result || isAssignableTo(superClass, typeName)
+		}
+	}
+	result
 }
 
 numeric isModel(map element) {
@@ -479,24 +493,20 @@ string modelName(map element) {
 	candidate:Name
 }
 
-string name(map element) {
-	element:Name
-}
-
 list getMandatoryPropertyList(map element) {
-	filter(isMandatory, element:AllAttributeList)
+	filter(isMandatory, getAttributeList(element))
 }
 
 list getOptionalPropertyList(map element) {
-	filter(isOptional, element:AttributeList)
+	filter(isOptional, getAttributeList(element))
 }
 
 list getMandatoryAssociationList(map element) {
-	filter(isMandatory, element:AllAssociationList)
+	filter(isMandatory, getAssociationList(element))
 }
 
 list getOptionalAssociationList(map element) {
-	filter(isOptional, element:AllAssociationList)
+	filter(isOptional, getAssociationList(element))
 }
 
 list getClassifierFieldList(map element) {
@@ -509,7 +519,7 @@ list getInstanceFieldList(map element) {
 
 list getPropertyFieldList(map element) {
 	list fieldList
-	foreach attr | !isDerived(attr) && !isMany(attr) <- element:AllAttributeList {
+	foreach attr | !isDerived(attr) && !isMany(attr) <- getAttributeList(element) {
 		fieldList.add(attr)
 	}
 	fieldList
@@ -520,7 +530,7 @@ list getAssociationFieldList(map element) {
 	foreach asso
 			| isAccessibleAssociation(asso) && !isMany(asso) && !isQualified(asso)
 				&& !isDerived(asso)
-			<- element:AllAssociationList {
+			<- getAssociationList(element) {
 		fieldList.add(asso)
 	}
 	fieldList
@@ -624,7 +634,6 @@ list getContainerList(map element) {
 map getContainer(map element) {
 	map container
 	if(isClass(element)) {
-		/* list containerList = filter(isComposition, element:AllAssociationList) */
 		list containerList = getContainerList(element)
 		if(containerList.size() == 1) {
 			container = containerList[0]
@@ -652,7 +661,7 @@ string model(map model) {
 
 string packages(map element) {
 	/* mapFiltered(package, isModelElement, packageList(element)) */
-	foreach package | isModelElement(package) <- packageList(element) {
+	foreach package | isModelElement(package) <- getPackageList(element) {
 		package(package)
 	}
 }
@@ -663,7 +672,7 @@ string package(map package) {
 
 string classes(map element) {
 	/* mapFiltered(class, isModelElement, element:ClassList) */
-	foreach class | isModelElement(class) <- element:ClassList {
+	foreach class | isModelElement(class) <- getClassList(element) {
 		class(class)
 	}
 }
@@ -674,7 +683,7 @@ string class(map class) {
 
 string properties(map element) {
 	/* mapFn(property, element:AttributeList) */
-	foreach attr <- element:AttributeList {
+	foreach attr <- getAttributeList(element) {
 		property(attr)
 	}
 }
@@ -685,7 +694,7 @@ string property(map attr) {
 
 string associations(map element) {
 	/* mapFn(association, element:AssociationList) */
-	foreach asso <- element:AssociationList {
+	foreach asso <- getAssociationList(element) {
 		association(asso)
 	}
 }
@@ -696,7 +705,7 @@ string association(map asso) {
 
 string operations(map element) {
 	/* mapFn(operation, element:OperationList) */
-	foreach op <- element:OperationList {
+	foreach op <- getOperationList(element) {
 		operation(op)
 	}
 }

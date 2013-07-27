@@ -4,8 +4,10 @@
  * ©2010-2012 Ludger Solbach
 --?><?
 string constructorBody(map element, list fieldList) {?>
-		super(<?constructorParameters(fieldList)?>);<?
+		super(<?constructorArguments(fieldList)?>);<?
 }
+
+string memberFields(map element) { }
 
 string operation(map op) {
 	operationDelegateImplementation(op)
