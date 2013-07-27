@@ -64,7 +64,7 @@ public class <?name(This)?> {
 /* TODO refactor into lib */
 list getElementList(map model) {
 	list elementList
-	foreach package <- getPackageList(model) {
+	foreach package <- getAllSubPackagesList(model) {
 		/* TODO handle enums? */
 		foreach class <- getClassList(package) {
 			elementList.add(class)
@@ -137,13 +137,7 @@ string classWriter(map element) {?>
 string writeAttributes(map element) {?>
 		if(<?argumentName(element)?>.getXmiId() != null) {
 			writer.append(" xmi.id=\"" + <?argumentName(element)?>.getXmiId() + "\"");<?
-	map attrMap = additionalPropertyMap(element)
-	foreach attr | !isDerived(attr) && !isMany(attr) <- element:AllAttributeList {
-		attrMap.put(attr:Name, attr)
-	}
-	list keyList = attrMap.keyList()
-	foreach attrKey <- keyList {	
-		map attr = attrMap[attrKey]
+	foreach attr | !isDerived(attr) && !isMany(attr) <- getAttributeList(element) {	
 		if(attr:Type:Name eq 'Boolean') {?>
 			writer.append(" <?attr:Name?>=\"" + <?argumentName(element)?>.get<?attr:Name.firstUpper()?>() + "\"");
 <?
@@ -173,17 +167,11 @@ string writeAttributes(map element) {?>
 }
 
 string writeAssociations(map element) {
-	map attrMap = additionalPropertyMap(element)
-	foreach attr | !isDerived(attr) <- element:AllAttributeList {
-		attrMap.put(attr:Name, attr)
-	}
-	list keyList = attrMap.keyList()
-	foreach attrKey <- keyList {	
-		map attr = attrMap[attrKey]
+	foreach attr <- getAttributeList(element) {	
 		if(isReferenceAttribute(attr) || isMany(attr)) {?>
 		if(<?argumentName(element)?>.get<?propertyMethodBase(attr)?>() != null) {<?
 			if(isPrimitive(attr) || javaType(attr) eq 'String') {?>
-			writer.append(xmlEncode("<<?namespace?>:<?attr:Owner:Name?>.<?attr:Name?>>"));<?
+			writer.append(xmlEncode("<<?namespace?>:<?attr:ParentElement:Name?>.<?attr:Name?>>"));<?
 				if(!isMany(attr)) {?>
 			write<?attr:Type:Name.firstUpper()?>(<?argumentName(element)?>.get<?attr:Name.firstUpper()?>());<?
 				} else {?>
@@ -191,9 +179,9 @@ string writeAssociations(map element) {
 				writer.append(child);
 			}<?
 				}?>
-			writer.append(xmlEncode("</<?namespace?>:<?attr:Owner:Name?>.<?attr:Name?>>\n"));
+			writer.append(xmlEncode("</<?namespace?>:<?attr:ParentElement:Name?>.<?attr:Name?>>\n"));
 			<?} else {?>
-			writer.append(xmlEncode("<<?namespace?>:<?attr:Owner:Name?>.<?attr:Name?>>\n"));<?
+			writer.append(xmlEncode("<<?namespace?>:<?attr:ParentElement:Name?>.<?attr:Name?>>\n"));<?
 				if(!isMany(attr)) {?>
 			write<?attr:Type:Name.firstUpper()?>(<?argumentName(element)?>.get<?attr:Name.firstUpper()?>());<?
 				} else {?>
@@ -201,7 +189,7 @@ string writeAssociations(map element) {
 				write<?attr:Type:Name.firstUpper()?>(child);
 			}<?
 				}?>
-			writer.append(xmlEncode("</<?namespace?>:<?attr:Owner:Name?>.<?attr:Name?>>\n"));
+			writer.append(xmlEncode("</<?namespace?>:<?attr:ParentElement:Name?>.<?attr:Name?>>\n"));
 			<?}?>
 		}<?
 		}

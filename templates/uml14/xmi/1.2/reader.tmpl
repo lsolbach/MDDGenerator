@@ -177,7 +177,7 @@ public class <?name(This)?> extends DefaultHandler {
 /* TODO refactor into lib */
 list getElementList(map model) {
 	list elementList
-	foreach package <- getPackageList(model) {
+	foreach package <- getAllSubPackagesList(model) {
 		/* TODO handle enums? */
 		foreach class | !hasStereotype(class, 'enumeration') <- getClassList(package) {
 			elementList.add(class)
@@ -211,9 +211,9 @@ string dispatchStartElement(list elementList) {
 			foreach attr 
 					| !isDerived(attr) && (isMany(attr) || isReferenceAttribute(attr))
 					<- element:AttributeList {?>
-		if(elementName.equals("<?attr:Owner:Name?>.<?attr:Name?>")) {
-			// Attribute <?attr:Owner:Name?>.<?attr:Name?>
-			start<?attr:Owner:Name?>_<?attr:Name.firstUpper()?>(attrs);
+		if(elementName.equals("<?attr:ParentElement:Name?>.<?attr:Name?>")) {
+			// Attribute <?attr:ParentElement:Name?>.<?attr:Name?>
+			start<?attr:ParentElement:Name?>_<?attr:Name.firstUpper()?>(attrs);
 			isHandled = true;
 		}
 		<?
@@ -242,9 +242,9 @@ string dispatchEndElement(list elementList) {
 			foreach attr 
 					| !isDerived(attr) && (isMany(attr) || isReferenceAttribute(attr))
 					<- element:AttributeList {?>
-		if(elementName.equals("<?attr:Owner:Name?>.<?attr:Name?>")) {
-			// Attribute <?attr:Owner:Name?>.<?attr:Name?>
-			end<?attr:Owner:Name?>_<?attr:Name.firstUpper()?>();
+		if(elementName.equals("<?attr:ParentElement:Name?>.<?attr:Name?>")) {
+			// Attribute <?attr:ParentElement:Name?>.<?attr:Name?>
+			end<?attr:ParentElement:Name?>_<?attr:Name.firstUpper()?>();
 		}
 		<?
 			}
@@ -276,24 +276,18 @@ string handleStartElement(list elementList) {
 			element.setHRef(attrs.getValue("href"));
 		}
 <?
-				map attrMap = additionalPropertyMap(element)
-				foreach attr | !isDerived(attr) <- element:AllAttributeList {
-					attrMap.put(attr:Name, attr)
-				}
-				list keyList = attrMap.keyList()
-				foreach attrKey
-				 		| !isMany(attrMap[attrKey]) && !isReferenceAttribute(attrMap[attrKey])
-				 		<- keyList {
-					attribute(attrMap[attrKey])
-				}
-?>
+				foreach attr
+						| !isDerived(attr) && !isMany(attr) && !isReferenceAttribute(attr)
+				 		<- getAttributeList(element) {
+					attribute(attr)
+				}?>
 	}
 <?
 			}
 			foreach attr 
 					| !isDerived(attr) && (isMany(attr) || isReferenceAttribute(attr))
 					<- element:AttributeList {?>
-	protected void start<?attr:Owner:Name.firstUpper()?>_<?attr:Name.firstUpper()?>(Attributes attrs) {
+	protected void start<?attr:ParentElement:Name.firstUpper()?>_<?attr:Name.firstUpper()?>(Attributes attrs) {
 		List<<?javaType(attr)?>> elementList = new ArrayList<<?javaType(attr)?>>();
 		elementStack.push(elementList);
 	}
@@ -343,10 +337,10 @@ string handleEndElement(list elementList) {
 			foreach attr 
 					| !isDerived(attr) && (isMany(attr) || isReferenceAttribute(attr))
 					<- element:AttributeList {?>
-	protected void end<?attr:Owner:Name?>_<?attr:Name.firstUpper()?>() {
+	protected void end<?attr:ParentElement:Name?>_<?attr:Name.firstUpper()?>() {
 		List<<?javaType(attr)?>> elementList = (List<<?javaType(attr)?>>) elementStack.pop();
 		if(!elementStack.isEmpty() && !elementList.isEmpty()) {
-			<?attr:Owner:Name?> parentElement = (<?attr:Owner:Name?>) elementStack.peek();
+			<?attr:ParentElement:Name?> parentElement = (<?attr:ParentElement:Name?>) elementStack.peek();
 			for(<?javaType(attr)?> element : elementList) {<?
 					if(javaType(attr) ne 'String') {?>
 				element.setParentElement(parentElement);<?

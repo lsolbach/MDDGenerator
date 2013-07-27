@@ -1,5 +1,4 @@
 <?
-
 string fileComment(map element) {
 ?>/*
  * Class <?name(This)?>
@@ -7,11 +6,18 @@ string fileComment(map element) {
 <? generationInfo(' * ')?>
  */
 <?
+
+list attributeList = getAttributeList(This)
+list addAttributeList = getAdditionalAttributeList(This)
+'// attributeList: ' + join(mapFn(cValue('Name'), attributeList), ', ') + lineFeed()
+'// addAttributeList: ' + join(mapFn(cValue('Name'), addAttributeList), ', ') + lineFeed()
+
 }
 
 map getImportMap(map element) {
 	map importMap
 	add(importMap, 'java.util.*')
+	add(importMap, 'java.io.Serializable')
 	add(importMap, 'org.soulspace.modelling.base.*')
 	add(importMap, 'org.soulspace.modelling.uml14.elements.*')
 	add(importMap, 'org.soulspace.modelling.uml14.types.*')
@@ -22,6 +28,10 @@ list getTypeAnnotationList(map element) {
 	list typeAnnotationList = super(element)
 	typeAnnotationList.add('@SuppressWarnings("unused")')
 	typeAnnotationList
+}
+
+string abstract(map element) {
+	'abstract'
 }
 
 string extension(map element) {

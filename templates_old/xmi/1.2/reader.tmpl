@@ -67,7 +67,6 @@ public class <?name()?> extends DefaultHandler {
 	}
 
 	public void parseXmi(File file, boolean isProfile) throws SAXException, IOException {
-		System.out.println("Parsing file " + file + ". Profile? " + isProfile);
 		elementStack = new Stack<java.lang.Object>();
 	    FileReader r = new FileReader(file);
 	    this.profile = isProfile;	

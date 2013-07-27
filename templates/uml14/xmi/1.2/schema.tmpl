@@ -1,8 +1,10 @@
-<?xml version="1.0" ?>
+<?
+list allPackagesList = getAllSubPackagesList(This)
+allPackagesList.debug('allPackagesList:')
+?><?xml version="1.0" ?>
 <!-- 
-  - UML 1.4/2.0 Schema
-  - Supports Poseidon 4, ArgoUML 0.24
-  - Copyright 2004-2008 Ludger Solbach
+  - UML 1.4 Schema
+  - Copyright 2004-2013 Ludger Solbach
   -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	elementFormDefault="qualified"
@@ -10,7 +12,6 @@
 <!--
   xmlns:XMI="XMI"
   xmlns:UML="UML"
-  xmlns:UML2="UML2"
   targetNamespace="XMI">
 -->
   <xs:element name="XMI">
@@ -66,16 +67,15 @@
   <xs:attribute name="xmi.idref" type="xs:string" /-->
 
 <!-- Types -->
-<?types(This)?>
+<?types(allPackagesList)?>
 
 <!-- Elements -->
-<?elements(This)?>
+<?elements(allPackagesList)?>
 
 </xs:schema>
 <?
-
-string elements(map model) {
-	foreach package <- getPackageList(model) {
+string elements(list allPackagesList) {
+	foreach package <- allPackagesList {
 		foreach class | hasStereotype(class, 'primitive') <- getClassList(package) {
 			primitiveElement(class)
 		}
@@ -88,9 +88,9 @@ string elements(map model) {
 	}
 }
 
-string types(map model) {
-	foreach package <- getPackageList(model) {
-		foreach class | (hasStereotype(class, 'enumeration')) <- getClassList(package) {
+string types(list allPackagesList) {
+	foreach package <- allPackagesList {
+		foreach class | hasStereotype(class, 'enumeration') <- getClassList(package) {
 			enumType(class)
 		}
 	}
@@ -144,6 +144,7 @@ string concreteElement(map element) {
 }
 
 string attributesRefs(map element, map renderedMap) {
+	/* FIXME remove duplicate attribute refs in output  */
 	map dummy = renderedMap.put(element:Name, element:Name)
 	if(getSuperClassList(element).size() > 0) {
 		foreach superClass <- getSuperClassList(element) {
@@ -156,6 +157,7 @@ string attributesRefs(map element, map renderedMap) {
 }
 
 string parentElementRefs(map element, map renderedMap) {
+	/* FIXME remove duplicate element refs in output  */
 	map dummy = renderedMap.put(element:Name, element:Name)
 	if(getSuperClassList(element).size() > 0) {
 		foreach superClass <- getSuperClassList(element) {

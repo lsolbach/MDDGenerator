@@ -70,8 +70,8 @@ string accessors(list elementList) {
 
 list getElementList(map model) {
 	list elementList
-	foreach package <- getPackageList(model) {
-		foreach element | !isAbstract(element) && !element:Stereotypes <- getClassList(package) {
+	foreach package <- getAllSubPackagesList(model) {
+		foreach element | !isAbstract(element) && !hasStereotypes(element) <- getClassList(package) {
 			elementList.add(element)
 		}	
 	}

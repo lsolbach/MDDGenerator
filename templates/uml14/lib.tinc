@@ -20,29 +20,60 @@ string imports(map element) {
 	importJavaOverrides(element)
 }
 
-/* add the properties of association classes to ModelElement */
-map additionalPropertyMap(map element) {
-	map attrMap
-	if(isInstanceOf(element, 'ModelElement')) {
+list getAttributeList(map element) {
+	super(element) + getAdditionalAttributeList(element)
+}
+?><?!--
+list getAttributeList(map element) {
+	list attributeList
+	map attributeMap /* avoid duplicates */
+	foreach attr | !attributeMap[attr:Name] <- element:AllAttributeList {
+		attributeList = attributeList.add(attr)
+		add(attributeMap, attr:Name)
+	}
+	foreach attr | !attributeMap[attr:Name] <- getAdditionalAttributeList(element) {
+		attributeList = attributeList.add(attr)
+	}
+	attributeList
+}--?><?
+
+list getAssociationList(map element) {
+	element:AllAssociationList
+}
+
+list getOperationList(map element) {
+	element:OperationList
+}
+
+/* get the attributes of association classes of ModelElement */
+list getAdditionalAttributeList(map element) {
+	list addList
+	map attrMap	/* collect attributes in map to avoid duplicates */
+	foreach attr <- element:AllAttributeList {
+		attrMap.put(attr:Name, attr)
+	}
+
+	if(isAssignableTo(element, 'ModelElement')) {
+		/* collect association classes for ModelElement */
 		map assoClassMap
-		/* FIXME getAllAssociationList? */
 		foreach asso
 				| asso:Association:ElementType eq 'AssociationClass'
 				<- element:AllAssociationList {
 			assoClassMap.put(asso:Association:Name, asso:Association)
-		}	
-		list keyList = assoClassMap.keyList()
-		foreach assoClassKey <- keyList {
-			map element = assoClassMap[assoClassKey]
-			foreach attr <- element:AttributeList {
+		}
+		/* collect attributes in map to avoid duplicates */
+		foreach assoClassKey <- assoClassMap.keyList() {
+			map asso = assoClassMap[assoClassKey]
+			foreach attr | !attrMap[attr:Name] <- asso:AttributeList {
 				attrMap.put(attr:Name, attr)
+				addList.add(attr)		
 			}
 		}
 	}
-	attrMap
+	addList
 }
 
-/* INFO: these associations have overloaded types in the UML 1.4 model and can not be transformed to java in a clean way. */
+/* INFO: these associations have overloaded types in the UML 1.4 model and can not be transformed to java in a clean way at the moment. */
 numeric isSuppressedAssociation(map element, map asso) {
 	(element:Name eq 'Instance' && asso:Name eq 'owner')
 	||

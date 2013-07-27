@@ -27,26 +27,4 @@ list getExtensionList(map element) {
 	extensionList
 }
 
-
-string properties(map element) {
-	map attrMap = additionalPropertyMap(element)
-	foreach attr | isAccessibleProperty(attr) <- element:AttributeList {
-		attrMap.put(attr:Name, attr)
-	}
-	list keyList = attrMap.keyList()
-	foreach attrKey <- keyList {	
-		property(attrMap[attrKey])
-	}
-}
-
-string associations(map element) {
-	map assoMap
-	foreach asso | isAccessibleAssociation(asso) <- element:AssociationList {
-		assoMap.put(asso:Name, asso)
-	}
-	list keyList = assoMap.keyList()
-	foreach assoKey <- keyList {	
-		association(assoMap[assoKey])
-	}
-}
 ?>

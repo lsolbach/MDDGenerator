@@ -1,5 +1,15 @@
 <?
 
+map getImportMap(map element) {
+	map importMap
+	add(importMap, 'java.util.*')
+	add(importMap, 'java.io.Serializable')
+	add(importMap, 'org.soulspace.modelling.base.*')
+	add(importMap, 'org.soulspace.modelling.uml14.elements.*')
+	add(importMap, 'org.soulspace.modelling.uml14.types.*')
+	importMap
+}
+
 list getTypeAnnotationList(map element) {
 	list typeAnnotationList = super(element)
 	typeAnnotationList.add('@SuppressWarnings("unused")')
