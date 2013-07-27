@@ -271,6 +271,9 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 			ae1.setSourceEnd(ae2);
 			ae2.setSourceEnd(ae1);
 
+			ae1.setAssociation(association);
+			ae2.setAssociation(association);
+			
 			// FIXME generalize
 			if (ae1.getType() instanceof Classifier) {
 //				Classifier cI = createClassifier(xmiObject)
