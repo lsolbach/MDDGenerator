@@ -1,4 +1,4 @@
-<project name="ModelGenerator" default="distribute">
+<project name="MDDGenerator" default="distribute">
 	
 	<property environment="env"/>
 	<property file="build.properties"/>
@@ -17,7 +17,7 @@
 	
 	<target name="check-generate-required">
 		<!--uptodate property="generateModel.notRequired" targetfile="${generate.dir}/src/org/soulspace/modelling/repository/builder/ModelFactory.java" >
-		    <srcfiles dir="${basedir}/../ModelRepository2/model" includes="ModelRepository2.xmi"/>
+		    <srcfiles dir="${basedir}/../MDDRepository/model" includes="MDDRepository.xmi"/>
 		</uptodate-->
 	</target>	
 		

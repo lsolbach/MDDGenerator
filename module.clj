@@ -1,5 +1,5 @@
 [
- :module "ModelGenerator"
+ :module "MDDGenerator"
  :project "org.soulspace.modelling"
  :project-lead "Ludger Solbach"
  :provider "soulspace.org"
@@ -12,8 +12,8 @@
                 [["org.soulspace.common" "JavaUtilLibrary" "0.3.0"]]
                 [["org.soulspace.modelling" "ArgoUMLProfileLibrary" "1.0.0" "ArgoUMLProfileLibrary" "zip"] :generator]
                 [["org.soulspace.modelling" "MDDTemplateLibrary" "1.0.0" "MDDTemplateLibrary" "zip"] :generator]
-;                [["org.soulspace.modelling" "ModelRepository2" "0.3.0" "ModelRepository2" "xmi"] "model"]
-                [["org.soulspace.modelling" "ModelRepository2" "0.3.0"]]
+;                [["org.soulspace.modelling" "MDDRepository" "0.3.0" "MDDRepository" "xmi"] "model"]
+                [["org.soulspace.modelling" "MDDRepository" "0.3.0"]]
                 [["org.soulspace.modelling" "UML14Repository" "0.3.0"]]
                 [["org.soulspace.modelling" "UML14ModelBuilder" "0.3.0"]]
                 [["oro" "oro" "2.0.8"]]
@@ -24,8 +24,8 @@
  :mdsd-config-dir "config"
  :mdsd-config-file "generators.clj"
  :mdsd-template-path "${lib-generator-dir}/templates:templates"
- :mdsd-model-dir "../ModelRepository2/model"
- :mdsd-model-name "ModelRepository2"
+ :mdsd-model-dir "../MDDRepository/model"
+ :mdsd-model-name "MDDRepository"
  :mdsd-std-profiles ["argouml/default-uml14"]
  :log-level :debug
  ]
