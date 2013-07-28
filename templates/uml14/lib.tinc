@@ -23,19 +23,6 @@ string imports(map element) {
 list getAttributeList(map element) {
 	super(element) + getAdditionalAttributeList(element)
 }
-?><?!--
-list getAttributeList(map element) {
-	list attributeList
-	map attributeMap /* avoid duplicates */
-	foreach attr | !attributeMap[attr:Name] <- element:AllAttributeList {
-		attributeList = attributeList.add(attr)
-		add(attributeMap, attr:Name)
-	}
-	foreach attr | !attributeMap[attr:Name] <- getAdditionalAttributeList(element) {
-		attributeList = attributeList.add(attr)
-	}
-	attributeList
-}--?><?
 
 list getAssociationList(map element) {
 	element:AllAssociationList

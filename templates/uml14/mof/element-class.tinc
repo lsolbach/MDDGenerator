@@ -6,12 +6,6 @@ string fileComment(map element) {
 <? generationInfo(' * ')?>
  */
 <?
-
-list attributeList = getAttributeList(This)
-list addAttributeList = getAdditionalAttributeList(This)
-'// attributeList: ' + join(mapFn(cValue('Name'), attributeList), ', ') + lineFeed()
-'// addAttributeList: ' + join(mapFn(cValue('Name'), addAttributeList), ', ') + lineFeed()
-
 }
 
 map getImportMap(map element) {
