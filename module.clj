@@ -2,7 +2,7 @@
  :module "UML14Repository"
  :project "org.soulspace.modelling"
  :type :library
- :version "0.3.0"
+ :version "0.4.0"
  :description "The UML14Repository provides a repository for UML 1.4 models and importers/exporters for XMI 1.2 files"
  :vendor "soulspace.org"
  :plugins ["global" "bmdebug" "sdeps" "mdsd" "java" "package"]
