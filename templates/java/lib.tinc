@@ -332,7 +332,7 @@ string associationCollectionType(map asso) {
 			'Set'
 		}
 	} else if(isQualified(asso)) {
-		list qualifiers = asso:SourceEnd:QualifierList
+		list qualifiers = getQualifierList(asso)
 		if(qualifiers.size() == 1) {
 			if(isPrimitive(qualifiers[0]:Type)) {
 				'List'
@@ -351,12 +351,14 @@ string associationCollectionImplementation(map asso) {
 		'ArrayList'
 	} else if(type eq 'Set') {
 		'HashSet'
+	} else if(type eq 'SortedSet') {
+		'TreeSet'
 	} else if(type eq 'Map') {
 		'HashMap'
 	} else if(type eq 'Collection') {
 		'ArrayList'
 	} else {
-		'// FIXME unknown collection type' 
+		'// FIXME unknown collection type ' 
 	}
 }
 
@@ -422,7 +424,7 @@ string operationParameters(map op) {
 }
 
 string operationParameter(map param) {
-	operationParameterAnnotation(arg) + ' ' + javaType(arg) + ' ' + javaName(arg)
+	operationParameterAnnotation(param) + ' ' + javaType(param) + ' ' + javaName(param)
 }
 
 string operationParameterAnnotation(map param) {
@@ -493,9 +495,13 @@ string javaNameForName(string name) {
 
 string javaType(map element) {
 	if(element:Type) {
+?><?!--
+		/* FIXME Inconsistent with property collection types, make consistent before using arrays as property types */
+		/* TODO use taggedValue type to switch between Array and List? */
 		if(isAttribute(element) && isMany(element)) {
 			javaTypeForType(createDataType('common.types', 'Array'), element:Type:Name)
 		}
+--?><?
 		if(hasStereotype(element, 'typed')) {
 			javaTypeForType(element:Type, taggedValue(element, 'type'))
 		} else {
@@ -572,6 +578,7 @@ numeric isCollection(map type) {
       || type:QualifiedName eq 'java.util.ArrayList'
       || type:QualifiedName eq 'java.util.LinkedList'
       || type:QualifiedName eq 'java.util.Set'
+      || type:QualifiedName eq 'java.util.SortedSet'
       || type:QualifiedName eq 'java.util.HashSet'
       || type:QualifiedName eq 'java.util.TreeSet'
 }

@@ -67,7 +67,7 @@ string associationGetMethod(map asso) {
 }
 
 string associationQualifiedGetMethod(map asso) {?>
-	<?javaType(asso)?> get<?asso:Name.firstUpper()?>(<?associationQualifierParameterss(asso)?>);
+	<?javaType(asso)?> get<?asso:Name.firstUpper()?>(<?qualifierParameters(asso)?>);
 <?
 }
 
@@ -84,8 +84,10 @@ string associationAddMethod(map asso) {
 	if(!isQualified(asso)) {?>
 	void add<?asso:Name.firstUpper()?>(<?javaType(asso)?> <?javaName(asso)?>);
 <?
-	} else {?>
-	void add<?asso:Name.firstUpper()?>(<?javaType(asso:SourceEnd:Qualifiers[0])?> <?javaName(asso:SourceEnd:Qualifiers[0])?>, <?javaType(asso)?> <?javaName(asso)?>);
+	} else {
+		list qualifierList = getQualifierList(asso)
+	?>
+	void add<?asso:Name.firstUpper()?>(<?javaType(qualifierList[0])?> <?javaName(qualifierList[0])?>, <?javaType(asso)?> <?javaName(asso)?>);
 <?
 	}
 }

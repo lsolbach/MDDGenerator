@@ -22,25 +22,34 @@ string generationInfo(string prefix) {
 }
 
 numeric hasGeneratorValue(string name) {
-	GenContext[name] ne ''
+	GENERATOR_CONTEXT[name] ne ''
 }
 
 any generatorValue(string name) {
-	if(GenContext[name]) {
-		GenContext[name]
+	if(GENERATOR_CONTEXT[name]) {
+		GENERATOR_CONTEXT[name]
 	}
 }
 
 numeric hasGeneratorParam(string name) {
-	GenContext:ParamMap[name] ne ''
+	GENERATOR_CONTEXT:ParamMap[name] ne ''
 }
 
 string generatorParam(string name) {
-	if(GenContext:ParamMap[name]) {
-		GenContext:ParamMap[name]:Value
+	if(GENERATOR_CONTEXT:ParamMap[name]) {
+		GENERATOR_CONTEXT:ParamMap[name]:Value
 	}
 }
 
+string protectedArea(string id, string beginComment, string endComment) {
+	protectedArea(id, beginComment, '')
+}
+
+string protectedArea(string id, string beginComment, string endComment) {
+	beginComment + generatorValue('protectedArea') + '-BEGIN(' + replace(id, '-', '=') + ')' + endComment?>
+<?PROTECTED_AREAS[id]?><?
+	beginComment + generatorValue('protectedArea') + '-END(' + replace(id, '-', '=') + ')' + endComment
+}
 
 /* model checks */
 
@@ -405,12 +414,23 @@ map getModel(map element) {
 	result
 }
 
-list getStereotypeList(map package) {
-	filter(isStereotype, package:OwnedElementSet)
+/* recursively collect all sub packages */
+/* that is all packages when called on model */
+list getAllSubPackagesList(map element) {
+	list packageList
+	foreach package <- getPackageList(element) {
+		packageList.add(package)
+		getAllSubPackagesList(package, packageList)
+	}
+	packageList
 }
 
-list getTagDefinitionList(map package) {
-	filter(isTagDefinition, package:OwnedElementSet)
+list getAllSubPackagesList(map element, list packageList) {
+	foreach package <- getPackageList(element) {
+		packageList.add(package)
+		getAllSubPackagesList(package, packageList)
+	}
+	packageList
 }
 
 list getPackageList(map package) {
@@ -483,6 +503,14 @@ map getDependencySupplier(map dependency) {
 
 map getDependencyClient(map dependency) {
 	dependency:Client
+}
+
+list getStereotypeList(map package) {
+	filter(isStereotype, package:OwnedElementSet)
+}
+
+list getTagDefinitionList(map package) {
+	filter(isTagDefinition, package:OwnedElementSet)
 }
 
 string modelName(map element) {

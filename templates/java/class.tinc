@@ -310,11 +310,11 @@ string associationReturn(map asso) {
 	if(!isMany(asso) && !isQualified(asso)) {
 		associationName(asso)
 	} else if(isQualified(asso)) {
-		list qualifiers = asso:SourceEnd:Qualifiers
+		list qualifiers = asso:SourceEnd:QualifierList
 	} else if(isMany(asso)) {
 		if(collectionType eq 'List') {
 			'Collections.unmodifiableList(' + associationName(asso) + ')'		
-		} else if(collectionType eq 'Set') {
+		} else if(collectionType eq 'Set' || collectionType eq 'SortedSet') {
 			'Collections.unmodifiableSet(' + associationName(asso) + ')'
 		} else if(collectionType eq 'Map') {
 			'Collections.unmodifiableMap(' + associationName(asso) + ')'
@@ -341,7 +341,7 @@ string associationQualifiedGetMethod(map asso) {
 }
 
 string associationQualifiedGetMethodBody(map asso) {
-	'return ' + associationName(asso) + '.get(' + qualifierParameters(asso) + ');'
+	'return ' + associationName(asso) + '.get(' + qualifierArguments(asso) + ');'
 }
 
 string associationSetMethod(map asso) {
@@ -370,7 +370,7 @@ string associationAddMethod(map asso) {
 	}
 <?
 	} else {?>
-	<?associationAddMethodModifiers(asso)?> void add<?asso:Name.firstUpper()?>(<?javaType(asso:SourceEnd:Qualifiers[0])?> <?javaName(asso:SourceEnd:Qualifiers[0])?>, <?javaType(asso)?> <?javaName(asso)?>) {
+	<?associationAddMethodModifiers(asso)?> void add<?asso:Name.firstUpper()?>(<?javaType(asso:SourceEnd:QualifierList[0])?> <?javaName(asso:SourceEnd:QualifierList[0])?>, <?javaType(asso)?> <?javaName(asso)?>) {
 		<?associationQualifiedAddMethodBody(asso)?>
 	}
 <?
@@ -386,7 +386,7 @@ string associationAddMethodBody(map asso) {
 }
 
 string associationQualifiedAddMethodBody(map asso) {
-	associationName(asso) + '.put(' + javaName(asso:SourceEnd:Qualifiers[0]) + ', ' + javaName(asso)+ ');'
+	associationName(asso) + '.put(' + javaName(asso:SourceEnd:QualifierList[0]) + ', ' + javaName(asso)+ ');'
 }
 
 string associationRemoveMethod(map asso) {
