@@ -28,7 +28,7 @@ public class GeneratorContext {
 
 	private String generationFilterPattern = "";
 
-	private String userSection = "";
+	private String protectedArea = "";
 
 	private String baseNamespace = "";
 
@@ -307,16 +307,16 @@ public class GeneratorContext {
 	/**
 	 * @return the userSection
 	 */
-	public String getUserSection() {
-		return userSection;
+	public String getProtectedArea() {
+		return protectedArea;
 	}
 
 	/**
 	 * @param userSection
 	 *            the userSection to set
 	 */
-	public void setUserSection(String userSection) {
-		this.userSection = userSection;
+	public void setProtectedArea(String protectedArea) {
+		this.protectedArea = protectedArea;
 	}
 
 	/**

@@ -249,11 +249,11 @@ public abstract class ModelElementGenerator {
 	}
 
 	public String getUserSection() {
-		return genContext.getUserSection();
+		return genContext.getProtectedArea();
 	}
 
-	public void setUserSection(String userSection) {
-		genContext.setUserSection(userSection);
+	public void setUserSection(String protectedArea) {
+		genContext.setProtectedArea(protectedArea);
 	}
 
 	public void setNamespaceIncludes(String namespaceIncludes) {
@@ -456,7 +456,7 @@ public abstract class ModelElementGenerator {
 			return;
 		}
 		String output;
-		Map<String, String> userSections = null;
+		Map<String, String> protectedAreas = null;
 		// dataSource = ctx.getDataSource();
 
 		engine = getEngine(ctx);
@@ -467,9 +467,9 @@ public abstract class ModelElementGenerator {
 		} else {
 			myDS = new BeanDataSourceImpl(element);
 		}
-		if (isSet(genContext.getUserSection())) {
-			userSections = readUserSections(getPath(ctx, element, true));
-			myDS.add("USERSECTIONS", userSections);
+		if (isSet(genContext.getProtectedArea())) {
+			protectedAreas = readProtectedAreas(getPath(ctx, element, true));
+			myDS.add("PROTECTED_AREAS", protectedAreas);
 		}
 		try {
 			myDS.add("GenContext", genContext);
@@ -686,8 +686,8 @@ public abstract class ModelElementGenerator {
 		return true;
 	}
 
-	protected Map<String, String> readUserSections(String filename) {
-		Map<String, String> userSections = new HashMap<String, String>();
+	protected Map<String, String> readProtectedAreas(String filename) {
+		Map<String, String> protectedAreas = new HashMap<String, String>();
 		String line = null;
 		String name = "";
 		MatchResult result = null;
@@ -697,7 +697,7 @@ public abstract class ModelElementGenerator {
 			in = new BufferedReader(new FileReader(filename));
 		} catch (FileNotFoundException e) {
 			System.out.println("File " + filename + " not found.");
-			return userSections;
+			return protectedAreas;
 		}
 
 		try {
@@ -705,13 +705,13 @@ public abstract class ModelElementGenerator {
 			while ((line = in.readLine()) != null) {
 				// match user section
 				if ((result = RegExHelper.match(line, "^.*"
-						+ genContext.getUserSection() + "-BEGIN\\((.*)\\).*$")) != null) {
+						+ genContext.getProtectedArea() + "-BEGIN\\((.*)\\).*$")) != null) {
 					name = result.group(1);
 					sb = new StringBuffer(64);
 				} else if ((result = RegExHelper.match(line, "^.*"
-						+ genContext.getUserSection() + "-END\\(" + name
+						+ genContext.getProtectedArea() + "-END\\(" + name
 						+ "\\).*$")) != null) {
-					userSections.put(name, sb.toString());
+					protectedAreas.put(name, sb.toString());
 					sb = null;
 					name = "";
 				} else if (sb != null) { // ) {
@@ -725,7 +725,7 @@ public abstract class ModelElementGenerator {
 					+ filename, e);
 		}
 
-		return userSections;
+		return protectedAreas;
 	}
 
 	boolean isSet(String s) {
