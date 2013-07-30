@@ -472,7 +472,7 @@ public abstract class ModelElementGenerator {
 			myDS.add("PROTECTED_AREAS", protectedAreas);
 		}
 		try {
-			myDS.add("GenContext", genContext);
+			myDS.add("GENERATOR_CONTEXT", genContext);
 
 			output = engine.generate(myDS);
 
