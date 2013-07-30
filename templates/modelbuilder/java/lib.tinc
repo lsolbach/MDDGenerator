@@ -1,10 +1,8 @@
 <?
 list factoryElementList(map model) {
 	list elementList
-	foreach package <- getPackageList(model) {
-		foreach element
-				| !hasStereotype(element)
-				<- getClassList(package) {
+	foreach package <- getAllSubPackagesList(model) {
+		foreach element	| !hasStereotypes(element) <- getClassList(package) {
 			elementList.add(element)
 		}
 	}
