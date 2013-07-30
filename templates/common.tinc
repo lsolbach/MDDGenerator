@@ -1,5 +1,5 @@
 <?
 numeric isConcreteModelElement(map element) {
-	 isInstanceOf(element, 'ModelElement') && !isAbstract(element)
+	 isAssignableTo(element, 'ModelElement') && !isAbstract(element)
 }
 ?>

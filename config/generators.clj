@@ -1,12 +1,12 @@
 {:standard-generators
  [
-  {:element "class"
+  {:element "Class"
    :template "generator-class"
    :includes ["lib" "model/lib" "java/lib" "common"]
    :suffix "Generator"
    :subdir "src"
    :extension "java"
-   :namespaceReplacement "org.soulspace.modelling.generator"
+   :baseNamespace "org.soulspace.modelling.generator"
    :namespaceIncludes "org.soulspace.modelling.repository.elements"
    :generationFilterPattern "^\\s*$"
    :stereotypes "NONE"
@@ -14,31 +14,28 @@
   {:element "Package"
    :template "generator-group"
    :includes ["lib" "model/lib" "java/lib" "common"]
-   :basename "GeneratorGroup"
+   :baseName "GeneratorGroup"
    :subdir "src"
    :extension "java"
-   :namespaceReplacement "org.soulspace.modelling.generator"
-   :useNameAsNamespace "true"
+   :baseNamespace "org.soulspace.modelling.generator"
    :stereotypes "model elements"
 		}
   {:element "Package"
    :template "generation-context"
    :includes ["lib" "model/lib" "java/lib" "common"]
-   :basename "AbstractGenerationContext"
+   :baseName "AbstractGenerationContext"
    :subdir "src"
    :extension "java"
-   :namespaceReplacement "org.soulspace.modelling.generator"
-   :useNameAsNamespace "true"
+   :baseNamespace "org.soulspace.modelling.generator"
    :stereotypes "model elements"
    }
   {:element "Package"
    :template "generator-task"
    :includes ["lib" "model/lib" "java/lib" "common"]
-   :basename "AbstractGeneratorTask"
+   :baseName "AbstractGeneratorTask"
    :subdir "src"
    :extension "java"
-   :namespaceReplacement "org.soulspace.modelling.generator.ant"
-   :useNameAsNamespace "true"
+   :baseNamespace "org.soulspace.modelling.generator.ant"
    :stereotypes "model elements"
    }
   ]

@@ -600,10 +600,10 @@ public abstract class ModelElementGenerator {
 						.replace('.', File.separatorChar)
 						+ File.separatorChar);
 			}
-			if (genContext.getUseNameAsNamespace()) {
-				sb.append(element.getName().replace('.', File.separatorChar)
-						+ File.separatorChar);
-			}
+		}
+		if (genContext.getUseNameAsNamespace()) {
+			sb.append(element.getName().replace('.', File.separatorChar)
+					+ File.separatorChar);
 		}
 		if (StringHelper.isSet(genContext.getNamespaceSuffix())) {
 			sb.append(genContext.getNamespaceSuffix().replace('.',

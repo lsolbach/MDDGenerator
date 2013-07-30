@@ -9,7 +9,7 @@ public class <?name(This)?> {
 	private List<GeneratorGroup> generatorGroups = new ArrayList<GeneratorGroup>();
 <?join(mapFiltered(property, isConcreteModelElement, getClassList(This)), lineFeed())?>
 
-	public <?name()?>() {
+	public <?name(This)?>() {
 		super();	
 	}
 
