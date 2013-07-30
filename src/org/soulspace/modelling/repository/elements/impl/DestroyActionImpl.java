@@ -11,6 +11,8 @@ import org.soulspace.modelling.repository.elements.TaggedValue;
 public class DestroyActionImpl extends AbstractDestroyAction implements
 		DestroyAction {
 
+	private static final long serialVersionUID = 1L;
+
 	Set<TaggedValue> taggedValueSet = null;
 	Set<Stereotype> stereotypeSet = null;
 	

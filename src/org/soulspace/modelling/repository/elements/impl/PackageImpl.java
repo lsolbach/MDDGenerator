@@ -10,6 +10,8 @@ import org.soulspace.modelling.repository.elements.Package;
 
 public class PackageImpl extends AbstractPackage {
 
+	private static final long serialVersionUID = 1L;
+
 	Set<TaggedValue> taggedValueSet = null;
 	Set<Stereotype> stereotypeSet = null;
 	

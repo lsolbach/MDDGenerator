@@ -4,19 +4,29 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.soulspace.modelling.repository.elements.AbstractSubState;
+import org.soulspace.modelling.repository.elements.Element;
 import org.soulspace.modelling.repository.elements.Stereotype;
 import org.soulspace.modelling.repository.elements.TaggedValue;
 
 public class SubStateImpl extends AbstractSubState {
 
+	private static final long serialVersionUID = 1L;
+
 	Set<TaggedValue> taggedValueSet = null;
 	Set<Stereotype> stereotypeSet = null;
 	
 	public SubStateImpl() {
+		super();
 	}
 
-	public SubStateImpl(String referenceState) {
-		super(referenceState);
+	public SubStateImpl(String id, boolean isProfileElement, boolean initialized, String name, String namespace,
+			String qualifiedName, String referenceState, Element parentElement) {
+		super(id, isProfileElement, initialized, name, namespace, qualifiedName, referenceState, parentElement);
+	}
+
+	public SubStateImpl(String id, boolean isProfileElement, boolean initialized, String name, String namespace,
+			String qualifiedName, String referenceState) {
+		super(id, isProfileElement, initialized, name, namespace, qualifiedName, referenceState);
 	}
 
 	@Override

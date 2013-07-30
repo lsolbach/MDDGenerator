@@ -1,6 +1,7 @@
 package org.soulspace.modelling.repository.elements.impl;
 
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.soulspace.modelling.repository.elements.AbstractActionSequence;
@@ -8,6 +9,8 @@ import org.soulspace.modelling.repository.elements.Stereotype;
 import org.soulspace.modelling.repository.elements.TaggedValue;
 
 public class ActionSequenceImpl extends AbstractActionSequence {
+
+	private static final long serialVersionUID = 1L;
 
 	Set<TaggedValue> taggedValueSet = null;
 	Set<Stereotype> stereotypeSet = null;

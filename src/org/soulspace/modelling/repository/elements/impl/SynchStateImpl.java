@@ -4,19 +4,29 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.soulspace.modelling.repository.elements.AbstractSynchState;
+import org.soulspace.modelling.repository.elements.Element;
 import org.soulspace.modelling.repository.elements.Stereotype;
 import org.soulspace.modelling.repository.elements.TaggedValue;
 
 public class SynchStateImpl extends AbstractSynchState {
 
+	private static final long serialVersionUID = 1L;
+
 	Set<TaggedValue> taggedValueSet = null;
 	Set<Stereotype> stereotypeSet = null;
 	
 	public SynchStateImpl() {
+		super();
 	}
 
-	public SynchStateImpl(int bound) {
-		super(bound);
+	public SynchStateImpl(String id, boolean isProfileElement, boolean initialized, String name, String namespace,
+			String qualifiedName, int bound, Element parentElement) {
+		super(id, isProfileElement, initialized, name, namespace, qualifiedName, bound, parentElement);
+	}
+
+	public SynchStateImpl(String id, boolean isProfileElement, boolean initialized, String name, String namespace,
+			String qualifiedName, int bound) {
+		super(id, isProfileElement, initialized, name, namespace, qualifiedName, bound);
 	}
 
 	@Override

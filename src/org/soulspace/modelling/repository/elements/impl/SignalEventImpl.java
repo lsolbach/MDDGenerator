@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.soulspace.modelling.repository.elements.AbstractSignalEvent;
+import org.soulspace.modelling.repository.elements.Element;
 import org.soulspace.modelling.repository.elements.Signal;
 import org.soulspace.modelling.repository.elements.SignalEvent;
 import org.soulspace.modelling.repository.elements.Stereotype;
@@ -11,16 +12,23 @@ import org.soulspace.modelling.repository.elements.TaggedValue;
 
 public class SignalEventImpl extends AbstractSignalEvent implements SignalEvent {
 
+	private static final long serialVersionUID = 1L;
+
 	Set<TaggedValue> taggedValueSet = null;
 	Set<Stereotype> stereotypeSet = null;
 	
 	public SignalEventImpl() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
-	public SignalEventImpl(Signal signal) {
-		super(signal);
-		// TODO Auto-generated constructor stub
+	public SignalEventImpl(String id, boolean isProfileElement, boolean initialized, String name, String namespace,
+			String qualifiedName, Element parentElement, Signal signal) {
+		super(id, isProfileElement, initialized, name, namespace, qualifiedName, parentElement, signal);
+	}
+
+	public SignalEventImpl(String id, boolean isProfileElement, boolean initialized, String name, String namespace,
+			String qualifiedName, Signal signal) {
+		super(id, isProfileElement, initialized, name, namespace, qualifiedName, signal);
 	}
 
 	@Override

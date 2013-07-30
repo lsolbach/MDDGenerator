@@ -10,6 +10,8 @@ import org.soulspace.modelling.repository.elements.Class;
 
 public class ClassImpl extends AbstractClass {
 
+	private static final long serialVersionUID = 1L;
+
 	Set<TaggedValue> taggedValueSet = null;
 	Set<Stereotype> stereotypeSet = null;
 	

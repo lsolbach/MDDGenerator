@@ -12,6 +12,8 @@ import org.soulspace.modelling.repository.elements.Operation;
 
 public class AssociationClassImpl extends ClassImpl implements AssociationClass {
 
+	private static final long serialVersionUID = 1L;
+
 	private List<AssociationEnd> connectionList = new ArrayList<AssociationEnd>();
 	
 	public String getElementType() {

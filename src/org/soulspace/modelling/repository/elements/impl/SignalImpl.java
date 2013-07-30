@@ -10,6 +10,8 @@ import org.soulspace.modelling.repository.elements.TaggedValue;
 
 public class SignalImpl extends AbstractSignal implements Signal {
 
+	private static final long serialVersionUID = 1L;
+
 	Set<TaggedValue> taggedValueSet = null;
 	Set<Stereotype> stereotypeSet = null;
 	

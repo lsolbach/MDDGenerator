@@ -7,6 +7,8 @@ import org.soulspace.modelling.repository.elements.*;
 
 public class AttributeImpl extends AbstractAttribute {
 
+	private static final long serialVersionUID = 1L;
+
 	Set<TaggedValue> taggedValueSet = null;
 	Set<Stereotype> stereotypeSet = null;
 	

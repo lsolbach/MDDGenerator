@@ -4,6 +4,8 @@ import org.soulspace.modelling.repository.elements.*;
 
 public class ElementImpl extends AbstractElement {
 
+	private static final long serialVersionUID = 1L;
+
 	public ElementImpl() {
 		super();
 	}

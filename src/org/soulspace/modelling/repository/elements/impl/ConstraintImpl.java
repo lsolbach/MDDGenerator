@@ -4,11 +4,14 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.soulspace.modelling.repository.elements.AbstractConstraint;
+import org.soulspace.modelling.repository.elements.Element;
 import org.soulspace.modelling.repository.elements.Expression;
 import org.soulspace.modelling.repository.elements.Stereotype;
 import org.soulspace.modelling.repository.elements.TaggedValue;
 
 public class ConstraintImpl extends AbstractConstraint {
+
+	private static final long serialVersionUID = 1L;
 
 	Set<TaggedValue> taggedValueSet = null;
 	Set<Stereotype> stereotypeSet = null;
@@ -17,8 +20,14 @@ public class ConstraintImpl extends AbstractConstraint {
 
 	}
 
-	public ConstraintImpl(Expression expression) {
-		super(expression);
+	public ConstraintImpl(String id, boolean isProfileElement, boolean initialized, String name, String namespace,
+			String qualifiedName, Expression expression, Element parentElement) {
+		super(id, isProfileElement, initialized, name, namespace, qualifiedName, expression, parentElement);
+	}
+
+	public ConstraintImpl(String id, boolean isProfileElement, boolean initialized, String name, String namespace,
+			String qualifiedName, Expression expression) {
+		super(id, isProfileElement, initialized, name, namespace, qualifiedName, expression);
 	}
 
 	@Override

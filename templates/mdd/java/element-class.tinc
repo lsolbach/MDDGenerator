@@ -1,0 +1,40 @@
+<?
+
+numeric isAccessibleProperty(map attr) {
+	!isDerived(attr)
+}
+
+string abstract(map element) {
+	'abstract'
+}
+
+string extension(map element) {
+}
+
+string operations(map element) {
+	elementAccessors(element)
+
+	super(element)
+
+	compareTo(element)
+}
+
+string elementAccessors(map element) {?>
+	public String getElementType() {
+		return "<?Name?>";
+	}
+	
+	public Element getThis() {
+		return this;
+	}
+<?
+}
+
+string compareTo(map element) {?>
+	public int compareTo(Element e) {
+		return getId().compareTo(e.getId());
+	}
+<?
+}
+
+?>

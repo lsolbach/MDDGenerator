@@ -5,10 +5,13 @@ import java.util.TreeSet;
 
 import org.soulspace.modelling.repository.elements.AbstractActor;
 import org.soulspace.modelling.repository.elements.Actor;
+import org.soulspace.modelling.repository.elements.Element;
 import org.soulspace.modelling.repository.elements.Stereotype;
 import org.soulspace.modelling.repository.elements.TaggedValue;
 
 public class ActorImpl extends AbstractActor {
+
+	private static final long serialVersionUID = 1L;
 
 	Set<TaggedValue> taggedValueSet = null;
 	Set<Stereotype> stereotypeSet = null;
@@ -17,9 +20,16 @@ public class ActorImpl extends AbstractActor {
 		super();
 	}
 
-	public ActorImpl(Actor subActor, Actor superActor) {
-		super(subActor, superActor);
+	public ActorImpl(String id, boolean isProfileElement, boolean initialized, String name, String namespace, String qualifiedName,
+			Actor subActor, Actor superActor) {
+		super(id, isProfileElement, initialized, name, namespace, qualifiedName, subActor, superActor);
 	}
+
+	public ActorImpl(String id, boolean isProfileElement, boolean initialized, String name, String namespace, String qualifiedName,
+			Element parentElement, Actor subActor, Actor superActor) {
+		super(id, isProfileElement, initialized, name, namespace, qualifiedName, parentElement, subActor, superActor);
+	}
+
 
 	@Override
 	protected Set<TaggedValue> doGetTaggedValueSet() {
@@ -28,7 +38,6 @@ public class ActorImpl extends AbstractActor {
 			for(String key : getTaggedValueMap().keySet()) {
 				taggedValueSet.add(getTaggedValue(key));
 			}
-			
 		}
 		return taggedValueSet;
 	}

@@ -4,20 +4,29 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.soulspace.modelling.repository.elements.AbstractComment;
+import org.soulspace.modelling.repository.elements.Element;
 import org.soulspace.modelling.repository.elements.Stereotype;
 import org.soulspace.modelling.repository.elements.TaggedValue;
 
 public class CommentImpl extends AbstractComment {
 
+	private static final long serialVersionUID = 1L;
+
 	Set<TaggedValue> taggedValueSet = null;
 	Set<Stereotype> stereotypeSet = null;
 	
 	public CommentImpl() {
-
+		super();
 	}
 
-	public CommentImpl(String body) {
-		super(body);
+	public CommentImpl(String id, boolean isProfileElement, boolean initialized, String name, String namespace,
+			String qualifiedName, String body, Element parentElement) {
+		super(id, isProfileElement, initialized, name, namespace, qualifiedName, body, parentElement);
+	}
+
+	public CommentImpl(String id, boolean isProfileElement, boolean initialized, String name, String namespace,
+			String qualifiedName, String body) {
+		super(id, isProfileElement, initialized, name, namespace, qualifiedName, body);
 	}
 
 	@Override

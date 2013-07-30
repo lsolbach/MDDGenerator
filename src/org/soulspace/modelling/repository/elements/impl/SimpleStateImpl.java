@@ -9,6 +9,8 @@ import org.soulspace.modelling.repository.elements.TaggedValue;
 
 public class SimpleStateImpl extends AbstractSimpleState {
 
+	private static final long serialVersionUID = 1L;
+
 	Set<TaggedValue> taggedValueSet = null;
 	Set<Stereotype> stereotypeSet = null;
 	
