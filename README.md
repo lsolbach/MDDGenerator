@@ -21,6 +21,9 @@ Code Repository
 History
 -------
 
+Version 0.4.0 (--.--.2013)
+--------------------------
+
 Version 0.3.0 (28.07.2013)
 --------------------------
 * refactored templates for self hosting
