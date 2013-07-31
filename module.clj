@@ -4,8 +4,8 @@
  :type :library
  :version "0.4.0"
  :description "A builder for generator models from UML 1.4/XMI 1.2 models"
- :vendor "soulspace.org"
- :plugins ["global" "sdeps" "mdsd" "java" "package"]
+ :provider "soulspace.org"
+ :plugins ["global" "sdeps" "depsdot" "mdsd" "java" "package"]
  :dependencies [[["org.soulspace.modelling" "UML14Repository" "0.4.0"]]
                 [["org.soulspace.modelling" "MDDRepository" "0.4.0"]]
                 [["org.soulspace.modelling" "ArgoUMLProfileLibrary" "1.0.0" "ArgoUMLProfileLibrary" "zip"] :generator]
