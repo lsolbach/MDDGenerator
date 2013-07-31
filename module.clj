@@ -4,8 +4,8 @@
  :type :library
  :version "0.4.0"
  :description "The module MDDRepository contains the model repository of the MDD Generator Framework to facilitate code generation."
- :vendor "soulspace.org"
- :plugins ["global" "sdeps" "mdsd" "java" "package"]
+ :provider "soulspace.org"
+ :plugins ["global" "sdeps" "depsdot" "mdsd" "java" "package"]
  :dependencies [[["junit" "junit" "3.8.1"] :dev]
                 [["org.soulspace.modelling" "ArgoUMLProfileLibrary" "1.0.0" "ArgoUMLProfileLibrary" "zip"] :generator]
                 [["org.soulspace.modelling" "MDDTemplateLibrary" "1.0.0" "MDDTemplateLibrary" "zip"] :generator]]
