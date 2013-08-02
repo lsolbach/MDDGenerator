@@ -453,7 +453,7 @@ string returnType(map op) {
 
 /* annotation rendering */
 string memberAnnotations(list annotationList) {
-	join(annotationList, lineFeed() + tab())
+	tab () + join(annotationList, lineFeed() + tab())
 }
 
 string parameterAnnotations(list annotationList) {
