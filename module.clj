@@ -7,7 +7,7 @@
  :version "0.4.0"
  :description "Generator framework for model driven software development. Contains generators and ant tasks."
  :license ["Eclipse Public License 1.0" "http://www.eclipse.org/legal/epl-v10.html"]
- :plugins ["global" "sdeps" "depsdot" "mdsd" "java" "package"]
+ :plugins ["global" "sdependencies" "mdsd" "java" "junit" "package"]
  :dependencies [[["org.soulspace.template" "TemplateEngine" "1.0.1"]]
                 [["org.soulspace.common" "JavaUtilLibrary" "0.3.0"]]
                 [["org.soulspace.modelling" "ArgoUMLProfileLibrary" "1.0.0" "ArgoUMLProfileLibrary" "zip"] :generator]
