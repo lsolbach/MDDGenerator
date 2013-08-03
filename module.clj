@@ -6,5 +6,5 @@
  :description "Templates for model driven software development"
  :author "Ludger Solbach"
  :provider "soulspace.org"
- :plugins ["global" "sdeps" "package"] 
+ :plugins ["global" "dependencies" "package"] 
  ]
