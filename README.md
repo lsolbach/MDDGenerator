@@ -1,7 +1,6 @@
 MDDGenerator
 ============
-Ant tasks and generators for the MDD Generator Framework.
-Contains generators for every ModelElement in the MDDRepository meta model.
+The MDDGenerator module contains generators for each model element in the MDDRepository meta model and ant tasks for the MDD Generator Framework.
 
 Author/Project Lead
 -------------------
