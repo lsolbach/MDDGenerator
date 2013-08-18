@@ -2,6 +2,14 @@ MDDTemplateLibrary
 ==================
 The MDDTemplateLibrary is a library of templates for the MDD Generator Framework.
 
+It contains a library include of basic functions and templates and includes for
+* MDD meta model navigation
+* Java, AspectJ and Clojure source code generation
+* Database DDL generation
+* HTML generation
+* Graphviz DOT file geeneration
+* XML generation
+
 Author/Project Lead
 -------------------
 Ludger Solbach
