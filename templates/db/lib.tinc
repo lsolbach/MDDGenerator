@@ -6,6 +6,10 @@
  *
  * ©2010-2012 Ludger Solbach
  --?><?
+string comment(string text) {
+	'-- ' + text
+}
+
 string dbName(string name) {
 	name.camelCaseToUnderScore()
 }
