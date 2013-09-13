@@ -31,4 +31,58 @@ string operations(map element) {
 	hashcode(element)
 	toString(element)
 }
+
+string equals(map element) {?>
+	public boolean equals(java.lang.Object obj) {
+	  	if(this == obj) return true;
+ 	 	if(!(obj instanceof <?name(element)?>)) return false;
+  	
+	  	<?name(element)?> other = (<?name(element)?>) obj;
+
+	  	if(getClass().getSuperclass() != null && getClass().getSuperclass() != java.lang.Object.class) {
+	  	  if(!super.equals(other)) return false;
+	    }<?
+	foreach attr | !isDerived(attr) <- getAttributeList(element) {
+		if(isPrimitive(attr:Type)) {?>
+		if(get<?propertyMethodBase(attr)?>() != other.get<?propertyMethodBase(attr)?>()) return false;<?
+		} else {?>
+		if(get<?propertyMethodBase(attr)?>().equals(other.get<?propertyMethodBase(attr)?>())) return false;<?
+		}
+	}?>
+		return true;
+	}
+<?
+}
+
+string hashcode(map element) {?>
+	public int hashCode() {
+		int result = 17;
+		if(getClass().getSuperclass() != null && getClass().getSuperclass() != java.lang.Object.class) {
+			result = 29 * result + super.hashCode();
+		}<?
+	foreach attr | !isDerived(attr) <- getAttributeList(element) {
+		if((javaType(attr) eq 'byte')
+			|| (javaType(attr) eq 'char')
+			|| (javaType(attr) eq 'short')
+			|| (javaType(attr) eq 'int')) {?>
+		result = 29 * result + get<?propertyMethodBase(attr)?>();<?
+		} else if(javaType(attr) eq 'long') {?>
+		result = 29 * result + (int) (get<?propertyMethodBase(attr)?>() ^ get<?propertyMethodBase(attr)?>() >>> 32));<?
+		} else if(javaType(attr) eq 'float') {?>
+		result = 29 * result + Float.floatToIntBits(get<?propertyMethodBase(attr)?>());<?
+		} else if(javaType(attr) eq 'double') {?>
+		result = 29 * result + Double.doubleToIntBits(get<?propertyMethodBase(attr)?>());<?
+		} else if(javaType(attr) eq 'boolean') {?>
+		result = 29 * result + (<?get<?propertyMethodBase(attr)?>() ? 1 : 0);<? 
+		} else {?>
+  		if(get<?propertyMethodBase(attr)?>() != null) {
+			result = 29 * result + get<?propertyMethodBase(attr)?>().hashCode();
+		}<?
+  		  }
+  	  }?>
+		return result;
+	}
+<?
+}
+
 ?>

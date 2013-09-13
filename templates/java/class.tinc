@@ -461,9 +461,9 @@ string equals(map element) {?>
 	    }<?
 	foreach attr | !isDerived(attr) <- getAttributeList(element) {
 		if(isPrimitive(attr:Type)) {?>
-		if(get<?propertyMethodBase(attr)?>() != other.get<?propertyMethodBase(attr)?>()) return false;<?
+		if(<?attr:Name?> != other.<?attr:Name?>) return false;<?
 		} else {?>
-		if(get<?propertyMethodBase(attr)?>().equals(other.get<?propertyMethodBase(attr)?>())) return false;<?
+		if(<?propertyName(attr)?>.equals(other.<?propertyName(attr)?>)) return false;<?
 		}
 	}?>
 		return true;
@@ -490,7 +490,7 @@ string hashcode(map element) {?>
 		} else if(javaType(attr) eq 'double') {?>
 		result = 29 * result + Double.doubleToIntBits(<?attr:Name?>);<?
 		} else if(javaType(attr) eq 'boolean') {?>
-		result = 29 * result + (<?attr:Name + '?1:0'?>);<? 
+		result = 29 * result + (<?attr:Name?> + ' ? 1 : 0'?>);<? 
 		} else {?>
   		if(<?propertyName(attr)?> != null) {
 			result = 29 * result + <?propertyName(attr)?>.hashCode();
