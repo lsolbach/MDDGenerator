@@ -2,7 +2,7 @@
  :module "MDDRepository"
  :project "org.soulspace.modelling"
  :type :library
- :version "0.4.0"
+ :version "0.5.0"
  :description "The module MDDRepository contains the model repository of the MDD Generator Framework to facilitate code generation."
  :provider "soulspace.org"
  :plugins ["global" "dependencies" "mdsd" "java" "package" "release"]

@@ -9,40 +9,59 @@
  */
 package org.soulspace.modelling.repository.elements.impl;
 
-import java.util.Set;
-import java.util.TreeSet;
-
+import org.soulspace.modelling.repository.elements.Stereotype;
+import java.util.*;
+import org.soulspace.modelling.repository.elements.StateMachine;
+import org.soulspace.modelling.repository.elements.Dependency;
 import org.soulspace.modelling.repository.elements.*;
+import org.soulspace.modelling.repository.elements.Constraint;
+import org.soulspace.modelling.repository.elements.TagDefinition;
+import org.soulspace.modelling.repository.elements.Comment;
+import org.soulspace.modelling.repository.elements.Element;
+import org.soulspace.modelling.repository.elements.TaggedValue;
 
-public class TaggedValueImpl extends AbstractTaggedValue {
+public  class TaggedValueImpl extends AbstractTaggedValue implements TaggedValue {
 
 	private static final long serialVersionUID = 1L;
 
-	Set<TaggedValue> taggedValueSet = null;
-	Set<Stereotype> stereotypeSet = null;
+	public TaggedValueImpl() {
+		super();
+	}
 	
+	public TaggedValueImpl( String id,  boolean isProfileElement,  boolean initialized,  String namespace,  String qualifiedName,  String value,  String name,  Element parentElement,  TagDefinition type) {
+		super(id, isProfileElement, initialized, namespace, qualifiedName, value, name, parentElement, type);
+	}
+	
+	public TaggedValueImpl( String id,  boolean isProfileElement,  boolean initialized,  String namespace,  String qualifiedName,  String value,  String name,  TagDefinition type) {
+		super(id, isProfileElement, initialized, namespace, qualifiedName, value, name, type);
+	}
+
+	@Override
+	protected String doGetElementType() {		
+		return "TaggedValue";
+	}
+
+	@Override
+	protected Element doGetThis() {
+		return this;
+	}
+
 	@Override
 	protected Set<TaggedValue> doGetTaggedValueSet() {
-		if(taggedValueSet == null) {
-			taggedValueSet = new TreeSet<TaggedValue>();
-			for(String key : getTaggedValueMap().keySet()) {
-				taggedValueSet.add(getTaggedValue(key));
-			}
-			
+		Set<TaggedValue> taggedValueSet = new TreeSet<TaggedValue>();
+		for(String key : getTaggedValueMap().keySet()) {
+			taggedValueSet.add(getTaggedValue(key));
 		}
-		return taggedValueSet;
+		return Collections.unmodifiableSet(taggedValueSet);
 	}
 
 	@Override
 	protected Set<Stereotype> doGetStereotypeSet() {
-		if(stereotypeSet == null) {
-			stereotypeSet = new TreeSet<Stereotype>();
-			for(String key : getStereotypeMap().keySet()) {
-				stereotypeSet.add(getStereotype(key));
-			}
-			
+		Set<Stereotype> stereotypeSet = new TreeSet<Stereotype>();
+		for(String key : getStereotypeMap().keySet()) {
+			stereotypeSet.add(getStereotype(key));
 		}
-		return stereotypeSet;
+		return Collections.unmodifiableSet(stereotypeSet);
 	}
 
 }

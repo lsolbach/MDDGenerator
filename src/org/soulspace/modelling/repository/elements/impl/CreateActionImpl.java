@@ -9,44 +9,62 @@
  */
 package org.soulspace.modelling.repository.elements.impl;
 
-import java.util.Set;
-import java.util.TreeSet;
-
-import org.soulspace.modelling.repository.elements.AbstractCreateAction;
-import org.soulspace.modelling.repository.elements.CreateAction;
-import org.soulspace.modelling.repository.elements.Stereotype;
+import org.soulspace.modelling.repository.elements.Classifier;
+import org.soulspace.modelling.repository.elements.AssociationEnd;
+import org.soulspace.modelling.repository.elements.Expression;
 import org.soulspace.modelling.repository.elements.TaggedValue;
+import org.soulspace.modelling.repository.elements.Stereotype;
+import org.soulspace.modelling.repository.elements.StateMachine;
+import java.util.*;
+import org.soulspace.modelling.repository.elements.Dependency;
+import org.soulspace.modelling.repository.elements.Constraint;
+import org.soulspace.modelling.repository.elements.*;
+import org.soulspace.modelling.repository.elements.Comment;
+import org.soulspace.modelling.repository.elements.ModelElement;
+import org.soulspace.modelling.repository.elements.Element;
 
-public class CreateActionImpl extends AbstractCreateAction implements
-		CreateAction {
+public  class CreateActionImpl extends AbstractCreateAction implements CreateAction {
 
 	private static final long serialVersionUID = 1L;
 
-	Set<TaggedValue> taggedValueSet = null;
-	Set<Stereotype> stereotypeSet = null;
+	public CreateActionImpl() {
+		super();
+	}
 	
+	public CreateActionImpl( String id,  boolean isProfileElement,  boolean initialized,  String name,  String namespace,  String qualifiedName,  Element parentElement,  Classifier instanciation) {
+		super(id, isProfileElement, initialized, name, namespace, qualifiedName, parentElement, instanciation);
+	}
+	
+	public CreateActionImpl( String id,  boolean isProfileElement,  boolean initialized,  String name,  String namespace,  String qualifiedName,  Classifier instanciation) {
+		super(id, isProfileElement, initialized, name, namespace, qualifiedName, instanciation);
+	}
+
+	@Override
+	protected String doGetElementType() {		
+		return "CreateAction";
+	}
+
+	@Override
+	protected Element doGetThis() {
+		return this;
+	}
+
 	@Override
 	protected Set<TaggedValue> doGetTaggedValueSet() {
-		if(taggedValueSet == null) {
-			taggedValueSet = new TreeSet<TaggedValue>();
-			for(String key : getTaggedValueMap().keySet()) {
-				taggedValueSet.add(getTaggedValue(key));
-			}
-			
+		Set<TaggedValue> taggedValueSet = new TreeSet<TaggedValue>();
+		for(String key : getTaggedValueMap().keySet()) {
+			taggedValueSet.add(getTaggedValue(key));
 		}
-		return taggedValueSet;
+		return Collections.unmodifiableSet(taggedValueSet);
 	}
 
 	@Override
 	protected Set<Stereotype> doGetStereotypeSet() {
-		if(stereotypeSet == null) {
-			stereotypeSet = new TreeSet<Stereotype>();
-			for(String key : getStereotypeMap().keySet()) {
-				stereotypeSet.add(getStereotype(key));
-			}
-			
+		Set<Stereotype> stereotypeSet = new TreeSet<Stereotype>();
+		for(String key : getStereotypeMap().keySet()) {
+			stereotypeSet.add(getStereotype(key));
 		}
-		return stereotypeSet;
+		return Collections.unmodifiableSet(stereotypeSet);
 	}
 
 }

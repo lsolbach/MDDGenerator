@@ -9,25 +9,52 @@
  */
 package org.soulspace.modelling.repository.elements.impl;
 
-import java.util.ArrayList;
+
+import org.soulspace.modelling.repository.elements.Interface;
+import org.soulspace.modelling.repository.elements.AssociationEnd;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
-import org.soulspace.modelling.repository.elements.*;
 import org.soulspace.modelling.repository.elements.Class;
+import org.soulspace.modelling.repository.elements.Attribute;
+import org.soulspace.modelling.repository.elements.Operation;
+import org.soulspace.modelling.repository.elements.TaggedValue;
+import org.soulspace.modelling.repository.elements.Stereotype;
+import java.util.*;
+import org.soulspace.modelling.repository.elements.StateMachine;
+import org.soulspace.modelling.repository.elements.Dependency;
+import org.soulspace.modelling.repository.elements.*;
+import org.soulspace.modelling.repository.elements.Constraint;
+import org.soulspace.modelling.repository.elements.Comment;
+import org.soulspace.modelling.repository.elements.ModelElement;
+import org.soulspace.modelling.repository.elements.Element;
 
-public class ClassImpl extends AbstractClass {
-
-	private static final long serialVersionUID = 1L;
+public  class ClassImpl extends AbstractClass implements Class {
 
 	Set<TaggedValue> taggedValueSet = null;
-	Set<Stereotype> stereotypeSet = null;
 	
+	Set<Stereotype> stereotypeSet = null;
+
 	public ClassImpl() {
 		super();
 	}
+	
+	public ClassImpl( String id,  boolean isProfileElement,  boolean initialized,  String name,  String namespace,  String qualifiedName,  String visibility,  boolean isAbstract,  Element parentElement) {
+		super(id, isProfileElement, initialized, name, namespace, qualifiedName, visibility, isAbstract, parentElement);
+	}
+	
+	public ClassImpl( String id,  boolean isProfileElement,  boolean initialized,  String name,  String namespace,  String qualifiedName,  String visibility,  boolean isAbstract) {
+		super(id, isProfileElement, initialized, name, namespace, qualifiedName, visibility, isAbstract);
+	}
 
+	@Override
+	protected String doGetElementType() {		
+		return "Class";
+	}
+
+	@Override
+	protected Element doGetThis() {
+		return this;
+	}
+	
 	@Override
 	protected Set<TaggedValue> doGetTaggedValueSet() {
 		if(taggedValueSet == null) {
@@ -35,7 +62,6 @@ public class ClassImpl extends AbstractClass {
 			for(String key : getTaggedValueMap().keySet()) {
 				taggedValueSet.add(getTaggedValue(key));
 			}
-			
 		}
 		return taggedValueSet;
 	}

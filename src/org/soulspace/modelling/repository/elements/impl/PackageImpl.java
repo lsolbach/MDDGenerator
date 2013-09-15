@@ -9,131 +9,153 @@
  */
 package org.soulspace.modelling.repository.elements.impl;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TreeSet;
-
-import org.soulspace.modelling.repository.elements.*;
-import org.soulspace.modelling.repository.elements.Class;
+import org.soulspace.modelling.repository.elements.Interface;
+import org.soulspace.modelling.repository.elements.Association;
 import org.soulspace.modelling.repository.elements.Package;
+import org.soulspace.modelling.repository.elements.Class;
+import org.soulspace.modelling.repository.elements.DataType;
+import org.soulspace.modelling.repository.elements.Generalization;
+import org.soulspace.modelling.repository.elements.TaggedValue;
+import org.soulspace.modelling.repository.elements.Stereotype;
+import java.util.*;
+import org.soulspace.modelling.repository.elements.StateMachine;
+import org.soulspace.modelling.repository.elements.Dependency;
+import org.soulspace.modelling.repository.elements.*;
+import org.soulspace.modelling.repository.elements.Constraint;
+import org.soulspace.modelling.repository.elements.Comment;
+import org.soulspace.modelling.repository.elements.ModelElement;
+import org.soulspace.modelling.repository.elements.Element;
 
-public class PackageImpl extends AbstractPackage {
+public  class PackageImpl extends AbstractPackage implements Package {
 
 	private static final long serialVersionUID = 1L;
 
-	Set<TaggedValue> taggedValueSet = null;
-	Set<Stereotype> stereotypeSet = null;
+	public PackageImpl() {
+		super();
+	}
 	
+	public PackageImpl( String id,  boolean isProfileElement,  boolean initialized,  String name,  String namespace,  String qualifiedName,  Element parentElement) {
+		super(id, isProfileElement, initialized, name, namespace, qualifiedName, parentElement);
+	}
+	
+	public PackageImpl( String id,  boolean isProfileElement,  boolean initialized,  String name,  String namespace,  String qualifiedName) {
+		super(id, isProfileElement, initialized, name, namespace, qualifiedName);
+	}
+
+	@Override
+	protected String doGetElementType() {		
+		return "Package";
+	}
+
+	@Override
+	protected Element doGetThis() {
+		return this;
+	}
+
 	@Override
 	protected Set<TaggedValue> doGetTaggedValueSet() {
-		if(taggedValueSet == null) {
-			taggedValueSet = new TreeSet<TaggedValue>();
-			for(String key : getTaggedValueMap().keySet()) {
-				taggedValueSet.add(getTaggedValue(key));
-			}
-			
+		Set<TaggedValue> taggedValueSet = new TreeSet<TaggedValue>();
+		for(String key : getTaggedValueMap().keySet()) {
+			taggedValueSet.add(getTaggedValue(key));
 		}
-		return taggedValueSet;
+		return Collections.unmodifiableSet(taggedValueSet);
 	}
 
 	@Override
 	protected Set<Stereotype> doGetStereotypeSet() {
-		if(stereotypeSet == null) {
-			stereotypeSet = new TreeSet<Stereotype>();
-			for(String key : getStereotypeMap().keySet()) {
-				stereotypeSet.add(getStereotype(key));
-			}
-			
+		Set<Stereotype> stereotypeSet = new TreeSet<Stereotype>();
+		for(String key : getStereotypeMap().keySet()) {
+			stereotypeSet.add(getStereotype(key));
 		}
-		return stereotypeSet;
+		return Collections.unmodifiableSet(stereotypeSet);
 	}
 
 	@Override
 	protected Set<Class> doGetClassSet() {
-		Set<Class> classSet = new HashSet<Class>();
+		Set<Class> aClassSet = new TreeSet<Class>();
 		for(ModelElement element : getOwnedElementSet()) {
 			if(element instanceof Class) {
-				classSet.add((Class) element);
+				aClassSet.add((Class) element);
 			}
 		}
-		return classSet;
+		return Collections.unmodifiableSet(aClassSet);
 	}
 
 	@Override
 	protected Set<Interface> doGetInterfaceSet() {
-		Set<Interface> interfaceSet = new HashSet<Interface>();
+		Set<Interface> aInterfaceSet = new TreeSet<Interface>();
 		for(ModelElement element : getOwnedElementSet()) {
 			if(element instanceof Interface) {
-				interfaceSet.add((Interface) element);
+				aInterfaceSet.add((Interface) element);
 			}
 		}
-		return interfaceSet;
+		return Collections.unmodifiableSet(aInterfaceSet);
 	}
 
 	@Override
 	protected Set<Package> doGetPackageSet() {
-		Set<Package> packageSet = new HashSet<Package>();
+		Set<Package> aPackageSet = new TreeSet<Package>();
 		for(ModelElement element : getOwnedElementSet()) {
 			if(element instanceof Package) {
-				packageSet.add((Package) element);
+				aPackageSet.add((Package) element);
 			}
 		}
-		return packageSet;
+		return Collections.unmodifiableSet(aPackageSet);
 	}
 
 	@Override
 	protected Set<DataType> doGetDataTypeSet() {
-		Set<DataType> dataTypeSet = new HashSet<DataType>();
+		Set<DataType> dataTypeSet = new TreeSet<DataType>();
 		for(ModelElement element : getOwnedElementSet()) {
 			if(element instanceof DataType) {
 				dataTypeSet.add((DataType) element);
 			}
 		}
-		return dataTypeSet;
+		return Collections.unmodifiableSet(dataTypeSet);
 	}
 
 	@Override
 	protected Set<Association> doGetAssociationSet() {
-		Set<Association> associationSet = new HashSet<Association>();
+		Set<Association> associationSet = new TreeSet<Association>();
 		for(ModelElement element : getOwnedElementSet()) {
 			if(element instanceof Association) {
 				associationSet.add((Association) element);
 			}
 		}
-		return associationSet;
+		return Collections.unmodifiableSet(associationSet);
 	}
 
 	@Override
 	protected Set<Dependency> doGetDependencySet() {
-		Set<Dependency> dependencySet = new HashSet<Dependency>();
+		Set<Dependency> dependencySet = new TreeSet<Dependency>();
 		for(ModelElement element : getOwnedElementSet()) {
 			if(element instanceof Dependency) {
 				dependencySet.add((Dependency) element);
 			}
 		}
-		return dependencySet;
+		return Collections.unmodifiableSet(dependencySet);
 	}
 
 	@Override
 	protected Set<Generalization> doGetGeneralizationSet() {
-		Set<Generalization> generalizationSet = new HashSet<Generalization>();
+		Set<Generalization> generalizationSet = new TreeSet<Generalization>();
 		for(ModelElement element : getOwnedElementSet()) {
 			if(element instanceof Generalization) {
 				generalizationSet.add((Generalization) element);
 			}
 		}
-		return generalizationSet;
+		return Collections.unmodifiableSet(generalizationSet);
 	}
 
 	@Override
 	protected Set<StateMachine> doGetStateMachineSet() {
-		Set<StateMachine> stateMachineSet = new HashSet<StateMachine>();
+		Set<StateMachine> stateMachineSet = new TreeSet<StateMachine>();
 		for(ModelElement element : getOwnedElementSet()) {
 			if(element instanceof StateMachine) {
 				stateMachineSet.add((StateMachine) element);
 			}
 		}
-		return stateMachineSet;
+		return Collections.unmodifiableSet(stateMachineSet);
 	}
 
 }
