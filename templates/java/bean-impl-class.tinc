@@ -7,6 +7,13 @@
  * 
  * © 2013- Ludger Solbach
 --?><?
+
+string staticFields(map element) {
+	super(element)?>
+	private static final long serialVersionUID = 1L;
+<?
+}
+
 string operations(map element) {
 	propertyAccessorDelegateImplementations(element)
 	associationAccessorDelegateImplementations(element)
@@ -15,6 +22,7 @@ string operations(map element) {
 
 string propertyAccessorDelegateImplementations(map element) {
 	foreach attr | isDerived(attr) <- getAttributeList(element) {?>
+	@Override
 	protected <?propertyType(attr)?> doGet<?propertyMethodBase(attr)?>() {<?
 		propertyGetMethodDelegateImplementationBody(attr)?>
 	}
@@ -24,7 +32,8 @@ string propertyAccessorDelegateImplementations(map element) {
 
 string associationAccessorDelegateImplementations(map element) {
 	foreach asso | isDerived(asso) <- getAssociationList(element) {?>
-	protected abstract <?associationType(asso)?> doGet<?associationMethodBase(asso)?>() {<?
+	@Override
+	protected <?associationType(asso)?> doGet<?associationMethodBase(asso)?>() {<?
 		associationGetMethodDelegateImplementationBody(asso)?>
 	}
 <?
