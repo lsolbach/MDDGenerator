@@ -1,0 +1,53 @@
+<?
+string fileComment(map element) {
+?>/*
+ *  Copyright (c) Ludger Solbach. All rights reserved.
+ *  The use and distribution terms for this software are covered by the
+ *  Eclipse Public License 1.0 (http://opensource.org/licenses/eclipse-1.0.php)
+ *  which can be found in the file license.txt at the root of this distribution.
+ *  By using this software in any fashion, you are agreeing to be bound by
+ *  the terms of this license.
+ *  You must not remove this notice, or any other, from this software.
+ */<?
+}
+
+string extension(map element) {
+	'extends Abstract' + element:Name
+}
+
+string propertyGetMethodDelegateImplementationBody(map attr) {
+	if(isAssignableTo(element, 'Element')) {
+		if(attr:Name eq 'this') {?>
+		return this;<?
+		} else if(attr:Name eq 'elementType') {?>		
+		return "<?Name?>";<?
+		} else {
+			super(attr)
+		}
+	} else {
+		super(attr)
+	}
+}
+
+string associationGetMethodDelegateImplementationBody(map asso) {
+	if(isAssignableTo(element, 'ModelElement')
+		&& (asso:Name eq 'stereotype' || asso:Name eq 'taggedValue')) {?>
+		<?associationType(asso)?> <?associationName(asso)?> <?associationInitialisation(asso)?>;
+		for(String key : get<?asso:Type:Name?>Map().keySet()) {
+			<?associationName(asso)?>.add(get<?asso:Type:Name?>(key));
+		}
+		return <?associationReturn(asso)?>;<?
+	} else if(isAssignableTo(element, 'Package')) {?>
+		<?associationType(asso)?> <?associationName(asso)?> <?associationInitialisation(asso)?>;
+		for(ModelElement element : getOwnedElementSet()) {
+			if(element instanceof <?asso:Type:Name?>) {
+				<?associationName(asso)?>.add((<?asso:Type:Name?>) element);
+			}
+		}
+		return <?associationReturn(asso)?>;<?
+	} else {
+		super(asso)
+	}
+}
+
+?>
