@@ -1,11 +1,11 @@
 <?!--
  * java/class
+ * 
+ * Mixin include for java classes
+ *
  * Requires includes lib, model/lib, java/lib
  * 
- * Methods for java class generation
- * Unspecific to any UML profile or design DSL
- *
- * ©2010-2012 Ludger Solbach
+ * © 2010- Ludger Solbach
 --?><?
 
 string fileComment(map element) {
@@ -212,6 +212,10 @@ string propertyGetMethodModifiers(map attr) {
 	visibility(attr) + ' synchronized'
 }
 
+string propertyGetMethodDelegateImplementationBody(map attr) {?>
+		// TODO implement<?
+}
+
 string propertySetMethod(map attr) {
 	javaDoc(attr, 1)
 	memberAnnotations(getPropertySetMethodAnnotationList(attr))?>
@@ -303,6 +307,10 @@ string associationGetMethodModifiers(map asso) {
 
 string associationGetMethodBody(map asso) {
 	'return ' + associationName(asso) + ';'
+}
+
+string associationGetMethodDelegateImplementationBody(map asso) {?>
+		// TODO implement<?
 }
 
 string associationReturn(map asso) {
@@ -443,10 +451,14 @@ string operationMethodDelegateSignature(map op) {?>
 }
 
 string operationMethodDelegateImplementation(map op) {?>
-	protected <?returnType(op)?> do<?op:Name.firstUpper()?>(<?operationParameters(op)?>) {
-		// TODO implement me
+	protected <?returnType(op)?> do<?op:Name.firstUpper()?>(<?operationParameters(op)?>) {<?
+	operationMethodDelegateImplementationBody(op)?>
 	}
 <?
+}
+
+string operationMethodDelegateImplementationBody(map op) {?>
+		// TODO implement<?
 }
 
 string equals(map element) {?>

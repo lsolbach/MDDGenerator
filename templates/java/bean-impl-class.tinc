@@ -1,0 +1,33 @@
+<?!--
+ * java/bean-impl-class
+ * 
+ * Mixin include for java bean implementation classes.
+ * 
+ * Required includes: lib, model/lib, java/lib, java/class, java/impl-class 
+ * 
+ * © 2013- Ludger Solbach
+--?><?
+string operations(map element) {
+	propertyAccessorDelegateImplementations(element)
+	associationAccessorDelegateImplementations(element)
+	super(element)
+}
+
+string propertyAccessorDelegateImplementations(map element) {
+	foreach attr | isDerived(attr) <- getAttributeList(element) {?>
+	protected <?propertyType(attr)?> doGet<?propertyMethodBase(attr)?>() {<?
+		propertyGetMethodDelegateImplementationBody(attr)?>
+	}
+<?
+	}
+}
+
+string associationAccessorDelegateImplementations(map element) {
+	foreach asso | isDerived(asso) <- getAssociationList(element) {?>
+	protected abstract <?associationType(asso)?> doGet<?associationMethodBase(asso)?>() {<?
+		associationGetMethodDelegateImplementationBody(asso)?>
+	}
+<?
+	}
+}
+?>

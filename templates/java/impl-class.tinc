@@ -1,7 +1,11 @@
 <?!--
- * common/java/impl-class
- *
- * ©2010-2012 Ludger Solbach
+ * java/impl-class
+ * 
+ * Mixin include for java implementation classes
+ * 
+ * Required includes: lib, model/lib, java/lib, java/class
+ * 
+ * © 2010- Ludger Solbach
 --?><?
 string constructorBody(map element, list fieldList) {?>
 		super(<?constructorArguments(fieldList)?>);<?
@@ -10,6 +14,6 @@ string constructorBody(map element, list fieldList) {?>
 string memberFields(map element) { }
 
 string operation(map op) {
-	operationDelegateImplementation(op)
+	operationMethodDelegateImplementation(op)
 }
 ?>

@@ -1,6 +1,12 @@
 <?!--
-    - include for java bean classes java/bean-class
-   --?><?
+ * java/bean-class
+ * 
+ * Mixin include for java bean classes
+ * 
+ * Required includes: lib, model/lib, java/lib, java/class
+ * 
+ * © 2010- Ludger Solbach
+ * --?><?
 map getImportMap(map element) {
 	map importMap = super(element)
 	add(importMap, 'java.io.Serializable')
@@ -15,7 +21,8 @@ list getImplementationList(map element) {
 
 string staticFields(map element) {
 	super(element)?>
-	private static final long serialVersionUID = 1L;<?
+	private static final long serialVersionUID = 1L;
+<?
 }
 
 string memberFields(map element) {
@@ -73,7 +80,7 @@ string hashcode(map element) {?>
 		} else if(javaType(attr) eq 'double') {?>
 		result = 29 * result + Double.doubleToIntBits(get<?propertyMethodBase(attr)?>());<?
 		} else if(javaType(attr) eq 'boolean') {?>
-		result = 29 * result + (<?get<?propertyMethodBase(attr)?>() ? 1 : 0);<? 
+		result = 29 * result + (get<?propertyMethodBase(attr)?>() ? 1 : 0);<? 
 		} else {?>
   		if(get<?propertyMethodBase(attr)?>() != null) {
 			result = 29 * result + get<?propertyMethodBase(attr)?>().hashCode();

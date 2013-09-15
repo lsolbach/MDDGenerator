@@ -2,8 +2,9 @@
  * db/lib
  *
  * Methods for the generation of SQL database scripts and queries
- * Unspecific to any UML profile, design DSL or target language
- *
+ * 
+ * Required includes: lib, model/lib
+ * 
  * ©2010-2012 Ludger Solbach
  --?><?
 string comment(string text) {
@@ -24,10 +25,6 @@ string dbName(map element) {
 
 string tableName(map element) {
 	dbName(element)
-}
-
-string tableName() {
-	tableName(This)
 }
 
 string columnName(map element, map attr) {
@@ -54,16 +51,8 @@ string foreignKeyName(map asso) {
 	associationColumnName(asso) + '_id'
 }
 
-string foreignKeyName() {
-	foreignKeyName(This)
-}
-
 string indexName(map element) {
   dbName(element:SourceEnd:Type) + '_idx'
-}
-
-string indexName() {
-	indexName(This)
 }
 
 string associationTableName(map asso) {
