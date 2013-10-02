@@ -1,0 +1,63 @@
+<?!--
+ * java/class
+ * 
+ * Mixin include for java annotations
+ *
+ * Requires includes lib, model/lib, java/lib
+ * 
+ * © 2010- Ludger Solbach
+--?><?
+
+string packageDeclaration(map element) {?>
+package <?namespace(element)?>;<?
+}
+
+string typeModifiers(map element) {
+	visibility(element)
+}
+
+list getExtensionList(map element) {
+	list extensionList
+	foreach superClass <- getSuperClassList(element) {
+		extensionList.add(superClass:Name)
+	}
+	extensionList
+}
+
+string extensions(map element) {
+	list extensionList = getExtensionList(element)
+	if(extensionList) {
+		'extends ' + join(extensionList, ', ')
+	}
+}
+
+string staticFields(map element) {
+
+}
+
+string valueMethod(map tagDefinition) {
+	javaDoc(tagDefinition, 1)
+	memberAnnotations(getValueMethodAnnotationList(tagDefinition))?>
+	<?propertyType(tagDefinition)?> <?propertyName(tagDefinition)?>()<?valueMethodDefault()?>;
+<?
+}
+
+string valueMethodDefault(map tagDefinition) {
+	if() {
+	' default' +  + ';'
+	}
+}
+
+string operation(map op) {
+	if(op:Visibility eq 'public') {
+		javaDoc(op, 1)
+		memberAnnotations(getOperationMethodAnnotationList(op))
+		operationMethod(op)
+	}
+}
+
+string operationMethod(map op) {?>
+	<?returnType(op)?> <?op:Name?>(<?operationParameters(op)?>);<?
+}
+
+?>

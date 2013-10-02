@@ -41,7 +41,7 @@ string generatorParam(string name) {
 	}
 }
 
-string protectedArea(string id, string beginComment, string endComment) {
+string protectedArea(string id, string beginComment) {
 	protectedArea(id, beginComment, '')
 }
 
@@ -431,6 +431,10 @@ list getAllSubPackagesList(map element, list packageList) {
 		getAllSubPackagesList(package, packageList)
 	}
 	packageList
+}
+
+list getOwnedElementList(map package) {
+	package:OwnedElementSet
 }
 
 list getPackageList(map package) {

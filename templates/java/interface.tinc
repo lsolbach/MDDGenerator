@@ -1,8 +1,11 @@
 <?!--
- * template include java/interface
- * requires includes lib, model/lib, java/lib 
+ * java/interface
+ *
  * base methods for java interface generation
- * (C) 2010 Ludger Solbach
+ *
+ * requires includes lib, model/lib, java/lib
+ *
+ * © 2010 Ludger Solbach
 --?><?
 string packageDeclaration(map element) {?>
 package <?namespace(element)?>;<?
