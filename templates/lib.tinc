@@ -1,10 +1,12 @@
 <?!--
- * lib
- * Standard functions to make life easier
- * Functional programming style used with no side effects, the functions all return new data structures.
- * Optimized for correctness, readability and maintainance, not for performance.
- * ©2010-2012 Ludger Solbach
---?><?
+   - lib
+   -
+   - Standard functions to make life easier
+   - Functional programming style used with no side effects, the functions all return new data structures.
+   - Optimized for correctness, readability and maintainance, not for performance.
+   -
+   - © 2010- Ludger Solbach
+   --?><?
 
 list cons(string e, list elements) {
 	list result
@@ -736,6 +738,10 @@ string lineFeeds(numeric lineFeeds) {
 		lineFeed()
 		lineFeedCount = lineFeedCount + 1
 	}
+}
+
+string apos() {
+	?>'<?
 }
 
 string boolean(numeric value) {

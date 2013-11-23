@@ -16,4 +16,5 @@ string memberFields(map element) { }
 string operation(map op) {
 	operationMethodDelegateImplementation(op)
 }
+
 ?>

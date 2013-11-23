@@ -1,11 +1,11 @@
 <?!--
- * model/lib
- *
- * Methods to query and navigate the meta model of the ModelRepository
- * Unspecific to any UML profile, design DSL or target language
- *
- * ©2010-2012 Ludger Solbach
---?><?
+   - model/lib
+   -
+   - Methods to query and navigate the meta model of the ModelRepository
+   - Unspecific to any UML profile, design DSL or target language
+   -
+   - © 2010 Ludger Solbach
+   --?><?
 
 /* returns generation information */
 string generationInfo() {
@@ -495,6 +495,10 @@ list getAssociationList(map element) {
 
 list getOperationList(map element) {
 	element:OperationList
+}
+
+list getParameterList(map operation) {
+	 operation:ParameterList
 }
 
 list getDependencyList(map element) {
