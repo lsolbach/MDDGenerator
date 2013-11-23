@@ -188,7 +188,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 	protected <T extends Action> T initAction(T action,
 			org.soulspace.modelling.uml14.elements.Action xmiSource) {
 		action = initModelElement(action, xmiSource);
-		// TODO
+		// TODO implement
 		xmiSource.getActualArgumentList();
 		return action;
 	}
@@ -466,6 +466,10 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		org.soulspace.modelling.uml14.elements.Extend xmiSource = (org.soulspace.modelling.uml14.elements.Extend) xmiObject;
 
 		extend = initElement(extend, xmiSource);
+		// TODO implement for real
+		xmiSource.getExtension();
+		xmiSource.getBase();
+		xmiSource.getExtensionPointList();
 
 		return extend;
 	}
@@ -506,6 +510,9 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		} else if(parent instanceof Actor && child instanceof Actor) {
 			((Actor) parent).setSubActor((Actor) child);
 			((Actor) child).setSuperActor((Actor) parent);
+		} else if(parent instanceof Interface && child instanceof Interface) {
+			((Interface) parent).addSubInterface((Interface) child);
+			((Interface) child).addSuperInterface((Interface) parent);
 		}
 		// TODO check if other relevant generalizations have to be added
 		
@@ -517,7 +524,6 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		org.soulspace.modelling.uml14.elements.Include xmiSource = (org.soulspace.modelling.uml14.elements.Include) xmiObject;
 
 		include = initElement(include, xmiSource);
-		// FIXME handle includes
 		UseCase base = (UseCase) createModelElement(xmiSource.getBase());
 		UseCase addition = (UseCase) createModelElement(xmiSource.getAddition());
 		base.addInclude(addition);
@@ -799,7 +805,8 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		}
 		for (org.soulspace.modelling.uml14.elements.Include xmiInclude : xmiSource
 				.getIncludeList()) {
-			createInclude(xmiInclude);
+			// TODO handle extends in initExtend()? (see initInclude())
+			Include include = createInclude(xmiInclude);
 		}
 		for(org.soulspace.modelling.uml14.elements.Extend xmiExtend : xmiSource.getExtendList()) {
 			// TODO handle extends in initExtend()? (see initInclude())
@@ -976,6 +983,99 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		subsystem = initNamespace(subsystem, xmiSource);
 		
 		return subsystem;
+	}
+	
+	@Override
+	protected ActivityGraph initActivityGraph(ActivityGraph activityGraph, XmiObject xmiObject) {
+		org.soulspace.modelling.uml14.elements.ActivityGraph xmiSource = (org.soulspace.modelling.uml14.elements.ActivityGraph) xmiObject;
+
+		initStateMachine(activityGraph, xmiSource);
+		for(org.soulspace.modelling.uml14.elements.Partition xmiPartition : xmiSource.getPartitionList()) {
+			activityGraph.addPartition(createPartition(xmiPartition));
+		}
+		return activityGraph;
+	}
+
+	@Override
+	protected Partition initPartition(Partition partition, XmiObject xmiObject) {
+		org.soulspace.modelling.uml14.elements.Partition xmiSource = (org.soulspace.modelling.uml14.elements.Partition) xmiObject;
+
+		initModelElement(partition, xmiSource);
+		for(org.soulspace.modelling.uml14.elements.ModelElement xmiModelElement : xmiSource.getContentsList()) {
+			partition.addContents(createModelElement(xmiModelElement));
+		}
+		return partition;
+	}
+
+	@Override
+	protected SubactivityState initSubactivityState(SubactivityState subactivityState, XmiObject xmiObject) {
+		org.soulspace.modelling.uml14.elements.SubactivityState xmiSource = (org.soulspace.modelling.uml14.elements.SubactivityState) xmiObject;
+
+		initState(subactivityState, xmiSource);
+
+		subactivityState.setIsDynamic(xmiSource.getIsDynamic());
+		if(xmiSource.getDynamicArguments() != null) {
+			// TODO implement
+		}
+		if(xmiSource.getDynamicMultiplicity() != null) {
+			subactivityState.setDynamicMultiplicity(createMultiplicity(xmiSource.getDynamicMultiplicity()));
+		}
+		return subactivityState;
+	}
+
+	@Override
+	protected ActionState initActionState(ActionState actionState, XmiObject xmiObject) {
+		org.soulspace.modelling.uml14.elements.ActionState xmiSource = (org.soulspace.modelling.uml14.elements.ActionState) xmiObject;
+		
+		initSimpleState(actionState, xmiSource);
+
+		actionState.setIsDynamic(xmiSource.getIsDynamic());
+		if(xmiSource.getDynamicArguments() != null) {
+			// TODO implement
+		}
+		if(xmiSource.getDynamicMultiplicity() != null) {
+			actionState.setDynamicMultiplicity(createMultiplicity(xmiSource.getDynamicMultiplicity()));
+		}
+		
+		return actionState;
+	}
+
+	@Override
+	protected ObjectFlowState initObjectFlowState(ObjectFlowState objectFlowState, XmiObject xmiObject) {
+		org.soulspace.modelling.uml14.elements.ObjectFlowState xmiSource = (org.soulspace.modelling.uml14.elements.ObjectFlowState) xmiObject;
+
+		initSimpleState(objectFlowState, xmiSource);
+		objectFlowState.setIsSynch(xmiSource.getIsSynch());
+		for(org.soulspace.modelling.uml14.elements.Parameter xmiParameter : xmiSource.getParameterList()) {
+			Parameter p = createParameter(xmiParameter);
+			p.addState(objectFlowState);
+			objectFlowState.addParameter(p);
+		}
+		
+		return objectFlowState;
+	}
+
+	@Override
+	protected CallState initCallState(CallState callState, XmiObject xmiObject) {
+		org.soulspace.modelling.uml14.elements.CallState xmiSource = (org.soulspace.modelling.uml14.elements.CallState) xmiObject;
+
+		initActionState(callState, xmiSource);
+
+		return callState;
+	}
+
+	@Override
+	protected ClassifierInState initClassifierInState(ClassifierInState classifierInState, XmiObject xmiObject) {
+		org.soulspace.modelling.uml14.elements.ClassifierInState xmiSource = (org.soulspace.modelling.uml14.elements.ClassifierInState) xmiObject;
+
+		if(xmiSource.getType() != null) {
+			classifierInState.setType(createClassifier(xmiSource.getType()));
+		}
+		for(org.soulspace.modelling.uml14.elements.State xmiState : xmiSource.getInStateList()) {
+			classifierInState.addInState(createState(xmiState));
+		}
+
+		return classifierInState;
 	}
 
 	String buildNamespace(

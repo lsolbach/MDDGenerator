@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="org/soulspace/modelling/repository/builder/uml14/impl/ElementInitializerAspect.aj" kind="src" path="src"/>
-	<classpathentry kind="src" path="generated/src"/>
+	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="build/generated/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/runtime/UML14Repository.jar" sourcepath="/UML14Repository"/>
-	<classpathentry kind="lib" path="lib/runtime/MDDRepository.jar"/>
+	<classpathentry kind="lib" path="build/lib/dev/junit.jar"/>
+	<classpathentry kind="lib" path="build/lib/runtime/MDDRepository.jar"/>
+	<classpathentry kind="lib" path="build/lib/runtime/UML14Repository.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
