@@ -1,5 +1,5 @@
 <?xml version = '1.0' encoding = 'UTF-8' ?>
-<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Sun Sep 15 14:13:10 CEST 2013'>
+<XMI xmi.version = '1.2' xmlns:UML = 'org.omg.xmi.namespace.UML' timestamp = 'Wed Dec 04 18:24:46 CET 2013'>
   <XMI.header>    <XMI.documentation>
       <XMI.exporter>ArgoUML (using Netbeans XMI Writer version 1.0)</XMI.exporter>
       <XMI.exporterVersion>0.34(6) revised on $Date: 2010-01-11 22:20:14 +0100 (Mon, 11 Jan 2010) $ </XMI.exporterVersion>
@@ -1897,7 +1897,11 @@
                     </UML:AssociationClass>
                     <UML:Class xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:00000000000011C9'
                       name = 'EnumerationLiteral' visibility = 'public' isSpecification = 'false'
-                      isRoot = 'false' isLeaf = 'false' isAbstract = 'false' isActive = 'false'/>
+                      isRoot = 'false' isLeaf = 'false' isAbstract = 'false' isActive = 'false'>
+                      <UML:GeneralizableElement.generalization>
+                        <UML:Generalization xmi.idref = '127-0-1-1-4a21a795:142be46a238:-8000:000000000000187C'/>
+                      </UML:GeneralizableElement.generalization>
+                    </UML:Class>
                     <UML:Association xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:00000000000011CE'
                       name = '' isSpecification = 'false' isRoot = 'false' isLeaf = 'false' isAbstract = 'false'>
                       <UML:Association.connection>
@@ -2425,6 +2429,15 @@
                         </UML:AssociationEnd>
                       </UML:Association.connection>
                     </UML:Association>
+                    <UML:Generalization xmi.id = '127-0-1-1-4a21a795:142be46a238:-8000:000000000000187C'
+                      isSpecification = 'false'>
+                      <UML:Generalization.child>
+                        <UML:Class xmi.idref = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:00000000000011C9'/>
+                      </UML:Generalization.child>
+                      <UML:Generalization.parent>
+                        <UML:Class xmi.idref = '127-0-0-1--25330789:12049cdd1dd:-8000:0000000000000DE1'/>
+                      </UML:Generalization.parent>
+                    </UML:Generalization>
                   </UML:Namespace.ownedElement>
                 </UML:Package>
                 <UML:Package xmi.id = '127-0-0-1-1b9b1313:1204d2d2e10:-8000:0000000000000EF0'
