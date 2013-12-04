@@ -28,7 +28,7 @@ string element(map class) {?>
 		foreach attr <- class:AttributeList {
 			elementRef(attr)
 		}
-		foreach asso <- class:AssociationList {
+		foreach asso | isNavigable(asso) && !isDerived(asso) <- class:AssociationList {
 			elementRef(asso)
 		}?>
 			</xs:sequence>
@@ -47,6 +47,22 @@ string complexType(map class) {?>
 		</xs:all>
 	</xs:complexType>
 <?
+}
+
+string simpleType(map element) {?>
+	<xs:simpleType name="<?element:Name?>"><?
+	if(isEnumeration(element)) {
+	}?>
+	</xs:simpleType>
+<?
+}
+
+string enumerationType(map element) {?>
+		<xs:restriction base='xs:NMTOKEN'><?
+	foreach literal <- element:EnumerationLiteralList {?>
+			<xs:enumeration value='<?literal:Name?>'/><?
+	}?>
+		</xs:restriction><?
 }
 
 string elementRef(map element) {?>
@@ -79,11 +95,11 @@ string typeRef(map element) {
 
 
 string multiplicity(map element) {
-	'minOccurs="' + element:Multiplicity:Low + '" '
-	if(element:Multiplicity:High == -1) {
+	'minOccurs="' + getLowerBound(element) + '" '
+	if(getUpperBound(element) == -1) {
 		'maxOccurs="unbounded"' 		
 	} else {
-		'maxOccurs="' + element:Multiplicity:High + '"'
+		'maxOccurs="' + getUpperBound(element) + '"'
 	}
 }
 ?>

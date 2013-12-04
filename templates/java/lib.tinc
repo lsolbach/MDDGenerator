@@ -8,6 +8,7 @@ string fileComment(map element) {
 
 }
 
+/* javadoc rendering */
 string javaDoc(map element) {
 	javaDoc(element, 0)
 }
@@ -19,6 +20,36 @@ string javaDoc(map element, numeric tabs) {
 <?tabs(tabs)?> */<?
 	}
 }
+
+string javaDoc(list javaDocList, numeric tabs) {
+	if(javaDocList) {
+		tabs(tabs) + '/**' + lineFeed()
+		tabs(tabs) + ' * ' + join(javaDocList, lineFeed() + tabs(tabs) + ' * ') + lineFeed()
+		tabs(tabs) + ' */'
+	}
+}
+
+string typeJavaDoc(list javaDocList) {
+	javaDoc(javaDocList, 0)
+}
+
+string memberJavaDoc(list javaDocList) {
+	javaDoc(javaDocList, 1)
+}
+
+/* annotation rendering */
+string typeAnnotations(list annotationList) {
+	join(annotationList, lineFeed())
+}
+
+string memberAnnotations(list annotationList) {
+	tab() + join(annotationList, lineFeed() + tab())
+}
+
+string parameterAnnotations(list annotationList) {
+	join(annotationList, ' ')
+}
+
 
 string qualifiedName(map element) {
 	string namespace = namespace(element)
@@ -111,6 +142,18 @@ map getOperationImports(map element) {
 	importMap
 }
 
+string typeJavaDoc(map element) {
+	typeJavaDoc(getTypeJavaDocList(element))
+}
+
+list getTypeJavaDocList(map element) {
+	list javaDocList
+	if(hasDocumentation(element)) {
+		javaDocList.add(documentation(element))
+	}
+	javaDocList
+}
+
 /* type annotations */
 
 /* default implementation returns empty type annotation list */
@@ -121,15 +164,10 @@ list getTypeAnnotationList(map element) {
 
 /* render type annotations for element */
 string typeAnnotations(map element) {
-	list typeAnnotationList = getTypeAnnotationList(element)
-	typeAnnotations(typeAnnotationList)
+	typeAnnotations(getTypeAnnotationList(element))
 }
 
-/* render type annotation list */
-string typeAnnotations(list annotationList) {
-	join(annotationList, lineFeed())
-}
-
+/* render type modifiers */
 string typeModifiers(map element) {
 	visibility(element)
 }
@@ -195,9 +233,33 @@ string propertyAccessor(map attr) {
 	}
 }
 
+string propertyGetMethodJavaDoc(map attr) {
+	memberJavaDoc(getPropertyGetMethodJavaDocList(attr))
+}
+
+list getPropertyGetMethodJavaDocList(map attr) {
+	list javaDocList
+	javaDocList.add('Returns the value of the property ' + javaName(attr) + '.')
+	javaDocList.add('')
+	javaDocList.add('@return value of ' + javaName(attr))
+	javaDocList
+}
+
 list getPropertyGetMethodAnnotationList(map attr) {
 	list annotationList
 	annotationList
+}
+
+string propertySetMethodJavaDoc(map attr) {
+	memberJavaDoc(getPropertySetMethodJavaDocList(attr))
+}
+
+list getPropertySetMethodJavaDocList(map attr) {
+	list javaDocList
+	javaDocList.add('Sets the property ' + javaName(attr) + ' to a new value.')
+	javaDocList.add('')
+	javaDocList.add('@param ' + javaName(attr) + ' the new value')
+	javaDocList
 }
 
 list getPropertySetMethodAnnotationList(map attr) {
@@ -205,9 +267,27 @@ list getPropertySetMethodAnnotationList(map attr) {
 	annotationList
 }
 
+string propertyAddMethodJavaDoc(map attr) {
+	memberJavaDoc(getPropertyAddMethodJavaDocList(attr))
+}
+
+list getPropertyAddMethodJavaDocList(map attr) {
+	list javaDocList
+	javaDocList
+}
+
 list getPropertyAddMethodAnnotationList(map attr) {
 	list annotationList
 	annotationList
+}
+
+string propertyRemoveMethodJavaDoc(map attr) {
+	memberJavaDoc(getPropertyRemoveMethodJavaDocList(attr))
+}
+
+list getPropertyRemoveMethodJavaDocList(map attr) {
+	list javaDocList
+	javaDocList
 }
 
 list getPropertyRemoveMethodAnnotationList(map attr) {
@@ -279,9 +359,30 @@ string associationAccessor(map asso) {
 	}
 }
 
+string associationGetMethodJavaDoc(map asso) {
+	memberJavaDoc(getAssociationGetMethodJavaDocList(asso))
+}
+
+list getAssociationGetMethodJavaDocList(map asso) {
+	list javaDocList
+	javaDocList.add('Returns the value of the association property ' + javaName(asso) + '.')
+	javaDocList.add('')
+	javaDocList.add('@return value of ' + javaName(asso))
+	javaDocList
+}
+
 list getAssociationGetMethodAnnotationList(map asso) {
 	list annotationList
 	annotationList
+}
+
+string associationQualifiedGetMethodJavaDoc(map asso) {
+	memberJavaDoc(getAssociationQualifiedGetMethodJavaDocList(asso))
+}
+
+list getAssociationQualifiedGetMethodJavaDocList(map asso) {
+	list javaDocList
+	javaDocList
 }
 
 list getAssociationQualifiedGetMethodAnnotationList(map asso) {
@@ -289,14 +390,44 @@ list getAssociationQualifiedGetMethodAnnotationList(map asso) {
 	annotationList
 }
 
+string associationSetMethodJavaDoc(map asso) {
+	memberJavaDoc(getAssociationSetMethodJavaDocList(asso))
+}
+
+list getAssociationSetMethodJavaDocList(map asso) {
+	list javaDocList
+	javaDocList.add('Sets the association property ' + javaName(asso) + ' to a new value.')
+	javaDocList.add('')
+	javaDocList.add('@param ' + javaName(asso) + ' the new value')
+	javaDocList
+}
+
 list getAssociationSetMethodAnnotationList(map asso) {
 	list annotationList
 	annotationList
 }
 
+string associationAddMethodJavaDoc(map asso) {
+	memberJavaDoc(getAssociationAddMethodJavaDocList(asso))
+}
+
+list getAssociationAddMethodJavaDocList(map asso) {
+	list javaDocList
+	javaDocList
+}
+
 list getAssociationAddMethodAnnotationList(map asso) {
 	list annotationList
 	annotationList
+}
+
+string associationRemoveMethodJavaDoc(map asso) {
+	memberJavaDoc(getAssociationRemoveMethodJavaDocList(asso))
+}
+
+list getAssociationRemoveMethodJavaDocList(map asso) {
+	list javaDocList
+	javaDocList
 }
 
 list getAssociationRemoveMethodAnnotationList(map asso) {
@@ -382,12 +513,44 @@ string associationTypeImplementation(map asso) {
 	}
 }
 
+string operationMethodJavaDoc(map op) {
+	memberJavaDoc(getOperationMethodJavaDocList(op))
+}
+
+list getOperationMethodJavaDocList(map op) {
+	list javaDocList
+	if(hasDocumentation(op)) {
+		javaDocList.add(documentation(op))
+		if(op:ParameterList) {
+			/* add empty line before parameter docs */
+			javaDocList.add('')
+		}
+	}
+	javaDocList = javaDocList + mapFiltered(parameterJavaDoc, isInputParameter, op:ParameterList)
+	javaDocList = javaDocList + mapFiltered(returnJavaDoc, isReturnParameter, op:ParameterList)
+	
+	javaDocList
+}
+
+list getOperationMethodAnnotationList(map op) {
+	list annotationList
+	annotationList
+}
+
 string parameters(list fieldList) {
 	join(mapFn(parameter, fieldList), ', ')
 }
 
 string parameter(map field) {
-	parameterAnnotations(field) + ' ' + javaType(field) + ' ' + javaName(field)
+	parameterAnnotations(param) + ' ' + javaType(param) + ' ' + javaName(param)
+}
+
+string parameterJavaDoc(map param) {
+	'@param' + javaName(param) + ' ' + documentation(param)
+}
+
+string returnJavaDoc(map param) {
+	'@return' + documentation(param)
 }
 
 string parameterAnnotations(map element) {
@@ -449,15 +612,6 @@ string returnType(map op) {
 	if(!found) {
 		'void'
 	}
-}
-
-/* annotation rendering */
-string memberAnnotations(list annotationList) {
-	tab () + join(annotationList, lineFeed() + tab())
-}
-
-string parameterAnnotations(list annotationList) {
-	join(annotationList, ' ')
 }
 
 string javaName(map element) {

@@ -35,54 +35,56 @@ string staticFields(map element) {
 }
 
 string propertyGetMethod(map attr) {
-	javaDoc(attr, 1)
+	propertyGetMethodJavaDoc(attr)
 	memberAnnotations(getPropertyGetMethodAnnotationList(attr))?>
 	<?propertyType(attr)?> get<?propertyMethodBase(attr)?>();
 <?
 }
 
 string propertySetMethod(map attr) {
-	javaDoc(attr, 1)
+	propertySetMethodJavaDoc(attr)
 	memberAnnotations(getPropertySetMethodAnnotationList(attr))?>
 	void set<?propertyMethodBase(attr)?>(<?propertyType(attr)?> <?propertyName(attr)?>);
 <?
 }
 
 string propertyAddMethod(map attr) {
-	javaDoc(attr, 1)
+	propertyAddMethodJavaDoc(attr)
 	memberAnnotations(getPropertyAddMethodAnnotationList(attr))?>
 	void add<?attr:Name.firstUpper()?>(<?javaType(attr)?> <?javaName(attr)?>);
 <?
 }
 
 string propertyRemoveMethod(map attr) {
-	javaDoc(attr, 1)
+	propertyRemoveMethodJavaDoc(attr)
 	memberAnnotations(getPropertyAddMethodAnnotationList(attr))?>
 	void remove<?attr:Name.firstUpper()?>(<?javaType(attr)?> <?javaName(attr)?>);
 <?
 }
 
 string associationGetMethod(map asso) {
-	javaDoc(asso, 1)
+	associationGetMethodJavaDoc(asso)
 	memberAnnotations(getAssociationGetMethodAnnotationList(asso))?>
 	<?associationType(asso)?> get<?associationMethodBase(asso)?>();
 <?
 }
 
-string associationQualifiedGetMethod(map asso) {?>
+string associationQualifiedGetMethod(map asso) {
+	associationQualifiedGetMethodJavaDoc(asso)
+	memberAnnotations(getAssociationQualifiedGetMethodAnnotationList(asso))?>
 	<?javaType(asso)?> get<?asso:Name.firstUpper()?>(<?qualifierParameters(asso)?>);
 <?
 }
 
 string associationSetMethod(map asso) {
-	javaDoc(asso, 1)
+	associationSetMethodJavaDoc(asso)
 	memberAnnotations(getAssociationSetMethodAnnotationList(asso))?>
 	void set<?associationMethodBase(asso)?>(<?associationType(asso)?> <?associationName(asso)?>);
 <?
 }
 
 string associationAddMethod(map asso) {
-	javaDoc(asso, 1)
+	associationAddMethodJavaDoc(asso)
 	memberAnnotations(getAssociationAddMethodAnnotationList(asso))
 	if(!isQualified(asso)) {?>
 	void add<?asso:Name.firstUpper()?>(<?javaType(asso)?> <?javaName(asso)?>);
@@ -96,7 +98,7 @@ string associationAddMethod(map asso) {
 }
 
 string associationRemoveMethod(map asso) {
-	javaDoc(asso, 1)
+	associationRemoveMethodJavaDoc(asso)
 	memberAnnotations(getAssociationRemoveMethodAnnotationList(asso))?>
 	void remove<?asso:Name.firstUpper()?>(<?javaType(asso)?> <?javaName(asso)?>);
 <?
@@ -104,7 +106,7 @@ string associationRemoveMethod(map asso) {
 
 string operation(map op) {
 	if(op:Visibility eq 'public') {
-		javaDoc(op, 1)
+		operationMethodJavaDoc(op)
 		memberAnnotations(getOperationMethodAnnotationList(op))
 		operationMethod(op)
 	}

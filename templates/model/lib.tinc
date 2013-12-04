@@ -453,6 +453,10 @@ list getDataTypeList(map package) {
 	filter(isDataType, package:OwnedElementSet)
 }
 
+list getEnumerationList(map package) {
+	filter(isEnumeration, package:OwnedElementSet)
+}
+
 list getUseCaseList(map package) {
 	filter(isUseCase, package:OwnedElementSet)
 }

@@ -191,7 +191,7 @@ string propertyInitialisation(map attr) {
 }
 
 string propertyGetMethod(map attr) {
-	javaDoc(attr, 1)
+	propertyGetMethodJavaDoc(attr)
 	memberAnnotations(getPropertyGetMethodAnnotationList(attr))
 	if(isDerived(attr)) {?>
 	<?propertyGetMethodModifiers(attr)?> <?propertyType(attr)?> get<?propertyMethodBase(attr)?>() {
@@ -209,7 +209,7 @@ string propertyGetMethod(map attr) {
 }
 
 string propertyGetMethodModifiers(map attr) {
-	visibility(attr) + ' synchronized'
+	visibility(attr)
 }
 
 string propertyGetMethodDelegateImplementationBody(map attr) {?>
@@ -217,7 +217,7 @@ string propertyGetMethodDelegateImplementationBody(map attr) {?>
 }
 
 string propertySetMethod(map attr) {
-	javaDoc(attr, 1)
+	propertySetMethodJavaDoc(attr)
 	memberAnnotations(getPropertySetMethodAnnotationList(attr))?>
 	<?propertySetMethodModifiers(attr)?> void set<?propertyMethodBase(attr)?>(<?propertyType(attr)?> <?propertyName(attr)?>) {
 		this.<?propertyName(attr)?> = <?propertyName(attr)?>;
@@ -226,11 +226,11 @@ string propertySetMethod(map attr) {
 }
 
 string propertySetMethodModifiers(map attr) {
-	visibility(attr) + ' synchronized'
+	visibility(attr)
 }
 
 string propertyAddMethod(map attr) {
-	javaDoc(attr, 1)
+	propertyAddMethodJavaDoc(attr)
 	memberAnnotations(getPropertyAddMethodAnnotationList(attr))?>
 	<?propertyAddMethodModifiers(attr)?> void add<?attr:Name.firstUpper()?>(<?javaType(attr)?> <?javaName(attr)?>) {
 		<?propertyName(attr)?>.add(<?javaName(attr)?>);
@@ -239,11 +239,11 @@ string propertyAddMethod(map attr) {
 }
 
 string propertyAddMethodModifiers(map attr) {
-	visibility(attr) + ' synchronized'
+	visibility(attr)
 }
 
 string propertyRemoveMethod(map attr) {
-	javaDoc(attr, 1)
+	propertyRemoveMethodJavaDoc(attr)
 	memberAnnotations(getPropertyRemoveMethodAnnotationList(attr))?>
 	<?propertyRemoveMethodModifiers(attr)?> void remove<?attr:Name.firstUpper()?>(<?javaType(attr)?> <?javaName(attr)?>) {
 		<?propertyName(attr)?>.remove(<?javaName(attr)?>);
@@ -252,7 +252,7 @@ string propertyRemoveMethod(map attr) {
 }
 
 string propertyRemoveMethodModifiers(map attr) {
-	visibility(attr) + ' synchronized'
+	visibility(attr)
 }
 
 string associationFields(map element) {
@@ -285,7 +285,7 @@ string associationInitialisation(map asso) {
 }
 
 string associationGetMethod(map asso) {
-	javaDoc(asso, 1)
+	associationGetMethodJavaDoc(asso)
 	memberAnnotations(getAssociationGetMethodAnnotationList(asso))
 	if(isDerived(asso)) {?>
 	<?associationGetMethodModifiers(asso)?> <?associationType(asso)?> get<?associationMethodBase(asso)?>() {
@@ -302,7 +302,7 @@ string associationGetMethod(map asso) {
 }
 
 string associationGetMethodModifiers(map asso) {
-	visibility(asso) + ' synchronized'
+	visibility(asso)
 }
 
 string associationGetMethodBody(map asso) {
@@ -333,7 +333,7 @@ string associationReturn(map asso) {
 }
 
 string associationQualifiedGetMethod(map asso) {
-	javaDoc(asso, 1)
+	associationQualifiedGetMethodJavaDoc(asso)
 	memberAnnotations(getAssociationQualifiedGetMethodAnnotationList(asso))
 	if(isDerived(asso)) {?>
 	<?associationGetMethodModifiers(asso)?> <?javaType(asso)?> get<?asso:Name.firstUpper()?>(<?qualifierParameters(asso)?>) {
@@ -353,7 +353,7 @@ string associationQualifiedGetMethodBody(map asso) {
 }
 
 string associationSetMethod(map asso) {
-	javaDoc(asso, 1)
+	associationSetMethodJavaDoc(asso)
 	memberAnnotations(getAssociationSetMethodAnnotationList(asso))?>
 	<?associationSetMethodModifiers(asso)?> void set<?associationMethodBase(asso)?>(<?associationType(asso)?> <?associationName(asso)?>) {
 		<?associationSetMethodBody(asso)?>
@@ -362,7 +362,7 @@ string associationSetMethod(map asso) {
 }
 
 string associationSetMethodModifiers(map asso) {
-	visibility(asso) + ' synchronized'
+	visibility(asso)
 }
 
 string associationSetMethodBody(map asso) {
@@ -370,7 +370,7 @@ string associationSetMethodBody(map asso) {
 }
 
 string associationAddMethod(map asso) {
-	javaDoc(asso, 1)
+	associationAddMethodJavaDoc(asso)
 	memberAnnotations(getAssociationAddMethodAnnotationList(asso))
 	if(!isQualified(asso)) {?>
 	<?associationAddMethodModifiers(asso)?> void add<?asso:Name.firstUpper()?>(<?javaType(asso)?> <?javaName(asso)?>) {
@@ -386,7 +386,7 @@ string associationAddMethod(map asso) {
 }
 
 string associationAddMethodModifiers(map asso) {
-	visibility(asso) + ' synchronized'
+	visibility(asso)
 }
 
 string associationAddMethodBody(map asso) {
@@ -398,7 +398,7 @@ string associationQualifiedAddMethodBody(map asso) {
 }
 
 string associationRemoveMethod(map asso) {
-	javaDoc(asso, 1)
+	associationRemoveMethodJavaDoc(asso)
 	memberAnnotations(getAssociationRemoveMethodAnnotationList(asso))?>
 	<?associationRemoveMethodModifiers(asso)?> void remove<?asso:Name.firstUpper()?>(<?javaType(asso)?> <?javaName(asso)?>) {
 		<?associationRemoveMethodBody(asso)?>
@@ -407,7 +407,7 @@ string associationRemoveMethod(map asso) {
 }
 
 string associationRemoveMethodModifiers(map asso) {
-	visibility(asso) + ' synchronized'
+	visibility(asso)
 }
 
 string associationRemoveMethodBody(map asso) {
@@ -415,7 +415,7 @@ string associationRemoveMethodBody(map asso) {
 }
 
 string operation(map op) {
-	javaDoc(op, 1)
+	operationMethodJavaDoc(op)
 	memberAnnotations(getOperationMethodAnnotationList(op))
 	operationMethod(op) + ' {'
 	operationMethodBody(op)
