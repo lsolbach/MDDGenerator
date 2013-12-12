@@ -193,12 +193,12 @@ method isStereotype = cIsElementType('Stereotype')
 method isTagDefinition = cIsElementType('TagDefinition')
 
 
-numeric isClassifierField(map element) {
+numeric isClassifierScope(map element) {
 	element:OwnerScope eq 'classifier'
 }
 
-numeric isInstanceField(map element) {
-	!isClassifierField(element)
+numeric isInstanceScope(map element) {
+	element:OwnerScope eq 'instance'
 }
 
 numeric isAssociationEnd(map element) {
@@ -365,10 +365,6 @@ numeric isAbstract(map element) {
 	element:IsAbstract
 }
 
-numeric isAbstract(map element) {
-	element:IsAbstract
-}
-
 numeric isManyEnd(map asso) {
 	isMany(asso) || isQualified(asso)
 }
@@ -493,12 +489,36 @@ list getAttributeList(map element) {
 	element:AllAttributeList
 }
 
+list getClassifierAttributeList(map element) {
+	filter(isClassifierScope, getAttributeList(element))
+}
+
+list getInstanceAttributeList(map element) {
+	filter(isInstanceScope, getAttributeList(element))
+}
+
 list getAssociationList(map element) {
 	element:AllAssociationList
 }
 
+list getClassifierAssociationList(map element) {
+	filter(isClassifierScope, getAssociationList(element))
+}
+
+list getInstanceAssociationList(map element) {
+	filter(isInstanceScope, getAssociationList(element))
+}
+
 list getOperationList(map element) {
 	element:OperationList
+}
+
+list getClassifierOperationList(map element) {
+	filter(isClassifierScope, getOperationList(element))
+}
+
+list getInstanceOperationList(map element) {
+	filter(isInstanceScope, getOperationList(element))
 }
 
 list getParameterList(map operation) {
@@ -550,14 +570,16 @@ list getOptionalAssociationList(map element) {
 }
 
 list getClassifierFieldList(map element) {
-	filter(isClassifierField, getPropertyFieldList(element) + getAssociationFieldList(element))	
+	filter(isClassifierScope, getPropertyFieldList(element) + getAssociationFieldList(element))	
 }
 
 list getInstanceFieldList(map element) {
-	filter(isInstanceField, getPropertyFieldList(element) + getAssociationFieldList(element))	
+	filter(isInstanceScope, getPropertyFieldList(element) + getAssociationFieldList(element))	
 }
 
 list getPropertyFieldList(map element) {
+	/* TODO if this method is referenced! If not remove */
+	/* TODO check if !isMany() is correct here (e.g. allow handling of multivalued properties as arrays ?!) */
 	list fieldList
 	foreach attr | !isDerived(attr) && !isMany(attr) <- getAttributeList(element) {
 		fieldList.add(attr)
@@ -566,6 +588,8 @@ list getPropertyFieldList(map element) {
 }
 
 list getAssociationFieldList(map element) {
+	/* TODO if this method is referenced! If not remove */
+	/* TODO check !isMany() && !isQualified(asso) */
 	list fieldList
 	foreach asso
 			| isAccessibleAssociation(asso) && !isMany(asso) && !isQualified(asso)

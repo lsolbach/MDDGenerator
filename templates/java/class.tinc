@@ -57,8 +57,18 @@ string extension(map element) {
 }
 
 /* TODO handle classifier/static fields correctly in all the methods working with properties and associations */
+string staticFields(map element) {
+	join(mapFn(staticAttributeField, getClassifierAttributeList(element)), lineFeed())
+	join(mapFn(staticAssociationField, getClassifierAssociationList(element)), lineFeed())
+}
 
-string staticFields(map element) {}
+string staticAttributeField(map attr) {
+	/* TODO implement classifier scoped fields */
+}
+
+string staticAssociationField(map attr) {
+	/* TODO implement classifier scoped fields */
+}
 
 string staticInitialization(map element) {}
 
@@ -68,7 +78,7 @@ string constructors(map element) {
 }
 
 string constructor(map element) {
-	list fieldList = filter(isInstanceField, getPropertyFieldList(element) + getAssociationFieldList(element))
+	list fieldList = filter(isInstanceScope, getPropertyFieldList(element) + getAssociationFieldList(element))
 	list mandatoryFieldList	= filter(isMandatory, fieldList)
 	
 	if(fieldList) {
@@ -113,7 +123,7 @@ string defaultConstructor(map element) {?>
 }
 
 string fieldConstructors(map element) {
-	list fieldList = filter(isInstanceProperty, getPropertyFieldList(element) + getAssociationFieldList(element))
+	list fieldList = filter(isInstanceScope, getPropertyFieldList(element) + getAssociationFieldList(element))
 	fieldConstructors(element fieldList)
 }
 
@@ -128,7 +138,7 @@ string fieldConstructors(map element, list fieldList) {
 }
 
 string propertiesConstructor(map element) {
-	list fieldList = filter(isInstanceField, getPropertyFieldList(element))
+	list fieldList = filter(isInstanceScope, getPropertyFieldList(element))
 	list mandatoryFieldList	= filter(isMandatory, fieldList)
 
 	if(fieldList) {
@@ -152,12 +162,14 @@ string associationsConstructor(map element) {
 }
 
 string memberFields(map element) {
+	/* TODO only instance scoped fields */
+	/* TODO check use of getInstanceFieldList*/
 	propertyFields(This)
 	associationFields(This)
 }
 
 string propertyFields(map element) {
-	foreach attr | !isDerived(attr) <- getAttributeList(element) {
+	foreach attr | !isDerived(attr) <- getInstanceAttributeList(element) {
 		propertyField(attr)
 	}
 }
@@ -166,9 +178,11 @@ string propertyField(map attr) {
 	memberAnnotations(getPropertyFieldAnnotationList(attr))
 	if(!isMany(attr)) {?>
 	<?propertyFieldModifiers(attr)?> <?propertyType(attr)?> <?propertyName(attr)?>;
+
 <?
 	} else {?>
 	<?propertyFieldModifiers(attr)?> <?propertyType(attr)?> <?propertyName(attr)?> = new <?propertyTypeImplementation(attr)?>();
+
 <?
 	}
 }
@@ -180,6 +194,9 @@ list getPropertyFieldAnnotationList(map attr) {
 
 string propertyFieldModifiers(map attr) {
 	'private'
+	if(isClassifierScope(attr)) {
+		' static'
+	}
 }
 
 string propertyInitialisation(map attr) {
@@ -204,12 +221,16 @@ string propertyGetMethod(map attr) {
 	<?propertyGetMethodModifiers(attr)?> <?propertyType(attr)?> get<?propertyMethodBase(attr)?>() {
 		return <?propertyName(attr)?>;
 	}
+
 <?
 	}
 }
 
 string propertyGetMethodModifiers(map attr) {
 	visibility(attr)
+	if(isClassifierScope(attr)) {
+		' static'
+	}
 }
 
 string propertyGetMethodDelegateImplementationBody(map attr) {?>
@@ -222,11 +243,15 @@ string propertySetMethod(map attr) {
 	<?propertySetMethodModifiers(attr)?> void set<?propertyMethodBase(attr)?>(<?propertyType(attr)?> <?propertyName(attr)?>) {
 		this.<?propertyName(attr)?> = <?propertyName(attr)?>;
 	}
+
 <?
 }
 
 string propertySetMethodModifiers(map attr) {
 	visibility(attr)
+	if(isClassifierScope(attr)) {
+		' static'
+	}
 }
 
 string propertyAddMethod(map attr) {
@@ -235,11 +260,15 @@ string propertyAddMethod(map attr) {
 	<?propertyAddMethodModifiers(attr)?> void add<?attr:Name.firstUpper()?>(<?javaType(attr)?> <?javaName(attr)?>) {
 		<?propertyName(attr)?>.add(<?javaName(attr)?>);
 	}
+
 <?
 }
 
 string propertyAddMethodModifiers(map attr) {
 	visibility(attr)
+	if(isClassifierScope(attr)) {
+		' static'
+	}
 }
 
 string propertyRemoveMethod(map attr) {
@@ -248,15 +277,19 @@ string propertyRemoveMethod(map attr) {
 	<?propertyRemoveMethodModifiers(attr)?> void remove<?attr:Name.firstUpper()?>(<?javaType(attr)?> <?javaName(attr)?>) {
 		<?propertyName(attr)?>.remove(<?javaName(attr)?>);
 	}
+
 <?
 }
 
 string propertyRemoveMethodModifiers(map attr) {
 	visibility(attr)
+	if(isClassifierScope(attr)) {
+		' static'
+	}
 }
 
 string associationFields(map element) {
-	foreach asso | isAccessibleAssociation(asso) && !isDerived(asso) <- getAssociationList(element) {
+	foreach asso | isAccessibleAssociation(asso) && !isDerived(asso) <- getInstanceAssociationList(element) {
 		associationField(asso)
 	}
 }
@@ -264,6 +297,7 @@ string associationFields(map element) {
 string associationField(map asso) {
 	memberAnnotations(getAssociationFieldAnnotationList(asso))?>
 	<?associationFieldModifiers(asso)?> <?associationType(asso)?> <?associationName(asso)?> <?associationInitialisation(asso)?>;
+
 <?
 }
 
@@ -274,6 +308,9 @@ list getAssociationFieldAnnotationList(map asso) {
 
 string associationFieldModifiers(map asso) {
 	'private'
+	if(isClassifierScope(asso)) {
+		' static'
+	}
 }
 
 string associationInitialisation(map asso) {
@@ -292,17 +329,22 @@ string associationGetMethod(map asso) {
 		return doGet<?associationMethodBase(asso)?>();
 	}
 	protected abstract <?associationType(asso)?> doGet<?associationMethodBase(asso)?>();
+
 <?
 	} else {?>
 	<?associationGetMethodModifiers(asso)?> <?associationType(asso)?> get<?associationMethodBase(asso)?>() {
 		<?associationGetMethodBody(asso)?>
 	}
+
 <?
 	}
 }
 
 string associationGetMethodModifiers(map asso) {
 	visibility(asso)
+	if(isClassifierScope(asso)) {
+		' static'
+	}
 }
 
 string associationGetMethodBody(map asso) {
@@ -340,10 +382,13 @@ string associationQualifiedGetMethod(map asso) {
 		return doGet<?asso:Name.firstUpper()?>(<?qualifierArguments(asso)?>);
 	}
 	protected abstract <?javaType(asso)?> doGet<?asso:Name.firstUpper()?>(<?qualifierParameters(asso)?>);
-	<?} else {?>
+
+<?
+	} else {?>
 	<?associationGetMethodModifiers(asso)?> <?javaType(asso)?> get<?asso:Name.firstUpper()?>(<?qualifierParameters(asso)?>) {
 		<?associationQualifiedGetMethodBody(asso)?>
 	}
+
 <?
 	}
 }
@@ -358,11 +403,15 @@ string associationSetMethod(map asso) {
 	<?associationSetMethodModifiers(asso)?> void set<?associationMethodBase(asso)?>(<?associationType(asso)?> <?associationName(asso)?>) {
 		<?associationSetMethodBody(asso)?>
 	}
+
 <?
 }
 
 string associationSetMethodModifiers(map asso) {
 	visibility(asso)
+	if(isClassifierScope(asso)) {
+		' static'
+	}
 }
 
 string associationSetMethodBody(map asso) {
@@ -376,17 +425,22 @@ string associationAddMethod(map asso) {
 	<?associationAddMethodModifiers(asso)?> void add<?asso:Name.firstUpper()?>(<?javaType(asso)?> <?javaName(asso)?>) {
 		<?associationAddMethodBody(asso)?>
 	}
+
 <?
 	} else {?>
 	<?associationAddMethodModifiers(asso)?> void add<?asso:Name.firstUpper()?>(<?javaType(asso:SourceEnd:QualifierList[0])?> <?javaName(asso:SourceEnd:QualifierList[0])?>, <?javaType(asso)?> <?javaName(asso)?>) {
 		<?associationQualifiedAddMethodBody(asso)?>
 	}
+
 <?
 	}
 }
 
 string associationAddMethodModifiers(map asso) {
 	visibility(asso)
+	if(isClassifierScope(asso)) {
+		' static'
+	}
 }
 
 string associationAddMethodBody(map asso) {
@@ -403,11 +457,15 @@ string associationRemoveMethod(map asso) {
 	<?associationRemoveMethodModifiers(asso)?> void remove<?asso:Name.firstUpper()?>(<?javaType(asso)?> <?javaName(asso)?>) {
 		<?associationRemoveMethodBody(asso)?>
 	}
+
 <?
 }
 
 string associationRemoveMethodModifiers(map asso) {
 	visibility(asso)
+	if(isClassifierScope(asso)) {
+		' static'
+	}
 }
 
 string associationRemoveMethodBody(map asso) {
@@ -429,6 +487,9 @@ string operationMethod(map op) {?>
 
 string operationMethodModifiers(map op) {
 	visibility(op)
+	if(isClassifierScope(op)) {
+		' static'
+	}
 }
 
 string operationMethodBody(map op) {
@@ -445,16 +506,30 @@ string operationMethodDelegate(map op) {
 	}	
 }
 
+/* TODO extract operationMethodDelegateSignatureJavaDoc(map op) and operationMethodDelegateSignatureAnnotations(map op) */
 string operationMethodDelegateSignature(map op) {?>
-	protected abstract <?returnType(op)?> do<?op:Name.firstUpper()?>(<?operationParameters(op)?>);
+	<?operationMethodDelegateSignatureModifiers(op)?> <?returnType(op)?> do<?op:Name.firstUpper()?>(<?operationParameters(op)?>);
+
 <?
 }
 
+/* TODO handle classifier scope */
+string operationMethodDelegateSignatureModifiers(map op) {
+	'protected abstract' 
+}
+
+/* TODO extract operationMethodDelegateImplementationJavaDoc(map op) and operationMethodDelegateImplementationAnnotations(map op) */
 string operationMethodDelegateImplementation(map op) {?>
-	protected <?returnType(op)?> do<?op:Name.firstUpper()?>(<?operationParameters(op)?>) {<?
+	<?operationMethodDelegateImplementationModifiers(op)?> <?returnType(op)?> do<?op:Name.firstUpper()?>(<?operationParameters(op)?>) {<?
 	operationMethodDelegateImplementationBody(op)?>
 	}
+
 <?
+}
+
+/* TODO handle classifier scope */
+string operationMethodDelegateImplementationModifiers(map op) {
+	'protected'
 }
 
 string operationMethodDelegateImplementationBody(map op) {?>
@@ -480,6 +555,7 @@ string equals(map element) {?>
 	}?>
 		return true;
 	}
+
 <?
 }
 
@@ -511,6 +587,7 @@ string hashcode(map element) {?>
   	  }?>
 		return result;
 	}
+
 <?
 }
 
@@ -522,10 +599,10 @@ string toString(map element) {?>
 		sb.append("]");
 		return sb.toString();
 	}
+
 <?
 }
 
-/* TODO still needed with join? */
 numeric isAppendable(map attr) {
 	!isDerived(attr)
 }

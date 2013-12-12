@@ -7,6 +7,14 @@
  * 
  * ©2010-2012 Ludger Solbach
  --?><?
+string fileComment(map element) {
+	'-- file comment'
+}
+
+string sqlStatements(map element) {
+	'-- sql statements'
+}
+
 string comment(string text) {
 	'-- ' + text
 }
@@ -82,8 +90,12 @@ list associations(map element) {
 	assoColumnList
 }
 
-string foreignKey(map asso) {
- 	foreignKeyName(asso) + ' ' + sqlType('Id') + optional(asso)
+string foreignKey(map element) {
+ 	foreignKeyName(element) + ' ' + foreignKeyType(element) + ' ' + optional(element)
+}
+
+string foreignKeyType(map element) {
+	sqlType('Integer')
 }
 
 string optional(map element) {
@@ -96,61 +108,19 @@ string optional(map element) {
 
 string sqlType(map element) {
 	if(element:Type:Name eq 'String' || element:Type:Name eq 'string') {
-		if(hasTaggedValue(element, 'maxLength')) {
-			sqlType(element:Type:Name, toNumeric(taggedValue(element, 'maxLength')))
-		} else {
-			sqlType(element:Type:Name)
-		}
+		sqlType(element:Type:Name)
 	} else if(isBlob(element)) {
-		if(hasTaggedValue(element, 'maxLength')) {
-			sqlType('BLOB',  toNumeric(taggedValue(element, 'maxLength')))
-		} else {
-			sqlType('BLOB')
-		}
+		sqlType('BLOB')
 	} else {
 		sqlType(element:Type:Name)
 	}
 }
 
 string sqlType(string typeName) {
-	if(typeName eq 'String' || typeName eq 'string') {
-		sqlType(typeName, 254)
-	} else if(typeName eq 'boolean' || typeName eq 'Boolean') {
-		'smallint'
-	} else if(typeName eq 'byte' || typeName eq 'Byte') {
-		'smallint'
-	} else if(typeName eq 'char' || typeName eq 'Char') {
-		'smallint'
-	} else if(typeName eq 'short' || typeName eq 'Short') {
-		'smallint'
-	} else if(typeName eq 'int' || typeName eq 'Integer') {
-		'integer'
-	} else if(typeName eq 'long' || typeName eq 'Long') {
-		'integer'
-	} else if(typeName eq 'float' || typeName eq 'Float') {
-		'numeric(20,10)'
-	} else if(typeName eq 'double' || typeName eq 'Double') {
-		'numeric(20,10)'
-	} else if(typeName eq 'TimeStamp') {
-		'timestamp'
-	} else if(typeName eq 'Time') {
-		'time'
-	} else if(typeName eq 'Date') {
-		'date'
-	} else if(typeName eq 'BLOB') {
-		'BLOB'
-	} else if(typeName eq 'Id') {
-		'varchar(20)'
-	}
+	typeName
 }
 
 string sqlType(string typeName, numeric length) {
-	if(typeName eq 'String' || typeName eq 'string') {
-		'varchar(' + length + ')'
-	} else if(typeName eq 'BLOB') {
-		'BLOB('+ length +')'
-	} else {
-		sqlType(typeName)
-	}
+	sqlType(typeName) + '(' + length + ')'
 }
 ?>

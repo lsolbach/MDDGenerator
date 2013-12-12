@@ -273,6 +273,9 @@ string propertyAddMethodJavaDoc(map attr) {
 
 list getPropertyAddMethodJavaDocList(map attr) {
 	list javaDocList
+	javaDocList.add('Adds a value to the multivalued property ' + propertyName(attr) + '.')
+	javaDocList.add('')
+	javaDocList.add('@param ' + javaName(attr)  + 'the value to add')
 	javaDocList
 }
 
@@ -287,6 +290,9 @@ string propertyRemoveMethodJavaDoc(map attr) {
 
 list getPropertyRemoveMethodJavaDocList(map attr) {
 	list javaDocList
+	javaDocList.add('Removes a value from the multivalued property ' + propertyName(attr) + '.')
+	javaDocList.add('')
+	javaDocList.add('@param ' + javaName(attr)  + 'the value to remove')
 	javaDocList
 }
 
@@ -382,6 +388,10 @@ string associationQualifiedGetMethodJavaDoc(map asso) {
 
 list getAssociationQualifiedGetMethodJavaDocList(map asso) {
 	list javaDocList
+	javaDocList.add('Returns the value of the association property ' + associationName(asso) + '.')
+	javaDocList.add('')
+	/* TODO add @param's for qualifiers */
+	javaDocList.add('@return value of ' + javaName(asso))
 	javaDocList
 }
 
@@ -413,6 +423,9 @@ string associationAddMethodJavaDoc(map asso) {
 
 list getAssociationAddMethodJavaDocList(map asso) {
 	list javaDocList
+	javaDocList.add('Adds a value to the multivalued association property ' + associationName(asso) + '.')
+	javaDocList.add('')
+	javaDocList.add('@param ' + javaName(asso)  + 'the value to add')
 	javaDocList
 }
 
@@ -427,6 +440,9 @@ string associationRemoveMethodJavaDoc(map asso) {
 
 list getAssociationRemoveMethodJavaDocList(map asso) {
 	list javaDocList
+	javaDocList.add('Removes a value from the multivalued association property ' + associationName(asso) + '.')
+	javaDocList.add('')
+	javaDocList.add('@param ' + javaName(asso)  + 'the value to remove')
 	javaDocList
 }
 

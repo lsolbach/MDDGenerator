@@ -1,0 +1,21 @@
+<?!--
+ * java/package-html
+ * 
+ * include for javadoc package descriptions
+ *
+ * Requires includes lib, model/lib, html/html4
+ * 
+ * © 2010- Ludger Solbach
+--?><?
+string headContent(map element) {
+	
+}
+
+string bodyContent(map element) {
+	if(hasDocumentation(element)) {
+		documentation(element)
+	}
+}
+
+
+?>
