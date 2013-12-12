@@ -441,6 +441,7 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		return dataType;
 	}
 
+
 	@Override
 	protected Dependency initDependency(Dependency dependency, XmiObject xmiObject) {
 		org.soulspace.modelling.uml14.elements.Dependency xmiSource = (org.soulspace.modelling.uml14.elements.Dependency) xmiObject;
@@ -1078,6 +1079,23 @@ public class Uml14ModelFactoryImpl extends AbstractModelFactory implements
 		return classifierInState;
 	}
 
+	protected Enumeration initEnumeration(Enumeration enumeration, XmiObject xmiObject) {
+		org.soulspace.modelling.uml14.elements.Enumeration xmiSource = (org.soulspace.modelling.uml14.elements.Enumeration) xmiObject;
+		initDataType(enumeration, xmiSource);
+
+		for(org.soulspace.modelling.uml14.elements.EnumerationLiteral xmiEnumLiteral : xmiSource.getLiteralList()) {
+			enumeration.addLiteral(createEnumerationLiteral(xmiEnumLiteral));
+		}
+		return enumeration;
+	}
+	
+	protected EnumerationLiteral initEnumerationLiteral(EnumerationLiteral enumerationLiteral, XmiObject xmiObject) {
+		org.soulspace.modelling.uml14.elements.EnumerationLiteral xmiSource = (org.soulspace.modelling.uml14.elements.EnumerationLiteral) xmiObject;
+		initModelElement(enumerationLiteral, xmiSource);
+		
+		return enumerationLiteral;
+	}
+	
 	String buildNamespace(
 			org.soulspace.modelling.uml14.elements.ModelElement xmiSource) {
 		StringBuilder sb = new StringBuilder("");
