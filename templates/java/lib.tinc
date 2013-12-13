@@ -562,11 +562,11 @@ string parameter(map field) {
 }
 
 string parameterJavaDoc(map param) {
-	'@param' + javaName(param) + ' ' + documentation(param)
+	'@param ' + javaName(param) + ' ' + documentation(param)
 }
 
 string returnJavaDoc(map param) {
-	'@return' + documentation(param)
+	'@return ' + documentation(param)
 }
 
 string parameterAnnotations(map element) {

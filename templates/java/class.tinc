@@ -477,8 +477,8 @@ string operation(map op) {
 	memberAnnotations(getOperationMethodAnnotationList(op))
 	operationMethod(op) + ' {'
 	operationMethodBody(op)
-	'	}'
-	operationMethodDelegateSignature(op)
+	'	}' + lineFeed()
+	operationMethodDelegateSignature(op) + lineFeed()
 }
 
 string operationMethod(map op) {?>
@@ -537,6 +537,9 @@ string operationMethodDelegateImplementationBody(map op) {?>
 }
 
 string equals(map element) {?>
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean equals(java.lang.Object obj) {
 	  	if(this == obj) return true;
  	 	if(!(obj instanceof <?name(element)?>)) return false;
@@ -560,6 +563,9 @@ string equals(map element) {?>
 }
 
 string hashcode(map element) {?>
+	/**
+	 * {@inheritDoc}
+	 */
 	public int hashCode() {
 		int result = 17;
 		if(getClass().getSuperclass() != null && getClass().getSuperclass() != java.lang.Object.class) {
@@ -592,6 +598,9 @@ string hashcode(map element) {?>
 }
 
 string toString(map element) {?>
+	/**
+	 * {@inheritDoc}
+	 */
 	public String toString() {
 		StringBuilder sb = new StringBuilder(64);
 		sb.append("<?element:Name?>[");<?

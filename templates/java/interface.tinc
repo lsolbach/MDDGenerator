@@ -113,7 +113,9 @@ string operation(map op) {
 }
 
 string operationMethod(map op) {?>
-	<?returnType(op)?> <?op:Name?>(<?operationParameters(op)?>);<?
+	<?returnType(op)?> <?op:Name?>(<?operationParameters(op)?>);
+
+<?
 }
 
 ?>
