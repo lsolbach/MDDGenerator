@@ -8,17 +8,17 @@
    --?><?
 
 /* returns generation information */
-string generationInfo() {
-	generationInfo('')
+string generationInfo(map element) {
+	generationInfo(element, '')
 }
 
 /* returns generation information */
-string generationInfo(string prefix) {
-	/* TODO tracing: Classifier Type and XMIId, Model and Profiles (generator and template versions) */
-	prefix + 'Classifier: ' + This:ElementType + ' ' + This:Id.replace('--', '__') + lineFeed()
+string generationInfo(map element, string prefix) {
+	/* tracing: Classifier Type and XMIId, Model and Profiles (generator and template versions) */
+	prefix + 'Classifier: ' + element:ElementType + ' ' + element:Id.replace('--', '__') + lineFeed()
 	prefix + 'Template:   ' + generatorValue('Template') + lineFeed()
 	prefix + 'Includes:   ' + join(generatorValue('Includes'), ', ') + lineFeed()
-	prefix + 'Timestamp:  ' + generatorValue('Timestamp')
+	prefix + 'Timestamp:  ' + generatorValue('Timestamp')	
 }
 
 numeric hasGeneratorValue(string name) {
@@ -50,8 +50,6 @@ string protectedArea(string id, string beginComment, string endComment) {
 <?PROTECTED_AREAS[id]?><?
 	beginComment + generatorValue('protectedArea') + '-END(' + replace(id, '-', '=') + ')' + endComment
 }
-
-/* model checks */
 
 /* returns the namespace of an element according to the generator context */
 string namespace(map element) {
@@ -313,10 +311,6 @@ numeric hasDerivedMembers(map element) {
 		derivedMembers = 1
 	}
 	derivedMembers
-}
-
-numeric hasDerivedMembers() {
-	hasDerivedMembers(This)
 }
 
 /**/

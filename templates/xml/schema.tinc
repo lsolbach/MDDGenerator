@@ -1,4 +1,12 @@
-<?
+<?!--
+ * xml/schema
+ *
+ * Standard include for XML Schema files
+ * 
+ * Requires lib, model/lib
+ *
+ * © 2010- Ludger Solbach
+--?><?
 string contentXml(map element) {?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	xmlns:<?schemaNamespacePrefix(element)?>="<?schemaNamespace(element)?>"

@@ -9,14 +9,14 @@
 --?><?
 
 string fileComment(map element) {
-?>/*
- * Class <?name(This)?>
-<? generationInfo(' * ')?>
- */<?
+	'/*' + lineFeed()
+	' * Class ' + name(element) + lineFeed()
+	generationInfo(element, ' * ') + lineFeed()
+	' */'
 }
 
 string packageDeclaration(map element) {?>
-package <?namespace(This)?>;<?
+package <?namespace(element)?>;<?
 }
 
 map getImportMap(map element) {
@@ -164,8 +164,8 @@ string associationsConstructor(map element) {
 string memberFields(map element) {
 	/* TODO only instance scoped fields */
 	/* TODO check use of getInstanceFieldList*/
-	propertyFields(This)
-	associationFields(This)
+	propertyFields(element)
+	associationFields(element)
 }
 
 string propertyFields(map element) {

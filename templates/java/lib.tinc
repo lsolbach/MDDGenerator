@@ -92,7 +92,7 @@ string qualifiedImplementationName(map element, string prefix, string suffix) {
 }
 
 string imports(map element) {
-	map importMap = getImportMap(This)
+	map importMap = getImportMap(element)
 	foreach importType <- importMap.keyList() {
 		importQualifiedName(importType)
 	}
@@ -205,7 +205,7 @@ string constructorArguments(list fieldList) {
 }
 
 string staticInitializer() {
-	staticInitializer(This)
+	staticInitializer(element)
 }
 
 string staticInitializer(map element) {

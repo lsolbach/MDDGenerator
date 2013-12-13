@@ -26,13 +26,13 @@ string staticFields(map element) {
 }
 
 string memberFields(map element) {
-	propertyFields(This)
-	associationFields(This)
+	propertyFields(element)
+	associationFields(element)
 }
 
 string operations(map element) {
-	propertyAccessors(This)
-	associationAccessors(This)
+	propertyAccessors(element)
+	associationAccessors(element)
 	super(element)
 	equals(element)
 	hashcode(element)

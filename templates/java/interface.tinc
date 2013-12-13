@@ -7,6 +7,14 @@
  *
  * © 2010 Ludger Solbach
 --?><?
+
+string fileComment(map element) {
+	'/*' + lineFeed()
+	' * Class ' + name(element) + lineFeed()
+	generationInfo(element, ' * ') + lineFeed()
+	' */'
+}
+
 string packageDeclaration(map element) {?>
 package <?namespace(element)?>;<?
 }
