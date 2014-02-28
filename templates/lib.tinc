@@ -3,7 +3,7 @@
    -
    - Standard functions to make life easier
    - Functional programming style used with no side effects, the functions all return new data structures.
-   - Optimized for correctness, readability and maintainance, not for performance.
+   - Optimized for correctness, readability and maintainance, not necessarily for performance.
    -
    - © 2010- Ludger Solbach
    --?><?
@@ -300,6 +300,18 @@ numeric size(list input) {
 
 numeric size(map input) {
 	input.size()
+}
+
+numeric isEmpty(string input) {
+	!input.size() > 0
+}
+
+numeric isEmpty(list input) {
+	!input.size() > 0
+}
+
+numeric isEmpty(map input) {
+	!input.size() > 0
 }
 
 any get(list elementList, numeric index) {
