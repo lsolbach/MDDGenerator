@@ -1,0 +1,10 @@
+<?
+string diagram(map element) {
+	activityDiagram(element)
+}
+
+/* override */
+string activityDiagram(map element) {
+
+}
+?>

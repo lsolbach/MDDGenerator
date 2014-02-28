@@ -1,0 +1,15 @@
+<?
+string diagram(map element) {
+	classDiagram(element)
+}
+
+/* override */
+string classDiagram(map element) {
+
+}
+
+string classDiagram(list elementList) {
+
+}
+
+?>
