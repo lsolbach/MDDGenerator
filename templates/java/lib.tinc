@@ -17,7 +17,8 @@ string javaDoc(map element, numeric tabs) {
 	if(hasDocumentation(element)) {?>
 <?tabs(tabs)?>/**
 <?tabs(tabs)?> * <?documentation(element)?>
-<?tabs(tabs)?> */<?
+<?tabs(tabs)?> */
+<?
 	}
 }
 
@@ -25,7 +26,7 @@ string javaDoc(list javaDocList, numeric tabs) {
 	if(javaDocList) {
 		tabs(tabs) + '/**' + lineFeed()
 		tabs(tabs) + ' * ' + join(javaDocList, lineFeed() + tabs(tabs) + ' * ') + lineFeed()
-		tabs(tabs) + ' */'
+		tabs(tabs) + ' */' + lineFeed()
 	}
 }
 
@@ -39,11 +40,15 @@ string memberJavaDoc(list javaDocList) {
 
 /* annotation rendering */
 string typeAnnotations(list annotationList) {
-	join(annotationList, lineFeed())
+	if(annotationList) {
+		join(annotationList, lineFeed()) + lineFeed()
+	}
 }
 
 string memberAnnotations(list annotationList) {
-	tab() + join(annotationList, lineFeed() + tab())
+	if(annotationList) {
+		tab() + join(annotationList, lineFeed() + tab()) + lineFeed()
+	}
 }
 
 string parameterAnnotations(list annotationList) {
@@ -204,282 +209,71 @@ string constructorArguments(list fieldList) {
 	join(mapFn(javaName, fieldList), ', ')
 }
 
-string staticInitializer() {
-	staticInitializer(element)
+string staticInitializer(map element) {
 }
 
-string staticInitializer(map element) {
-
+list getStaticInitializerList(map element) {
+	list initializerList
+	initializerList
 }
 
 string dependencies(map element) {
 
 }
 
-string propertyAccessors(map element) {
-	foreach attr | isAccessibleProperty(attr) <- getAttributeList(element) {
-		propertyAccessor(attr)
-	}
-}
-
-string propertyAccessor(map attr) {
-	propertyGetMethod(attr)
-	if(isChangeable(attr)) {
-		propertySetMethod(attr)
-		if(isMany(attr)) {
-			propertyAddMethod(attr)
-			propertyRemoveMethod(attr)
-		}
-	}
-}
-
-string propertyGetMethodJavaDoc(map attr) {
-	memberJavaDoc(getPropertyGetMethodJavaDocList(attr))
-}
-
-list getPropertyGetMethodJavaDocList(map attr) {
-	list javaDocList
-	javaDocList.add('Returns the value of the property ' + javaName(attr) + '.')
-	javaDocList.add('')
-	javaDocList.add('@return value of ' + javaName(attr))
-	javaDocList
-}
-
-list getPropertyGetMethodAnnotationList(map attr) {
-	list annotationList
-	annotationList
-}
-
-string propertySetMethodJavaDoc(map attr) {
-	memberJavaDoc(getPropertySetMethodJavaDocList(attr))
-}
-
-list getPropertySetMethodJavaDocList(map attr) {
-	list javaDocList
-	javaDocList.add('Sets the property ' + javaName(attr) + ' to a new value.')
-	javaDocList.add('')
-	javaDocList.add('@param ' + javaName(attr) + ' the new value')
-	javaDocList
-}
-
-list getPropertySetMethodAnnotationList(map attr) {
-	list annotationList
-	annotationList
-}
-
-string propertyAddMethodJavaDoc(map attr) {
-	memberJavaDoc(getPropertyAddMethodJavaDocList(attr))
-}
-
-list getPropertyAddMethodJavaDocList(map attr) {
-	list javaDocList
-	javaDocList.add('Adds a value to the multivalued property ' + propertyName(attr) + '.')
-	javaDocList.add('')
-	javaDocList.add('@param ' + javaName(attr)  + 'the value to add')
-	javaDocList
-}
-
-list getPropertyAddMethodAnnotationList(map attr) {
-	list annotationList
-	annotationList
-}
-
-string propertyRemoveMethodJavaDoc(map attr) {
-	memberJavaDoc(getPropertyRemoveMethodJavaDocList(attr))
-}
-
-list getPropertyRemoveMethodJavaDocList(map attr) {
-	list javaDocList
-	javaDocList.add('Removes a value from the multivalued property ' + propertyName(attr) + '.')
-	javaDocList.add('')
-	javaDocList.add('@param ' + javaName(attr)  + 'the value to remove')
-	javaDocList
-}
-
-list getPropertyRemoveMethodAnnotationList(map attr) {
-	list annotationList
-	annotationList
-}
-
-string propertyName(map attr) {
-	if(isMany(attr)) {
-		javaName(attr) + propertyCollectionType(attr)
+/* member fields */
+string fieldMethodBaseName(map field) {
+	if(isMany(field) || isQualified(field)) {
+		field:Name.firstUpper() + collectionType(field)		
 	} else {
-		javaName(attr)
+		field:Name.firstUpper()
 	}
 }
 
-string propertyMethodBase(map attr) {
-	if(isMany(attr)) {
-		attr:Name.firstUpper() + propertyCollectionType(attr)		
+string fieldName(map field) {
+	string fieldName = javaName(field)
+	if(!fieldName) {
+		fieldName = javaName(field:Type)
+	}
+	if(isMany(field) || isQualified(field)) {
+		fieldName + collectionType(field)		
 	} else {
-		attr:Name.firstUpper()
+		fieldName
 	}
 }
 
-string propertyCollectionType(map attr) {
-	if(isMany(attr)) {
-		'List'
-	}
-}
-
-string propertyCollectionImplementation(map attr) {
-	if(isMany(attr)) {
-		'ArrayList'
-	}
-}
-
-string propertyType(map attr) {
-	if(!isMany(attr)) {
-		javaType(attr)
+string fieldType(map field) {
+	if(!isMany(field) && !isQualified(field)) {
+		javaType(field)
+	} else if(isQualified(field)) {
+		/* TODO check */
+		collectionType(field) + '<' + javaType(field:SourceEnd:QualifierList[0]) + ', ' + javaType(field)+ '>'
 	} else {
-		propertyCollectionType(attr) + '<' + javaType(attr)+ '>'
+		collectionType(field) + '<' + javaType(field)+ '>'
 	}
 }
 
-string propertyTypeImplementation(map attr) {
-	if(!isMany(attr)) {
-		javaType(attr)
+string fieldImplementationType(map field) {
+	if(!isMany(field) && !isQualified(field)) {
+		javaType(field)
+	} else if(isQualified(field)) {
+		/* TODO check */
+		collectionImplementationType(field) + '<' + javaType(field:SourceEnd:QualifierList[0]) + ', ' + javaType(field)+ '>'
 	} else {
-		propertyCollectionImplementation(attr) + '<' + javaType(attr)+ '>'
+		collectionImplementationType(field) + '<' + javaType(field)+ '>'
 	}
 }
 
-string associationAccessors(map element) {
-	foreach asso | isAccessibleAssociation(asso) <- getAssociationList(element) {
-		associationAccessor(asso)
-	}
-}
-
-string associationAccessor(map asso) {
-	associationGetMethod(asso)
-	if(isQualified(asso)) {
-		associationQualifiedGetMethod(asso)
-	}
-	if(isChangeable(asso)) {
-		associationSetMethod(asso)
-		if(isMany(asso) || isQualified(asso)) {
-			associationAddMethod(asso)
-			associationRemoveMethod(asso)
-		}
-	}
-}
-
-string associationGetMethodJavaDoc(map asso) {
-	memberJavaDoc(getAssociationGetMethodJavaDocList(asso))
-}
-
-list getAssociationGetMethodJavaDocList(map asso) {
-	list javaDocList
-	javaDocList.add('Returns the value of the association property ' + javaName(asso) + '.')
-	javaDocList.add('')
-	javaDocList.add('@return value of ' + javaName(asso))
-	javaDocList
-}
-
-list getAssociationGetMethodAnnotationList(map asso) {
-	list annotationList
-	annotationList
-}
-
-string associationQualifiedGetMethodJavaDoc(map asso) {
-	memberJavaDoc(getAssociationQualifiedGetMethodJavaDocList(asso))
-}
-
-list getAssociationQualifiedGetMethodJavaDocList(map asso) {
-	list javaDocList
-	javaDocList.add('Returns the value of the association property ' + associationName(asso) + '.')
-	javaDocList.add('')
-	/* TODO add @param's for qualifiers */
-	javaDocList.add('@return value of ' + javaName(asso))
-	javaDocList
-}
-
-list getAssociationQualifiedGetMethodAnnotationList(map asso) {
-	list annotationList
-	annotationList
-}
-
-string associationSetMethodJavaDoc(map asso) {
-	memberJavaDoc(getAssociationSetMethodJavaDocList(asso))
-}
-
-list getAssociationSetMethodJavaDocList(map asso) {
-	list javaDocList
-	javaDocList.add('Sets the association property ' + javaName(asso) + ' to a new value.')
-	javaDocList.add('')
-	javaDocList.add('@param ' + javaName(asso) + ' the new value')
-	javaDocList
-}
-
-list getAssociationSetMethodAnnotationList(map asso) {
-	list annotationList
-	annotationList
-}
-
-string associationAddMethodJavaDoc(map asso) {
-	memberJavaDoc(getAssociationAddMethodJavaDocList(asso))
-}
-
-list getAssociationAddMethodJavaDocList(map asso) {
-	list javaDocList
-	javaDocList.add('Adds a value to the multivalued association property ' + associationName(asso) + '.')
-	javaDocList.add('')
-	javaDocList.add('@param ' + javaName(asso)  + 'the value to add')
-	javaDocList
-}
-
-list getAssociationAddMethodAnnotationList(map asso) {
-	list annotationList
-	annotationList
-}
-
-string associationRemoveMethodJavaDoc(map asso) {
-	memberJavaDoc(getAssociationRemoveMethodJavaDocList(asso))
-}
-
-list getAssociationRemoveMethodJavaDocList(map asso) {
-	list javaDocList
-	javaDocList.add('Removes a value from the multivalued association property ' + associationName(asso) + '.')
-	javaDocList.add('')
-	javaDocList.add('@param ' + javaName(asso)  + 'the value to remove')
-	javaDocList
-}
-
-list getAssociationRemoveMethodAnnotationList(map asso) {
-	list annotationList
-	annotationList
-}
-
-string associationName(map asso) {
-	string roleName = javaName(asso)
-	if(!roleName) {
-		roleName = javaName(asso:Type)
-	}
-	if(isMany(asso) || isQualified(asso)) {
-		roleName + associationCollectionType(asso)		
-	} else {
-		roleName
-	}
-}
-
-string associationMethodBase(map asso) {
-	if(isMany(asso) || isQualified(asso)) {
-		asso:Name.firstUpper() + associationCollectionType(asso)		
-	} else {
-		asso:Name.firstUpper()
-	}
-}
-
-string associationCollectionType(map asso) {
-	if(isMany(asso)) {
-		if(isOrdered(asso)) {
+string collectionType(map field) {
+	if(isMany(field)) {
+		if(isOrdered(field)) {
 			'List'
 		} else {
 			'Set'
 		}
-	} else if(isQualified(asso)) {
-		list qualifiers = getQualifierList(asso)
+	} else if(isQualified(field)) {
+		/* TODO check */
+		list qualifiers = getQualifierList(field)
 		if(qualifiers.size() == 1) {
 			if(isPrimitive(qualifiers[0]:Type)) {
 				'List'
@@ -492,8 +286,8 @@ string associationCollectionType(map asso) {
 	}
 }
 
-string associationCollectionImplementation(map asso) {
-	string type = associationCollectionType(asso)
+string collectionImplementationType(map field) {
+	string type = collectionType(field)
 	if(type eq 'List') {
 		'ArrayList'
 	} else if(type eq 'Set') {
@@ -509,26 +303,87 @@ string associationCollectionImplementation(map asso) {
 	}
 }
 
-string associationType(map asso) {
-	if(!isMany(asso) && !isQualified(asso)) {
-		javaType(asso)
-	} else if(isQualified(asso)) {
-		associationCollectionType(asso) + '<' + javaType(asso:SourceEnd:QualifierList[0]) + ', ' + javaType(asso)+ '>'
-	} else {
-		associationCollectionType(asso) + '<' + javaType(asso)+ '>'
+string fieldAccessor(map field) {
+	fieldGetMethod(field)
+	if(isQualified(field)) {
+		fieldQualifiedGetMethod(field)
+	}
+	if(isChangeable(field)) {
+		fieldSetMethod(field)
+		if(isMany(field) || isQualified(field)) {
+			fieldAddMethod(field)
+			fieldRemoveMethod(field)
+		}
 	}
 }
 
-string associationTypeImplementation(map asso) {
-	if(!isMany(asso) && !isQualified(asso)) {
-		javaType(asso)
-	} else if(isQualified(asso)) {
-		associationCollectionImplementation(asso) + '<' + javaType(asso:SourceEnd:QualifierList[0]) + ', ' + javaType(asso)+ '>'
-	} else {
-		associationCollectionImplementation(asso) + '<' + javaType(asso)+ '>'
-	}
+list getFieldGetMethodJavaDocList(map field) {
+	list javaDocList
+	javaDocList.add('Returns the value of the association property ' + fieldName(field) + '.')
+	javaDocList.add('')
+	javaDocList.add('@return value of ' + javaName(field))
+	javaDocList
 }
 
+list getFieldGetMethodAnnotationList(map field) {
+	list annotationList
+	annotationList
+}
+
+list getFieldQualifiedGetMethodJavaDocList(map field) {
+	list javaDocList
+	javaDocList.add('Returns the value of the association property ' + fieldName(field) + '.')
+	javaDocList.add('')
+	/* TODO add @param's for qualifiers */
+	javaDocList.add('@return value of ' + javaName(field))
+	javaDocList
+}
+
+list getFieldQualifiedGetMethodAnnotationList(map field) {
+	list annotationList
+	annotationList
+}
+
+list getFieldSetMethodJavaDocList(map field) {
+	list javaDocList
+	javaDocList.add('Sets the association property ' + javaName(field) + ' to a new value.')
+	javaDocList.add('')
+	javaDocList.add('@param ' + javaName(field) + ' the new value')
+	javaDocList
+}
+
+list getFieldSetMethodAnnotationList(map field) {
+	list annotationList
+	annotationList
+}
+
+list getFieldAddMethodJavaDocList(map field) {
+	list javaDocList
+	javaDocList.add('Adds a value to the multivalued association property ' + fieldName(field) + '.')
+	javaDocList.add('')
+	javaDocList.add('@param ' + javaName(field)  + 'the value to add')
+	javaDocList
+}
+
+list getFieldAddMethodAnnotationList(map field) {
+	list annotationList
+	annotationList
+}
+
+list getFieldRemoveMethodJavaDocList(map field) {
+	list javaDocList
+	javaDocList.add('Removes a value from the multivalued association property ' + fieldName(field) + '.')
+	javaDocList.add('')
+	javaDocList.add('@param ' + javaName(field)  + 'the value to remove')
+	javaDocList
+}
+
+list getFieldRemoveMethodAnnotationList(map field) {
+	list annotationList
+	annotationList
+}
+
+/* operations */
 string operationMethodJavaDoc(map op) {
 	memberJavaDoc(getOperationMethodJavaDocList(op))
 }
@@ -607,6 +462,7 @@ string operationParameter(map param) {
 }
 
 string operationParameterAnnotation(map param) {
+
 }
 
 list getOperationMethodAnnotationList(map asso) {

@@ -42,75 +42,50 @@ string staticFields(map element) {
 
 }
 
-string propertyGetMethod(map attr) {
-	propertyGetMethodJavaDoc(attr)
-	memberAnnotations(getPropertyGetMethodAnnotationList(attr))?>
-	<?propertyType(attr)?> get<?propertyMethodBase(attr)?>();
+/* BEGIN NEW FIELDS */
+
+string fieldGetMethod(map field) {
+	memberJavaDoc(getFieldGetMethodJavaDocList(field))
+	memberAnnotations(getFieldGetMethodAnnotationList(field))
+?>	<?fieldType(field)?> get<?fieldMethodBaseName(field)?>();
 <?
 }
 
-string propertySetMethod(map attr) {
-	propertySetMethodJavaDoc(attr)
-	memberAnnotations(getPropertySetMethodAnnotationList(attr))?>
-	void set<?propertyMethodBase(attr)?>(<?propertyType(attr)?> <?propertyName(attr)?>);
+string fieldQualifiedGetMethod(map field) {
+	memberJavaDoc(getFieldQualifiedGetMethodJavaDocList(field))
+	memberAnnotations(getFieldQualifiedGetMethodAnnotationList(field))
+?>	<?javaType(field)?> get<?field:Name.firstUpper()?>(<?qualifierParameters(field)?>);
 <?
 }
 
-string propertyAddMethod(map attr) {
-	propertyAddMethodJavaDoc(attr)
-	memberAnnotations(getPropertyAddMethodAnnotationList(attr))?>
-	void add<?attr:Name.firstUpper()?>(<?javaType(attr)?> <?javaName(attr)?>);
+string fieldSetMethod(map field) {
+	memberJavaDoc(getFieldSetMethodJavaDocList(field))
+	memberAnnotations(getFieldSetMethodAnnotationList(field))
+?>	void set<?fieldMethodBaseName(field)?>(<?fieldType(field)?> <?fieldName(field)?>);
 <?
 }
 
-string propertyRemoveMethod(map attr) {
-	propertyRemoveMethodJavaDoc(attr)
-	memberAnnotations(getPropertyAddMethodAnnotationList(attr))?>
-	void remove<?attr:Name.firstUpper()?>(<?javaType(attr)?> <?javaName(attr)?>);
-<?
-}
-
-string associationGetMethod(map asso) {
-	associationGetMethodJavaDoc(asso)
-	memberAnnotations(getAssociationGetMethodAnnotationList(asso))?>
-	<?associationType(asso)?> get<?associationMethodBase(asso)?>();
-<?
-}
-
-string associationQualifiedGetMethod(map asso) {
-	associationQualifiedGetMethodJavaDoc(asso)
-	memberAnnotations(getAssociationQualifiedGetMethodAnnotationList(asso))?>
-	<?javaType(asso)?> get<?asso:Name.firstUpper()?>(<?qualifierParameters(asso)?>);
-<?
-}
-
-string associationSetMethod(map asso) {
-	associationSetMethodJavaDoc(asso)
-	memberAnnotations(getAssociationSetMethodAnnotationList(asso))?>
-	void set<?associationMethodBase(asso)?>(<?associationType(asso)?> <?associationName(asso)?>);
-<?
-}
-
-string associationAddMethod(map asso) {
-	associationAddMethodJavaDoc(asso)
-	memberAnnotations(getAssociationAddMethodAnnotationList(asso))
-	if(!isQualified(asso)) {?>
-	void add<?asso:Name.firstUpper()?>(<?javaType(asso)?> <?javaName(asso)?>);
+string fieldAddMethod(map field) {
+	memberJavaDoc(getFieldAddMethodJavaDocList(field))
+	memberAnnotations(getFieldAddMethodAnnotationList(field))
+	if(!isQualified(field)) {
+?>	void add<?field:Name.firstUpper()?>(<?javaType(field)?> <?javaName(field)?>);
 <?
 	} else {
-		list qualifierList = getQualifierList(asso)
-	?>
-	void add<?asso:Name.firstUpper()?>(<?javaType(qualifierList[0])?> <?javaName(qualifierList[0])?>, <?javaType(asso)?> <?javaName(asso)?>);
+		list qualifierList = getQualifierList(field)
+?>	void add<?field:Name.firstUpper()?>(<?javaType(qualifierList[0])?> <?javaName(qualifierList[0])?>, <?javaType(field)?> <?javaName(field)?>);
 <?
 	}
 }
 
-string associationRemoveMethod(map asso) {
-	associationRemoveMethodJavaDoc(asso)
-	memberAnnotations(getAssociationRemoveMethodAnnotationList(asso))?>
-	void remove<?asso:Name.firstUpper()?>(<?javaType(asso)?> <?javaName(asso)?>);
+string fieldRemoveMethod(map field) {
+	memberJavaDoc(getFieldRemoveMethodJavaDocList(field))
+	memberAnnotations(getFieldRemoveMethodAnnotationList(field))
+?>	void remove<?field:Name.firstUpper()?>(<?javaType(field)?> <?javaName(field)?>);
 <?
 }
+
+/* END NEW FIELDS */
 
 string operation(map op) {
 	if(op:Visibility eq 'public') {

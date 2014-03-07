@@ -15,26 +15,17 @@ string staticFields(map element) {
 }
 
 string operations(map element) {
-	propertyAccessorDelegateImplementations(element)
-	associationAccessorDelegateImplementations(element)
+	compose(fieldAccessorDelegateImplementation, filter(isPropertyField, getFieldList(element)), lineFeed())
 	super(element)
 }
 
-string propertyAccessorDelegateImplementations(map element) {
-	foreach attr | isDerived(attr) <- getAttributeList(element) {?>
+string fieldAccessorDelegateImplementations(map field) {?>
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	protected <?propertyType(attr)?> doGet<?propertyMethodBase(attr)?>() {<?
-		propertyGetMethodDelegateImplementationBody(attr)?>
-	}
-<?
-	}
-}
-
-string associationAccessorDelegateImplementations(map element) {
-	foreach asso | isDerived(asso) <- getAssociationList(element) {?>
-	@Override
-	protected <?associationType(asso)?> doGet<?associationMethodBase(asso)?>() {<?
-		associationGetMethodDelegateImplementationBody(asso)?>
+	protected <?fieldType(field)?> doGet<?fieldMethodBaseName(field)?>() {<?
+		fieldGetMethodDelegateImplementationBody(field)?>
 	}
 <?
 	}

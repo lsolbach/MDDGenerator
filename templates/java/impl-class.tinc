@@ -7,6 +7,12 @@
  * 
  * © 2010- Ludger Solbach
 --?><?
+
+string extension(map element) {
+	/* TODO implement correctly with respect to model superclasses */
+	super(element)
+}
+
 string constructorBody(map element, list fieldList) {?>
 		super(<?constructorArguments(fieldList)?>);<?
 }

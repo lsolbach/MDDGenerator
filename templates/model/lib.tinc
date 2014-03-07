@@ -75,6 +75,14 @@ string namespace(map element) {
 	}
 }
 
+string modelName(map element) {
+	map candidate = element
+	while(candidate:ParentElement) {
+		candidate = candidate:ParentElement
+	}
+	candidate:Name
+}
+
 /* returns the name of an element according to the generator context */
 string name(map element) {
 	if(hasGeneratorValue('Prefix')) {
@@ -154,6 +162,17 @@ numeric isAssignableTo(map element, string typeName) {
 	result
 }
 
+method isUseCase = cIsElementType('UseCase')
+method isActor = cIsElementType('Actor')
+method isStateMachine = cIsElementType('StateMachine')
+method isNode = cIsElementType('Node')
+method isComponent = cIsElementType('Component')
+method isStereotype = cIsElementType('Stereotype')
+method isTagDefinition = cIsElementType('TagDefinition')
+method isAttribute = cIsElementType('Attribute')
+method isAssociationEnd = cIsElementType('AssociationEnd')
+method isOperation = cIsElementType('Operation')
+
 numeric isModel(map element) {
 	isInstanceOf(element, 'Model')
 }
@@ -182,29 +201,12 @@ numeric isState(map element) {
 	isInstanceOf(element, 'State')
 }
 
-method isUseCase = cIsElementType('UseCase')
-method isActor = cIsElementType('Actor')
-method isStateMachine = cIsElementType('StateMachine')
-method isNode = cIsElementType('Node')
-method isComponent = cIsElementType('Component')
-method isStereotype = cIsElementType('Stereotype')
-method isTagDefinition = cIsElementType('TagDefinition')
-
-
 numeric isClassifierScope(map element) {
-	element:OwnerScope eq 'classifier'
+	element:OwnerScope eq 'classifier' || element:TargetScope eq 'classifier'
 }
 
 numeric isInstanceScope(map element) {
-	element:OwnerScope eq 'instance'
-}
-
-numeric isAssociationEnd(map element) {
-	element:ElementType eq 'AssociationEnd'
-}
-
-numeric isAttribute(map element) {
-	element:ElementType eq 'Attribute'
+	!isClassifierScope(element) 
 }
 
 numeric isArray(map element) {
@@ -287,15 +289,15 @@ numeric isQualified(map element) {
 }
 
 numeric isOrdered(map asso) {
-	asso:Ordering eq 'ordered'
+	isAssociationEnd(asso) && asso:Ordering eq 'ordered'
 }
 
 numeric isNavigable(map asso) {
-	asso:Navigable
+	isAssociationEnd(asso) && asso:Navigable
 }
 
 numeric isQuery(map op) {
-	op:IsQuery
+	isOperation(op) && op:IsQuery
 }
 
 numeric isDerived(map element) {
@@ -315,32 +317,32 @@ numeric hasDerivedMembers(map element) {
 
 /**/
 numeric isAggregation(map asso) {
-	asso:Aggregation eq 'aggregate'
+	isAssociationEnd(asso) && asso:Aggregation eq 'aggregate'
 }
 
 /**/
 numeric isAggregated(map asso) {
-	isAggregation(asso:SourceEnd)
+	isAssociationEnd(asso) && isAggregation(asso:SourceEnd)
 }
 
 /**/
 numeric isComposition(map asso) {
-	asso:Aggregation eq 'composite'
+	isAssociationEnd(asso) && asso:Aggregation eq 'composite'
 }
 
 /**/
 numeric isComposed(map asso) {
-	isComposition(asso:SourceEnd)
+	isAssociationEnd(asso) && isComposition(asso:SourceEnd)
 }
 
 /**/
 numeric isReference(map asso) {
-	asso:Aggregation eq 'none'
+	isAssociationEnd(asso) && asso:Aggregation eq 'none'
 }
 
 /**/
 numeric isReferred(map asso) {
-	isReference(asso:SourceEnd)
+	isAssociationEnd(asso) && isReference(asso:SourceEnd)
 }
 
 numeric isChangeable(map element) {
@@ -379,12 +381,13 @@ numeric isManyToMany(map asso) {
 	isManyEnd(asso:SourceEnd) && isManyEnd(asso)
 }
 
-numeric isAccessibleProperty(map attr) {
-	attr:Name ne ''
+numeric isPropertyField(map field) {
+	/* TODO check java beans spec */
+	isAccessibleField(field) && isInstanceScope(field) && !isDerived(field)
 }
 
-numeric isAccessibleAssociation(map asso) {
-	asso:Name ne '' && isNavigable(asso)
+numeric isAccessibleField(map field) {
+	field:Name ne '' && (field:ElementType ne 'AssociationEnd' || isNavigable(field))
 }
 
 numeric isStartState(map state) {
@@ -479,40 +482,36 @@ list getSubClassList(map element) {
 	element:SubClassList	
 }
 
+list getFieldList(map element) {
+	 getAttributeList(element) + getAssociationList(element)
+}
+
+list getAllFieldList(map element) {
+	getAllAttributeList(element) + getAllAssociationList(element)
+}
+
 list getAttributeList(map element) {
+	element:AttributeList
+}
+
+list getAllAttributeList(map element) {
 	element:AllAttributeList
 }
 
-list getClassifierAttributeList(map element) {
-	filter(isClassifierScope, getAttributeList(element))
-}
-
-list getInstanceAttributeList(map element) {
-	filter(isInstanceScope, getAttributeList(element))
-}
-
 list getAssociationList(map element) {
+	element:AssociationList
+}
+
+list getAllAssociationList(map element) {
 	element:AllAssociationList
-}
-
-list getClassifierAssociationList(map element) {
-	filter(isClassifierScope, getAssociationList(element))
-}
-
-list getInstanceAssociationList(map element) {
-	filter(isInstanceScope, getAssociationList(element))
 }
 
 list getOperationList(map element) {
 	element:OperationList
 }
 
-list getClassifierOperationList(map element) {
-	filter(isClassifierScope, getOperationList(element))
-}
-
-list getInstanceOperationList(map element) {
-	filter(isInstanceScope, getOperationList(element))
+list getAllOperationList(map element) {
+	element:AllOperationList
 }
 
 list getParameterList(map operation) {
@@ -539,71 +538,12 @@ list getTagDefinitionList(map package) {
 	filter(isTagDefinition, package:OwnedElementSet)
 }
 
-string modelName(map element) {
-	map candidate = element
-	while(candidate:ParentElement) {
-		candidate = candidate:ParentElement
-	}
-	candidate:Name
-}
-
-list getMandatoryPropertyList(map element) {
-	filter(isMandatory, getAttributeList(element))
-}
-
-list getOptionalPropertyList(map element) {
-	filter(isOptional, getAttributeList(element))
-}
-
-list getMandatoryAssociationList(map element) {
-	filter(isMandatory, getAssociationList(element))
-}
-
-list getOptionalAssociationList(map element) {
-	filter(isOptional, getAssociationList(element))
-}
-
-list getClassifierFieldList(map element) {
-	filter(isClassifierScope, getPropertyFieldList(element) + getAssociationFieldList(element))	
-}
-
-list getInstanceFieldList(map element) {
-	filter(isInstanceScope, getPropertyFieldList(element) + getAssociationFieldList(element))	
-}
-
-list getPropertyFieldList(map element) {
-	/* TODO if this method is referenced! If not remove */
-	/* TODO check if !isMany() is correct here (e.g. allow handling of multivalued properties as arrays ?!) */
-	list fieldList
-	foreach attr | !isDerived(attr) && !isMany(attr) <- getAttributeList(element) {
-		fieldList.add(attr)
-	}
-	fieldList
-}
-
-list getAssociationFieldList(map element) {
-	/* TODO if this method is referenced! If not remove */
-	/* TODO check !isMany() && !isQualified(asso) */
-	list fieldList
-	foreach asso
-			| isAccessibleAssociation(asso) && !isMany(asso) && !isQualified(asso)
-				&& !isDerived(asso)
-			<- getAssociationList(element) {
-		fieldList.add(asso)
-	}
-	fieldList
-}
-
-list getPropertyMandatoryFieldList(map element) {
-	filter(isMandatory, getPropertyFieldList(element))
-}
-
-list getAssociationMandatoryFieldList(map element) {
-	filter(isMandatory, getAssociationFieldList(element))
-}
-
 list getQualifierList(map asso) {
-	asso:SourceEnd:QualifierList
+	list qualifierList
+	if(asso:ElementType eq 'AssociationEnd') {
+		qualifierList = asso:SourceEnd:QualifierList
+	}
+	qualifierList
 }
 
 /* profile elements */

@@ -26,13 +26,18 @@ string staticFields(map element) {
 }
 
 string memberFields(map element) {
-	propertyFields(element)
-	associationFields(element)
+	compose(memberField, filter(isPropertyField, getFieldList(element)), lineFeed())
+}
+
+string fieldModifiers(map field) {
+	'private'
+	if(isClassifierScope(field)) {
+		' static'
+	}
 }
 
 string operations(map element) {
-	propertyAccessors(element)
-	associationAccessors(element)
+	compose(fieldAccessor, filter(isPropertyField, getFieldList(element)), lineFeed())
 	super(element)
 	equals(element)
 	hashcode(element)
@@ -40,6 +45,9 @@ string operations(map element) {
 }
 
 string equals(map element) {?>
+	/**
+	 * {@inheritDoc}
+	 */
 	public boolean equals(java.lang.Object obj) {
 	  	if(this == obj) return true;
  	 	if(!(obj instanceof <?name(element)?>)) return false;
@@ -49,11 +57,12 @@ string equals(map element) {?>
 	  	if(getClass().getSuperclass() != null && getClass().getSuperclass() != java.lang.Object.class) {
 	  	  if(!super.equals(other)) return false;
 	    }<?
-	foreach attr | !isDerived(attr) <- getAttributeList(element) {
+	foreach attr | isPropertyField(attr) <- getAttributeList(element) {
+		/* TODO Use association fields here, too?*/
 		if(isPrimitive(attr:Type)) {?>
-		if(get<?propertyMethodBase(attr)?>() != other.get<?propertyMethodBase(attr)?>()) return false;<?
+		if(get<?fieldMethodBaseName(attr)?>() != other.get<?fieldMethodBaseName(attr)?>()) return false;<?
 		} else {?>
-		if(get<?propertyMethodBase(attr)?>().equals(other.get<?propertyMethodBase(attr)?>())) return false;<?
+		if(!get<?fieldMethodBaseName(attr)?>().equals(other.get<?fieldMethodBaseName(attr)?>())) return false;<?
 		}
 	}?>
 		return true;
@@ -62,28 +71,32 @@ string equals(map element) {?>
 }
 
 string hashcode(map element) {?>
+	/**
+	 * {@inheritDoc}
+	 */
 	public int hashCode() {
 		int result = 17;
 		if(getClass().getSuperclass() != null && getClass().getSuperclass() != java.lang.Object.class) {
 			result = 29 * result + super.hashCode();
 		}<?
-	foreach attr | !isDerived(attr) <- getAttributeList(element) {
+	foreach attr | isPropertyField(attr) <- getAttributeList(element) {
+		/* TODO Use association fields here, too?*/
 		if((javaType(attr) eq 'byte')
 			|| (javaType(attr) eq 'char')
 			|| (javaType(attr) eq 'short')
 			|| (javaType(attr) eq 'int')) {?>
-		result = 29 * result + get<?propertyMethodBase(attr)?>();<?
+		result = 29 * result + get<?fieldMethodBaseName(attr)?>();<?
 		} else if(javaType(attr) eq 'long') {?>
-		result = 29 * result + (int) (get<?propertyMethodBase(attr)?>() ^ get<?propertyMethodBase(attr)?>() >>> 32));<?
+		result = 29 * result + (int) (get<?fieldMethodBaseName(attr)?>() ^ get<?fieldMethodBaseName(attr)?>() >>> 32));<?
 		} else if(javaType(attr) eq 'float') {?>
-		result = 29 * result + Float.floatToIntBits(get<?propertyMethodBase(attr)?>());<?
+		result = 29 * result + Float.floatToIntBits(get<?fieldMethodBaseName(attr)?>());<?
 		} else if(javaType(attr) eq 'double') {?>
-		result = 29 * result + Double.doubleToIntBits(get<?propertyMethodBase(attr)?>());<?
+		result = 29 * result + Double.doubleToIntBits(get<?fieldMethodBaseName(attr)?>());<?
 		} else if(javaType(attr) eq 'boolean') {?>
-		result = 29 * result + (get<?propertyMethodBase(attr)?>() ? 1 : 0);<? 
+		result = 29 * result + (get<?fieldMethodBaseName(attr)?>() ? 1 : 0);<? 
 		} else {?>
-  		if(get<?propertyMethodBase(attr)?>() != null) {
-			result = 29 * result + get<?propertyMethodBase(attr)?>().hashCode();
+  		if(get<?fieldMethodBaseName(attr)?>() != null) {
+			result = 29 * result + get<?fieldMethodBaseName(attr)?>().hashCode();
 		}<?
   		  }
   	  }?>

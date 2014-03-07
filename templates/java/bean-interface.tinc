@@ -2,8 +2,7 @@
     - include for java bean interfaces java/bean-interface
    --?><?
 string operations(map element) {
-	propertyAccessors(element)
-	associationAccessors(element)
+	compose(fieldAccessor, filter(isPropertyField, getFieldList(element)), lineFeed())
 	super(element)
 }
 ?>

@@ -45,7 +45,7 @@ list getImplementationList(map element) {
 }
 
 string extendType(map type) {
-	if(type && !isAbstract(type)) {
+	if(type) {
 		'extends ' + name(type)
 	}
 }
@@ -58,16 +58,20 @@ string extension(map element) {
 
 /* TODO handle classifier/static fields correctly in all the methods working with properties and associations */
 string staticFields(map element) {
-	join(mapFn(staticAttributeField, getClassifierAttributeList(element)), lineFeed())
-	join(mapFn(staticAssociationField, getClassifierAssociationList(element)), lineFeed())
+	join(mapFiltered(staticField, isClassifierScope, getFieldList(element)), lineFeed())
 }
 
-string staticAttributeField(map attr) {
-	/* TODO implement classifier scoped fields */
+string allStaticFields(map element) {
+	join(mapFiltered(staticField, isClassifierScope, getAllFieldList(element)), lineFeed())
 }
 
-string staticAssociationField(map attr) {
-	/* TODO implement classifier scoped fields */
+/* TODO implement classifier scoped fields */
+string staticField(map field) {
+	memberJavaDoc(getFieldJavaDocList(field))
+	memberAnnotations(getFieldAnnotationList(field))
+	?>
+	<?fieldModifiers(field)?> static <?fieldType(field)?> <?fieldName(field)?> <?fieldInitialisation(field)?>;
+<?
 }
 
 string staticInitialization(map element) {}
@@ -78,15 +82,41 @@ string constructors(map element) {
 }
 
 string constructor(map element) {
-	list fieldList = filter(isInstanceScope, getPropertyFieldList(element) + getAssociationFieldList(element))
-	list mandatoryFieldList	= filter(isMandatory, fieldList)
-	
-	if(fieldList) {
-		constructor(element, fieldList)
-		if(mandatoryFieldList && mandatoryFieldList ne fieldList) {
-			constructor(element, mandatoryFieldList)
+
+	if(getSuperClassList(element)) {
+		list allFieldList = filter(isAccessibleField, getAllFieldList(element))
+		list superFieldList = filter(isAccessibleField, getAllFieldList(first(getSuperClassList(element))))
+		list declaredFieldList = filter(isAccessibleField, getFieldList(element))
+
+		list allMandatoryFieldList = filter(isMandatory, allFieldList)
+		list superMandatoryFieldList filter(isMandatory, superFieldList)
+		list declaredMandatoryFieldList filter(isMandatory, declaredFieldList)
+
+		if(allFieldList) {
+			constructor(element, allFieldList, superFieldList, declaredFieldList)
+			if(allMandatoryFieldList && allMandatoryFieldList ne allFieldList) {
+				constructor(element, allMandatoryFieldList, superMandatoryFieldList, declaredMandatoryFieldList)
+			}
+		}
+	} else {
+		list fieldList = filter(isAccessibleField, getAllFieldList(element))
+		list mandatoryFieldList	= filter(isMandatory, fieldList)
+		if(fieldList) {
+			constructor(element, fieldList)
+			if(mandatoryFieldList && mandatoryFieldList ne fieldList) {
+				constructor(element, mandatoryFieldList)
+			}
 		}
 	}
+}
+
+string constructor(map element, list allFieldList, list superFieldList, list declaredFieldList) {
+	memberAnnotations(getConstructorAnnotationList(element))?>
+	<?constructorModifiers(element)?> <?name(element)?>(<?constructorParameters(allFieldList)?>) {<?
+		constructorBody(element, superFieldList, declaredFieldList)
+?>
+	}
+<?	
 }
 
 string constructor(map element, list fieldList) {
@@ -102,11 +132,25 @@ string constructorModifiers(map element) {
 	'public'
 }
 
+string constructorBody(map element, list superFieldList, list declaredFieldList) {
+	constructorSuperCall(element, superFieldList)
+	foreach field <- declaredFieldList {
+		constructorFieldInitialisation(field)
+	}
+	constructorPostInitialisation(element, declaredFieldList)
+}
+
 string constructorBody(map element, list fieldList) {
 	foreach field <- fieldList {
-		constructorFieldInitialisation(field)		
+		constructorFieldInitialisation(field)
 	}
 	constructorPostInitialisation(element, fieldList)
+}
+
+string constructorSuperCall(map element, list fieldList) {
+	if(fieldList) {?>
+		super(<?constructorArguments(fieldList)?>);<?
+	}
 }
 
 string constructorFieldInitialisation(map field) {?>
@@ -123,7 +167,7 @@ string defaultConstructor(map element) {?>
 }
 
 string fieldConstructors(map element) {
-	list fieldList = filter(isInstanceScope, getPropertyFieldList(element) + getAssociationFieldList(element))
+	list fieldList = filter(isPropertyField, getFieldList(element))
 	fieldConstructors(element fieldList)
 }
 
@@ -138,7 +182,8 @@ string fieldConstructors(map element, list fieldList) {
 }
 
 string propertiesConstructor(map element) {
-	list fieldList = filter(isInstanceScope, getPropertyFieldList(element))
+	/* TODO check */
+	list fieldList = filter(isAttribute, getFieldList(element))
 	list mandatoryFieldList	= filter(isMandatory, fieldList)
 
 	if(fieldList) {
@@ -150,7 +195,8 @@ string propertiesConstructor(map element) {
 }
 
 string associationsConstructor(map element) {
-	list fieldList = getAssociationFieldList(element)
+	/* TODO check */
+	list fieldList = filter(isAssociationEnd, getFieldList(element))
 	list mandatoryFieldList	= filter(isMandatory, fieldList)
 
 	if(fieldList) {
@@ -161,317 +207,196 @@ string associationsConstructor(map element) {
 	}
 }
 
+/* fields */
 string memberFields(map element) {
-	/* TODO only instance scoped fields */
-	/* TODO check use of getInstanceFieldList*/
-	propertyFields(element)
-	associationFields(element)
+	compose(memberField, filter(isInstanceScope, getFieldList(element)), lineFeed())
 }
 
-string propertyFields(map element) {
-	foreach attr | !isDerived(attr) <- getInstanceAttributeList(element) {
-		propertyField(attr)
-	}
-}
-
-string propertyField(map attr) {
-	memberAnnotations(getPropertyFieldAnnotationList(attr))
-	if(!isMany(attr)) {?>
-	<?propertyFieldModifiers(attr)?> <?propertyType(attr)?> <?propertyName(attr)?>;
+string memberField(map field) {
+	memberJavaDoc(getFieldJavaDocList(field))
+	memberAnnotations(getFieldAnnotationList(field))
+?>	<?fieldModifiers(field)?> <?fieldType(field)?> <?fieldName(field)?> <?fieldInitialisation(field)?>;
 
 <?
-	} else {?>
-	<?propertyFieldModifiers(attr)?> <?propertyType(attr)?> <?propertyName(attr)?> = new <?propertyTypeImplementation(attr)?>();
-
-<?
-	}
 }
 
-list getPropertyFieldAnnotationList(map attr) {
+list getFieldJavaDocList(map field) {
+	list javaDocList
+	javaDocList
+}
+
+list getFieldAnnotationList(map field) {
 	list annotationList
 	annotationList
 }
 
-string propertyFieldModifiers(map attr) {
-	'private'
-	if(isClassifierScope(attr)) {
+string fieldModifiers(map field) {
+	visibility(field)
+	if(isClassifierScope(field)) {
 		' static'
 	}
 }
 
-string propertyInitialisation(map attr) {
-	if(isMany(attr)) {
-		'= new ' + propertyTypeImplementation(attr) + '()'
+string fieldInitialisation(map field) {
+	if(isMany(field) || isQualified(field)) {
+		'= new ' + fieldImplementationType(field) + '()'
 	} else {
 		'= null'
 	}
 }
 
-string propertyGetMethod(map attr) {
-	propertyGetMethodJavaDoc(attr)
-	memberAnnotations(getPropertyGetMethodAnnotationList(attr))
-	if(isDerived(attr)) {?>
-	<?propertyGetMethodModifiers(attr)?> <?propertyType(attr)?> get<?propertyMethodBase(attr)?>() {
-		return doGet<?attr:Name.firstUpper()?>();
+string fieldGetMethod(map field) {
+	memberJavaDoc(getFieldGetMethodJavaDocList(field))
+	memberAnnotations(getFieldGetMethodAnnotationList(field))
+	if(isDerived(field)) {
+?>	<?fieldGetMethodModifiers(field)?> <?fieldType(field)?> get<?fieldMethodBaseName(field)?>() {
+		return doGet<?fieldMethodBase(field)?>();
 	}
-	protected abstract <?propertyType(attr)?> doGet<?propertyMethodBase(attr)?>();
-	
-<?
-	} else {?>
-	<?propertyGetMethodModifiers(attr)?> <?propertyType(attr)?> get<?propertyMethodBase(attr)?>() {
-		return <?propertyName(attr)?>;
-	}
+	protected abstract <?fieldType(field)?> doGet<?fieldMethodBaseName(field)?>();
 
 <?
-	}
-}
-
-string propertyGetMethodModifiers(map attr) {
-	visibility(attr)
-	if(isClassifierScope(attr)) {
-		' static'
-	}
-}
-
-string propertyGetMethodDelegateImplementationBody(map attr) {?>
-		// TODO implement<?
-}
-
-string propertySetMethod(map attr) {
-	propertySetMethodJavaDoc(attr)
-	memberAnnotations(getPropertySetMethodAnnotationList(attr))?>
-	<?propertySetMethodModifiers(attr)?> void set<?propertyMethodBase(attr)?>(<?propertyType(attr)?> <?propertyName(attr)?>) {
-		this.<?propertyName(attr)?> = <?propertyName(attr)?>;
-	}
-
-<?
-}
-
-string propertySetMethodModifiers(map attr) {
-	visibility(attr)
-	if(isClassifierScope(attr)) {
-		' static'
-	}
-}
-
-string propertyAddMethod(map attr) {
-	propertyAddMethodJavaDoc(attr)
-	memberAnnotations(getPropertyAddMethodAnnotationList(attr))?>
-	<?propertyAddMethodModifiers(attr)?> void add<?attr:Name.firstUpper()?>(<?javaType(attr)?> <?javaName(attr)?>) {
-		<?propertyName(attr)?>.add(<?javaName(attr)?>);
-	}
-
-<?
-}
-
-string propertyAddMethodModifiers(map attr) {
-	visibility(attr)
-	if(isClassifierScope(attr)) {
-		' static'
-	}
-}
-
-string propertyRemoveMethod(map attr) {
-	propertyRemoveMethodJavaDoc(attr)
-	memberAnnotations(getPropertyRemoveMethodAnnotationList(attr))?>
-	<?propertyRemoveMethodModifiers(attr)?> void remove<?attr:Name.firstUpper()?>(<?javaType(attr)?> <?javaName(attr)?>) {
-		<?propertyName(attr)?>.remove(<?javaName(attr)?>);
-	}
-
-<?
-}
-
-string propertyRemoveMethodModifiers(map attr) {
-	visibility(attr)
-	if(isClassifierScope(attr)) {
-		' static'
-	}
-}
-
-string associationFields(map element) {
-	foreach asso | isAccessibleAssociation(asso) && !isDerived(asso) <- getInstanceAssociationList(element) {
-		associationField(asso)
-	}
-}
-
-string associationField(map asso) {
-	memberAnnotations(getAssociationFieldAnnotationList(asso))?>
-	<?associationFieldModifiers(asso)?> <?associationType(asso)?> <?associationName(asso)?> <?associationInitialisation(asso)?>;
-
-<?
-}
-
-list getAssociationFieldAnnotationList(map asso) {
-	list annotationList
-	annotationList
-}
-
-string associationFieldModifiers(map asso) {
-	'private'
-	if(isClassifierScope(asso)) {
-		' static'
-	}
-}
-
-string associationInitialisation(map asso) {
-	if(isMany(asso) || isQualified(asso)) {
-		'= new ' + associationTypeImplementation(asso) + '()'
 	} else {
-		'= null'
-	}
-}
-
-string associationGetMethod(map asso) {
-	associationGetMethodJavaDoc(asso)
-	memberAnnotations(getAssociationGetMethodAnnotationList(asso))
-	if(isDerived(asso)) {?>
-	<?associationGetMethodModifiers(asso)?> <?associationType(asso)?> get<?associationMethodBase(asso)?>() {
-		return doGet<?associationMethodBase(asso)?>();
-	}
-	protected abstract <?associationType(asso)?> doGet<?associationMethodBase(asso)?>();
-
-<?
-	} else {?>
-	<?associationGetMethodModifiers(asso)?> <?associationType(asso)?> get<?associationMethodBase(asso)?>() {
-		<?associationGetMethodBody(asso)?>
+?>	<?fieldGetMethodModifiers(field)?> <?fieldType(field)?> get<?fieldMethodBaseName(field)?>() {
+		<?fieldGetMethodBody(field)?>
 	}
 
 <?
 	}
 }
 
-string associationGetMethodModifiers(map asso) {
-	visibility(asso)
-	if(isClassifierScope(asso)) {
+string fieldGetMethodModifiers(map field) {
+	visibility(field)
+	if(isClassifierScope(field)) {
 		' static'
 	}
 }
 
-string associationGetMethodBody(map asso) {
-	'return ' + associationName(asso) + ';'
+string fieldGetMethodBody(map field) {
+	'return ' + fieldName(field) + ';'
 }
 
-string associationGetMethodDelegateImplementationBody(map asso) {?>
+string fieldGetMethodDelegateImplementationBody(map field) {?>
 		// TODO implement<?
 }
 
-string associationReturn(map asso) {
-	string collectionType = associationCollectionType(asso)
-	if(!isMany(asso) && !isQualified(asso)) {
-		associationName(asso)
-	} else if(isQualified(asso)) {
-		list qualifiers = asso:SourceEnd:QualifierList
-	} else if(isMany(asso)) {
+string fieldReturn(map field) {
+	string collectionType = fieldCollectionType(field)
+	if(!isMany(field) && !isQualified(field)) {
+		fieldName(field)
+	} else if(isQualified(field)) {
+		list qualifiers = field:SourceEnd:QualifierList
+	} else if(isMany(field)) {
 		if(collectionType eq 'List') {
-			'Collections.unmodifiableList(' + associationName(asso) + ')'		
+			'Collections.unmodifiableList(' + fieldName(field) + ')'		
 		} else if(collectionType eq 'Set' || collectionType eq 'SortedSet') {
-			'Collections.unmodifiableSet(' + associationName(asso) + ')'
+			'Collections.unmodifiableSet(' + fieldName(field) + ')'
 		} else if(collectionType eq 'Map') {
-			'Collections.unmodifiableMap(' + associationName(asso) + ')'
+			'Collections.unmodifiableMap(' + fieldName(field) + ')'
 		} else {
-			'Collections.unmodifiableMap(' + associationName(asso) + ')'
+			'Collections.unmodifiableMap(' + fieldName(field) + ')'
 		}
 	}
 }
 
-string associationQualifiedGetMethod(map asso) {
-	associationQualifiedGetMethodJavaDoc(asso)
-	memberAnnotations(getAssociationQualifiedGetMethodAnnotationList(asso))
-	if(isDerived(asso)) {?>
-	<?associationGetMethodModifiers(asso)?> <?javaType(asso)?> get<?asso:Name.firstUpper()?>(<?qualifierParameters(asso)?>) {
-		return doGet<?asso:Name.firstUpper()?>(<?qualifierArguments(asso)?>);
+string fieldQualifiedGetMethod(map field) {
+	memberJavaDoc(getFieldQualifiedGetMethodJavaDocList(field))
+	memberAnnotations(getFieldQualifiedGetMethodAnnotationList(field))
+	if(isDerived(field)) {
+?>	<?fieldGetMethodModifiers(field)?> <?javaType(field)?> get<?field:Name.firstUpper()?>(<?qualifierParameters(field)?>) {
+		return doGet<?field:Name.firstUpper()?>(<?qualifierArguments(field)?>);
 	}
-	protected abstract <?javaType(asso)?> doGet<?asso:Name.firstUpper()?>(<?qualifierParameters(asso)?>);
+	protected abstract <?javaType(field)?> doGet<?field:Name.firstUpper()?>(<?qualifierParameters(field)?>);
 
 <?
-	} else {?>
-	<?associationGetMethodModifiers(asso)?> <?javaType(asso)?> get<?asso:Name.firstUpper()?>(<?qualifierParameters(asso)?>) {
-		<?associationQualifiedGetMethodBody(asso)?>
+	} else {
+?>	<?fieldGetMethodModifiers(field)?> <?javaType(field)?> get<?field:Name.firstUpper()?>(<?qualifierParameters(field)?>) {
+		<?fieldQualifiedGetMethodBody(field)?>
 	}
 
 <?
 	}
 }
 
-string associationQualifiedGetMethodBody(map asso) {
-	'return ' + associationName(asso) + '.get(' + qualifierArguments(asso) + ');'
+string fieldQualifiedGetMethodBody(map field) {
+	'return ' + fieldName(field) + '.get(' + qualifierArguments(field) + ');'
 }
 
-string associationSetMethod(map asso) {
-	associationSetMethodJavaDoc(asso)
-	memberAnnotations(getAssociationSetMethodAnnotationList(asso))?>
-	<?associationSetMethodModifiers(asso)?> void set<?associationMethodBase(asso)?>(<?associationType(asso)?> <?associationName(asso)?>) {
-		<?associationSetMethodBody(asso)?>
+string fieldSetMethod(map field) {
+	memberJavaDoc(getFieldSetMethodJavaDocList(field))
+	memberAnnotations(getFieldSetMethodAnnotationList(field))
+?>	<?fieldSetMethodModifiers(field)?> void set<?fieldMethodBaseName(field)?>(<?fieldType(field)?> <?fieldName(field)?>) {
+		<?fieldSetMethodBody(field)?>
 	}
 
 <?
 }
 
-string associationSetMethodModifiers(map asso) {
-	visibility(asso)
-	if(isClassifierScope(asso)) {
+string fieldSetMethodModifiers(map field) {
+	visibility(field)
+	if(isClassifierScope(field)) {
 		' static'
 	}
 }
 
-string associationSetMethodBody(map asso) {
-	'this.' + associationName(asso)+ ' = ' + associationName(asso) + ';'
+string fieldSetMethodBody(map field) {
+	'this.' + fieldName(field) + ' = ' + fieldName(field) + ';'
 }
 
-string associationAddMethod(map asso) {
-	associationAddMethodJavaDoc(asso)
-	memberAnnotations(getAssociationAddMethodAnnotationList(asso))
-	if(!isQualified(asso)) {?>
-	<?associationAddMethodModifiers(asso)?> void add<?asso:Name.firstUpper()?>(<?javaType(asso)?> <?javaName(asso)?>) {
-		<?associationAddMethodBody(asso)?>
+string fieldAddMethod(map field) {
+	memberJavaDoc(getFieldAddMethodJavaDocList(field))
+	memberAnnotations(getFieldAddMethodAnnotationList(field))
+	if(!isQualified(field)) {
+?>	<?fieldAddMethodModifiers(field)?> void add<?field:Name.firstUpper()?>(<?javaType(field)?> <?javaName(field)?>) {
+		<?fieldAddMethodBody(field)?>
 	}
 
 <?
-	} else {?>
-	<?associationAddMethodModifiers(asso)?> void add<?asso:Name.firstUpper()?>(<?javaType(asso:SourceEnd:QualifierList[0])?> <?javaName(asso:SourceEnd:QualifierList[0])?>, <?javaType(asso)?> <?javaName(asso)?>) {
-		<?associationQualifiedAddMethodBody(asso)?>
+	} else {
+?>	<?fieldAddMethodModifiers(field)?> void add<?field:Name.firstUpper()?>(<?javaType(field:SourceEnd:QualifierList[0])?> <?javaName(field:SourceEnd:QualifierList[0])?>, <?javaType(field)?> <?javaName(field)?>) {
+		<?fieldQualifiedAddMethodBody(field)?>
 	}
 
 <?
 	}
 }
 
-string associationAddMethodModifiers(map asso) {
-	visibility(asso)
-	if(isClassifierScope(asso)) {
+string fieldAddMethodModifiers(map field) {
+	visibility(field)
+	if(isClassifierScope(field)) {
 		' static'
 	}
 }
 
-string associationAddMethodBody(map asso) {
-	associationName(asso) + '.add(' + javaName(asso) + ');'
+string fieldAddMethodBody(map field) {
+	fieldName(field) + '.add(' + javaName(field) + ');'
 }
 
-string associationQualifiedAddMethodBody(map asso) {
-	associationName(asso) + '.put(' + javaName(asso:SourceEnd:QualifierList[0]) + ', ' + javaName(asso)+ ');'
+string fieldQualifiedAddMethodBody(map field) {
+	fieldName(field) + '.put(' + javaName(field:SourceEnd:QualifierList[0]) + ', ' + javaName(field)+ ');'
 }
 
-string associationRemoveMethod(map asso) {
-	associationRemoveMethodJavaDoc(asso)
-	memberAnnotations(getAssociationRemoveMethodAnnotationList(asso))?>
-	<?associationRemoveMethodModifiers(asso)?> void remove<?asso:Name.firstUpper()?>(<?javaType(asso)?> <?javaName(asso)?>) {
-		<?associationRemoveMethodBody(asso)?>
+string fieldRemoveMethod(map field) {
+	memberJavaDoc(getFieldRemoveMethodJavaDocList(field))
+	memberAnnotations(getFieldRemoveMethodAnnotationList(field))
+?>	<?fieldRemoveMethodModifiers(field)?> void remove<?field:Name.firstUpper()?>(<?javaType(field)?> <?javaName(field)?>) {
+		<?fieldRemoveMethodBody(field)?>
 	}
 
 <?
 }
 
-string associationRemoveMethodModifiers(map asso) {
-	visibility(asso)
-	if(isClassifierScope(asso)) {
+string fieldRemoveMethodModifiers(map field) {
+	visibility(field)
+	if(isClassifierScope(field)) {
 		' static'
 	}
 }
 
-string associationRemoveMethodBody(map asso) {
-	associationName(asso) + '.remove(' + javaName(asso) + ');'
+string fieldRemoveMethodBody(map field) {
+	fieldName(field) + '.remove(' + javaName(field) + ');'
 }
 
+/* operations */
 string operation(map op) {
 	operationMethodJavaDoc(op)
 	memberAnnotations(getOperationMethodAnnotationList(op))
@@ -553,7 +478,7 @@ string equals(map element) {?>
 		if(isPrimitive(attr:Type)) {?>
 		if(<?attr:Name?> != other.<?attr:Name?>) return false;<?
 		} else {?>
-		if(<?propertyName(attr)?>.equals(other.<?propertyName(attr)?>)) return false;<?
+		if(<?fieldName(attr)?>.equals(other.<?fieldName(attr)?>)) return false;<?
 		}
 	}?>
 		return true;
@@ -587,7 +512,7 @@ string hashcode(map element) {?>
 		result = 29 * result + (<?attr:Name?> + ' ? 1 : 0'?>);<? 
 		} else {?>
   		if(<?propertyName(attr)?> != null) {
-			result = 29 * result + <?propertyName(attr)?>.hashCode();
+			result = 29 * result + <?fieldName(attr)?>.hashCode();
 		}<?
   		  }
   	  }?>
@@ -604,7 +529,7 @@ string toString(map element) {?>
 	public String toString() {
 		StringBuilder sb = new StringBuilder(64);
 		sb.append("<?element:Name?>[");<?
-		join(mapFiltered(propertyAppend, isAppendable, getAttributeList(element)), commaAppend())?>
+		join(mapFiltered(fieldAppend, isAppendable, getAttributeList(element)), commaAppend())?>
 		sb.append("]");
 		return sb.toString();
 	}
@@ -616,8 +541,8 @@ numeric isAppendable(map attr) {
 	!isDerived(attr)
 }
 
-string propertyAppend(map attr) {?>
-		sb.append("<?javaName(attr)?>: " + <?propertyName(attr)?>);<?
+string fieldAppend(map attr) {?>
+		sb.append("<?javaName(attr)?>: " + <?fieldName(attr)?>);<?
 }
 
 string commaAppend() {?>
