@@ -16,8 +16,8 @@
                 ["org.soulspace.modelling/MDDTemplateLibrary, 1.0.0, MDDTemplateLibrary, zip" :generator]]
  :mdsd-config-dir "./config"
 ; :mdsd-config-file "generators.clj"
- :mdsd-template-path "${lib-generator-dir}/templates:templates"
- :mdsd-std-profiles ["argouml/default-uml14"]
+ :mddgenerator-template-path "${lib-generator-dir}/templates:templates"
+ :mddgenerator-std-profiles ["argouml/default-uml14"]
  :log-level :debug
  :debug "true"
  ]
