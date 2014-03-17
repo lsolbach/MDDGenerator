@@ -12,11 +12,13 @@ DONE Generate correct type for Attributes, *KindType for enums and "some" DataTy
 	Elements and ElementRefs for other DataTypes (Multiplicity, Expression, ...)
 DONE Generate Marshalling/Unmarshalling without Castor (xstream?), because of the Enumeration problem
 
+ArguUML
+-------
 
 Raise Bugs on ArgoUML
 * Dragging Elements with an AssociationClass to a ClassDiagram
 * Dragging of AssociationClasses to a ClassDiagram
-* TaggedValue "Derived" not visible in ClassDiagram
+* FIXED TaggedValue "Derived" not visible in ClassDiagram
 * OrderingKind on AssociationEnds not visible in ClassDiagram ({ordered})
 * Constraints on Associations not possible ({xor})
 * (Constraints on Generalisations? Haven't checked)
@@ -33,7 +35,7 @@ AssociationClass to the diagram, the AssociationClass is rendered as a normal As
 
 
 Derived not visible in ClassDiagrams
-Derived Attributes and Associations are not shown with a '/' in front of the name in ClassDiagrams.
+FIXED Derived Attributes and Associations are not shown with a '/' in front of the name in ClassDiagrams.
 
 
 Ordering is not shown in the ClassDiagram

@@ -14,8 +14,8 @@
  :dependencies [["junit" "junit" "3.8.1" :dev]
                 ["org.soulspace.modelling/ArgoUMLProfileLibrary, 1.0.0, ArgoUMLProfileLibrary, zip" :generator]
                 ["org.soulspace.modelling/MDDTemplateLibrary, 1.0.0, MDDTemplateLibrary, zip" :generator]]
- :mdsd-config-dir "./config"
- :mdsd-template-path "${lib-generator-dir}/templates:templates"
- :mdsd-std-profiles ["argouml/default-uml14"]
- :debug "true"
+ :mddgenerator-config-dir "./config"
+ :mddgenerator-template-path "${lib-generator-dir}/templates:templates"
+ :mddgenerator-std-profiles ["argouml/default-uml14"]
+ :compile-debug "true"
  ]
