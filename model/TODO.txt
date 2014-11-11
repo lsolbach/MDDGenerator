@@ -12,6 +12,7 @@ DONE Generate correct type for Attributes, *KindType for enums and "some" DataTy
 	Elements and ElementRefs for other DataTypes (Multiplicity, Expression, ...)
 DONE Generate Marshalling/Unmarshalling without Castor (xstream?), because of the Enumeration problem
 
+
 ArguUML
 -------
 
