@@ -1,0 +1,93 @@
+<project name="UML14ModelBuilder" default="distribute">
+
+	<property environment="env"/>
+	<property file="build.properties"/>
+	<property name="global.build.dir" value="${env.GLOBAL_BUILD_HOME}"/>
+	
+	<!-- import common build files -->
+	<import file="${global.build.dir}/ant/global.properties.xml"/>
+	<import file="${global.build.dir}/ant/global.build.xml"/>
+
+	<property name="global.build.dir" value="${env.GLOBAL_BUILD_HOME}"/>
+
+	<!-- import common build files -->
+	<import file="${global.build.dir}/ant/global.build.xml"/>
+	<property name="mdsd.profiles" value="${mdsd.profiles.common}"/>
+	<property name="generate.dir" value="${basedir}/generated"/>
+	
+	<path id="source.path">
+		<path refid="global.source.path"/>
+		<pathelement location="generated/src"/>
+	</path>
+
+	<!--target name="generate-local" depends="generate-post"/-->
+	<target name="generate-local" depends="generate-model"/>
+
+	<target name="check-generate-required">
+		<!--uptodate property="generateModel.notRequired" targetfile="${generate.dir}/src/org/soulspace/modelling/repository/builder/ModelFactory.java" >
+		    <srcfiles dir="${basedir}/../ModelRepository2/model" includes="ModelRepository2.xmi"/>
+		</uptodate-->
+	</target>	
+
+	<target name="generate-model">
+		<delete>
+			<fileset dir="${backup.dir}"/>
+		</delete>
+		<copy todir="${backup.dir}" overwrite="true">
+			<fileset dir="${generate.dir}"/>
+		</copy>
+		<delete>
+			<fileset dir="${generate.dir}"/>
+		</delete>
+		
+		<!--
+		  - Generator
+		  -->
+		<soulmda destdir="${generate.dir}"
+                    backupdir="${backup.dir}"
+                    templateDirs="templates_old,../MdaStandardTemplateLibrary/templates"
+                    modelFile="../ModelRepository2/model/ModelRepository2.xmi"
+					profiles="../ModelRepository2/data/argouml/profiles/default-uml14.xmi">
+			<modelGenerator 	name="java/factory-interface"
+                                imports="lib,model/lib,java/lib,java/interface,java/base"
+								basename="ModelFactory"
+								subdir="src"
+								extension="java"
+								namespaceReplacement="org.soulspace.modelling.repository.builder"
+								stereotype="NONE"/>
+			<modelGenerator 	name="java/factory-class"
+                                imports="lib,model/lib,java/lib,java/class,java/base"
+								subdir="src"
+								basename="ModelFactory"
+								prefix="Abstract"
+								extension="java"
+								namespaceReplacement="org.soulspace.modelling.repository.builder.impl"
+								stereotype ="NONE"/>
+		</soulmda>
+<!--
+		TODO use ArgoUMLProfileLibrary
+		<mdsd destdir="${generate.dir}"
+                    backupdir="${backup.dir}"
+                    templateDirs="lib/generator/templates,templates"
+                    modelFile="../ModelRepository2/model/ModelRepository2.xmi"
+					profiles="../ModelRepository2/data/argouml/profiles/default-uml14.xmi">
+			<modelGenerator 	name="modelbuilder/java/factory-interface"
+                                imports="lib,model/lib,java/lib,java/interface,modelbuilder/java/lib"
+								basename="ModelFactory"
+								subdir="src"
+								extension="java"
+								namespaceReplacement="org.soulspace.modelling.repository.builder"
+								stereotype="NONE"/>
+			<modelGenerator 	name="modelbuilder/java/factory-class"
+                                imports="lib,model/lib,java/lib,java/class,modelbuilder/java/lib"
+								subdir="src"
+								basename="ModelFactory"
+								prefix="Abstract"
+								extension="java"
+								namespaceReplacement="org.soulspace.modelling.repository.builder.impl"
+								stereotype ="NONE"/>
+		</mdsd>
+-->
+	</target>
+
+</project>

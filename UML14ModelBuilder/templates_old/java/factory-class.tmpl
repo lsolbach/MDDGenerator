@@ -1,0 +1,99 @@
+<?
+list elementList = factoryElementList()
+?>package <?namespace()?>;
+
+import java.util.List;
+import java.util.ArrayList;
+
+import org.soulspace.modelling.base.*;
+import org.soulspace.modelling.repository.*;
+import org.soulspace.modelling.repository.elements.*;
+import org.soulspace.modelling.repository.elements.impl.*;
+import org.soulspace.modelling.repository.elements.Class;
+import org.soulspace.modelling.repository.elements.Package;
+
+public abstract class <?name()?> {
+	protected ModelRepository repository;
+	protected UmlRepository umlRepository;
+	
+<?
+ctorDefault()
+create(elementList)
+init(elementList)
+?>
+
+	private String getXmiId(XmiObject xmiObject) {
+		if(xmiObject != null) {
+			if(xmiObject.getXmiId() != null) {
+				return xmiObject.getXmiId();
+			} else if(xmiObject.getRefId() != null) {
+				return xmiObject.getRefId();
+			}
+		}
+		return null;
+	}
+}
+<?
+string create(list elementList) {
+	foreach element <- elementList {
+		if(isAbstract(element)) {
+			createAbstract(element)
+		} else {
+			createConcrete(element)
+		}
+	}
+}
+
+string createAbstract(map element) {?>
+	public <?element:Name?> create<?element:Name?>(XmiObject xmiObject) {<?
+	foreach subclass <- element:SubClasses {?>
+	
+		if(xmiObject instanceof org.soulspace.modelling.uml14.elements.<?subclass:Name?>) {
+			return create<?subclass:Name?>(xmiObject);
+		}<?
+	}?>
+		return null;
+	}
+<?
+}
+
+string createConcrete(map element) {
+	string memberName = javaName(element)?>
+	public <?element:Name?> create<?element:Name?>(XmiObject xmiObject) {<?
+	foreach subclass <- element:SubClasses {?>
+	
+		if(xmiObject instanceof org.soulspace.modelling.uml14.elements.<?subclass:Name?>) {
+			return create<?subclass:Name?>(xmiObject);
+		}<?
+	}?>
+	
+		<?element:Name?> <?memberName?>;
+		String id = getXmiId(xmiObject);
+		<?memberName?> = (<?element:Name?>Impl) repository.findById(id);
+		if(<?memberName?> == null) {
+			<?memberName?> = new <?element:Name?>Impl();
+			<?memberName?>.setId(id);
+			repository.register<?element:Name?>(<?memberName?>);
+		}
+		if(!<?memberName?>.getInitialized()) {
+			if(xmiObject.getXmiId() != null) {
+				<?memberName?>.setInitialized(true);
+				<?memberName?> = init<?element:Name?>(<?memberName?>, xmiObject);
+			} else {
+				XmiObject xmiSource = umlRepository.findByXmiId(id);
+				<?memberName?>.setInitialized(true);
+				<?memberName?> = init<?element:Name?>(<?memberName?>, xmiSource);
+			}
+		}
+		return <?memberName?>;
+	}
+<?
+}
+
+string init(list elementList) {
+	foreach element | !isAbstract(element) <- elementList {?>
+	protected abstract <?element:Name?> init<?element:Name?>(<?element:Name?> <?javaName(element)?>, XmiObject xmiObject);
+	<?
+	}
+}
+?>
