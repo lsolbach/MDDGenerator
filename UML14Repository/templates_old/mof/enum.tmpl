@@ -1,0 +1,31 @@
+package <?namespace()?>;
+
+public enum <?name()?> {
+
+	<?enumValues()?>
+	
+	private final String name;
+
+	private <?name()?>(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String toString() {
+		return name;
+	}
+}
+
+<?
+string enumValues() {
+	list valueList
+	foreach attr <- Attributes {
+		valueList = valueList.add(attr:Name.toUpper() + ' ("' + attr:Name + '")')	
+	}
+	formatListWithLineFeedsAndTabs(valueList, ',', 1) + ';'
+}
+?>
+

@@ -1,0 +1,263 @@
+<?
+list elementList = elementList()
+string namespace = 'UML'
+?>package <?namespace()?>;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import org.soulspace.modelling.base.*;
+import org.soulspace.modelling.uml14.*;
+import org.soulspace.modelling.uml14.impl.*;
+import org.soulspace.modelling.uml14.elements.*;
+import org.soulspace.modelling.uml14.elements.Class;
+import org.soulspace.modelling.uml14.elements.Exception;
+import org.soulspace.modelling.uml14.elements.Object;
+import org.soulspace.modelling.uml14.elements.Package;
+import org.soulspace.modelling.uml14.elements.impl.*;
+import org.soulspace.modelling.uml14.types.*;
+
+public class <?name()?> {
+
+	private FileWriter writer = null;
+	String filename = "";
+	
+	public <?name()?>(String filename) {
+		this.filename = filename;	
+	}
+	
+	public void write(Uml14RepositoryImpl repository) {
+		try {	
+			writer = new FileWriter(new File(filename));
+		<?writeXmiPrefix()?>
+		<?!-- write models --?>
+			for(Model model : repository.getModelList()) {
+				writeModel(model);				
+			}
+		<?writeXmiPostfix()?>
+			writer.close();
+		} catch(IOException e) {
+			try {
+			    writer.close();
+			} catch(IOException e1) {
+				// can't do anything
+			}
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private String xmlEncode(String input) {
+		// FIXME implement encoding
+		input = input.replace("&", "&amp;");
+		input = input.replace("<", "&lt;");
+		input = input.replace(">", "&gt;");
+		input = input.replace("\"", "&quot;");
+		input = input.replace("'", "&apos;");
+		return input;
+	}
+	
+	<?elementWriters(elementList)?>
+}
+
+<?
+list elementList() {
+	list elementList
+	foreach package <- Packages {
+		foreach class <- package:Classes {
+			elementList.add(class)
+			foreach asso | asso:Name && !isDerived(asso) <- class:Associations {
+				elementList.add(asso)
+			}
+		}
+	}
+	elementList
+}
+
+string elementWriters(list elementList) {
+	foreach element | !element:StereotypeMap <- elementList {
+		if(element:ElementType eq 'Class') {
+			if(!isAbstract(element)) {
+				classWriter(element)
+			} else {
+				abstractClassWriter(element)			
+			}
+		} else if (element:ElementType eq 'AssociationEnd') {
+		/* TODO check what to do here!? */
+		}
+	}
+}
+
+string abstractClassWriter(map element) {?>
+	// Abstract Class 
+	protected void write<?element:Name.firstUpper()?>(<?element:Name?> <?argumentName(element)?>) throws IOException {
+<?
+		foreach subclass <- element:SubClasses {
+?>		if(<?argumentName(element)?> instanceof <?subclass:Name?>) {
+			write<?subclass:Name?>((<?subclass:Name?>) <?argumentName(element)?>);
+		} else <?
+		}?>{
+			// Unknown element
+		}
+	}
+<?
+}
+
+string classWriter(map element) {?>
+	// Class 
+	protected void write<?element:Name.firstUpper()?>(<?element:Name?> <?argumentName(element)?>) throws IOException {
+<?
+	if(element:SubClasses) {
+		foreach subclass <- element:SubClasses {
+?>		if(<?argumentName(element)?> instanceof <?subclass:Name?>) {
+			write<?subclass:Name?>((<?subclass:Name?>) <?argumentName(element)?>);
+		} else <?
+		}?>{
+			writer.append(xmlEncode("<<?namespace?>:<?element:Name?>"));
+			<?writeAttributes(element)?>
+			writer.append(xmlEncode(">\n"));		
+			<?writeAssociations(element)?>
+			writer.append(xmlEncode("</<?namespace?>:<?element:Name?>>\n"));
+		}
+<?
+	} else {?>
+		writer.append(xmlEncode("<<?namespace?>:<?element:Name?>"));
+		<?writeAttributes(element)?>
+		writer.append(xmlEncode(">\n"));		
+		<?writeAssociations(element)?>
+		writer.append(xmlEncode("</<?namespace?>:<?element:Name?>>\n"));
+<?
+	}?>
+	}
+<?
+}
+
+string writeAttributes(map element) {?>
+		if(<?argumentName(element)?>.getXmiId() != null) {
+			writer.append(" xmi.id=\"" + <?argumentName(element)?>.getXmiId() + "\"");<?
+	map attrMap = additionalPropertyMap(element)
+	foreach attr | !isDerived(attr) && !isMany(attr) <- element:AllAttributes {
+		attrMap.put(attr:Name, attr)
+	}
+	list keyList = attrMap.keyList()
+	foreach attrKey <- keyList {	
+		map attr = attrMap[attrKey]
+		if(attr:Type:Name eq 'Boolean') {?>
+			writer.append(" <?attr:Name?>=\"" + <?argumentName(element)?>.get<?attr:Name.firstUpper()?>() + "\"");
+<?
+		} else if(hasStereotype(attr:Type, 'enumeration')) {?>
+			if(<?argumentName(element)?>.get<?attr:Name.firstUpper()?>() != null) {
+				writer.append(" <?attr:Name?>=\"" + <?argumentName(element)?>.get<?attr:Name.firstUpper()?>() + "\"");
+			}
+<?
+		} else if(attr:Type:Name eq 'Integer' || attr:Type:Name eq 'UnlimitedInteger') {?>
+			writer.append(" <?attr:Name?>=\"" + <?argumentName(element)?>.get<?attr:Name.firstUpper()?>() + "\"");
+<?
+		} else if(!isReferenceAttribute(attr)) {?>
+			if(<?argumentName(element)?>.get<?attr:Name.firstUpper()?>() != null) {
+				writer.append(" <?attr:Name?>=\"" + <?argumentName(element)?>.get<?attr:Name.firstUpper()?>() + "\"");
+			}
+<?
+		}
+	}?>
+		}
+		if(<?argumentName(element)?>.getXmiIdRef() != null) {
+			writer.append(" xmi.idref=\"" + <?argumentName(element)?>.getXmiIdRef() + "\"");
+		}
+		if(<?argumentName(element)?>.getHRef() != null) {
+			writer.append(" href=\"" + <?argumentName(element)?>.getHRef() + "\"");
+		}
+<?
+}
+
+string writeAssociations(map element) {
+	map attrMap = additionalPropertyMap(element)
+	foreach attr | !isDerived(attr) <- element:AllAttributes {
+		attrMap.put(attr:Name, attr)
+	}
+	list keyList = attrMap.keyList()
+	foreach attrKey <- keyList {	
+		map attr = attrMap[attrKey]
+		if(isReferenceAttribute(attr) || isMany(attr)) {?>
+		if(<?argumentName(element)?>.get<?propertyMethodBase(attr)?>() != null) {<?
+			if(isPrimitive(attr) || javaType(attr) eq 'String') {?>
+			writer.append(xmlEncode("<<?namespace?>:<?attr:Owner:Name?>.<?attr:Name?>>"));<?
+				if(!isMany(attr)) {?>
+			write<?attr:Type:Name.firstUpper()?>(<?argumentName(element)?>.get<?attr:Name.firstUpper()?>());<?
+				} else {?>
+			for(<?javaType(attr)?> child : <?argumentName(element)?>.get<?propertyMethodBase(attr)?>()) {
+				writer.append(child);
+			}<?
+				}?>
+			writer.append(xmlEncode("</<?namespace?>:<?attr:Owner:Name?>.<?attr:Name?>>\n"));
+			<?} else {?>
+			writer.append(xmlEncode("<<?namespace?>:<?attr:Owner:Name?>.<?attr:Name?>>\n"));<?
+				if(!isMany(attr)) {?>
+			write<?attr:Type:Name.firstUpper()?>(<?argumentName(element)?>.get<?attr:Name.firstUpper()?>());<?
+				} else {?>
+			for(<?javaType(attr)?> child : <?argumentName(element)?>.get<?propertyMethodBase(attr)?>()) {
+				write<?attr:Type:Name.firstUpper()?>(child);
+			}<?
+				}?>
+			writer.append(xmlEncode("</<?namespace?>:<?attr:Owner:Name?>.<?attr:Name?>>\n"));
+			<?}?>
+		}<?
+		}
+	}
+	
+	foreach asso | asso:Name && !isDerived(asso) <- element:AllAssociations {
+		if(isMany(asso)) {?>
+		if(!<?argumentName(element)?>.get<?associationMethodBase(asso)?>().isEmpty()) {
+			writer.append(xmlEncode("<<?namespace?>:<?asso:SourceEnd:Type:Name?>.<?asso:Name?>>\n"));		
+			for(<?javaType(asso)?> child : <?argumentName(element)?>.get<?associationMethodBase(asso)?>()) {
+				write<?asso:Type:Name.firstUpper()?>(child);
+			}
+			writer.append(xmlEncode("</<?namespace?>:<?asso:SourceEnd:Type:Name?>.<?asso:Name?>>\n"));
+		}<?
+		} else {?>
+		if(<?argumentName(element)?>.get<?asso:Name.firstUpper()?>() != null) {
+			writer.append(xmlEncode("<<?namespace?>:<?asso:SourceEnd:Type:Name?>.<?asso:Name?>>\n"));		
+			write<?asso:Type:Name.firstUpper()?>(<?argumentName(element)?>.get<?asso:Name.firstUpper()?>());
+			writer.append(xmlEncode("</<?namespace?>:<?asso:SourceEnd:Type:Name?>.<?asso:Name?>>\n"));
+		}<?
+		}
+	}
+}
+
+string argumentName(map element) {
+	if(element:Name eq 'Class') {
+		'aClass'
+	} else if(element:Name eq 'Interface') {
+		'aInterface'
+	} else if(element:Name eq 'Package') {
+		'aPackage'
+	} else if(element:Name eq 'Integer') {
+		'aInteger'
+	} else if(element:Name eq 'Boolean') {
+		'aBoolean'
+	} else if(element:Name eq 'String') {
+		'aString'
+	} else {
+		element:Name.firstLower()		
+	}
+}
+
+string writeXmiPrefix() {?>
+			writer.append("<?'<' + '?'?>xml version = '1.0' encoding = 'UTF-8'<?'?' + '>'?>\n");
+			writer.append("<XMI xmi.version='1.2' xmlns:UML='org.omg.xmi.namespace.UML' timestamp=''>\n");
+			writer.append("	<XMI.header>\n");
+			writer.append("		<XMI.documentation>\n");
+			writer.append("			<XMI.exporter>soulspace xmi writer</XMI.exporter>\n");
+			writer.append("			<XMI.exporterVersion>0.1</XMI.exporterVersion>\n");
+			writer.append("		</XMI.documentation>\n");
+			writer.append("		<XMI.metamodel xmi.name='UML' xmi.version='1.4'/>\n");
+			writer.append("	</XMI.header>\n");
+			writer.append("	<XMI.content>\n");
+<?
+}
+string writeXmiPostfix() {?>
+			writer.append("	</XMI.content>\n");
+			writer.append("</XMI>");
+<?
+}
+?>

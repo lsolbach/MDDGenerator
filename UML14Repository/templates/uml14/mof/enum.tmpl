@@ -1,0 +1,30 @@
+package <?namespace(This)?>;
+
+public enum <?name(This)?> {
+
+	<?enumValues(This)?>
+	
+	private final String name;
+
+	private <?name(This)?>(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String toString() {
+		return name;
+	}
+}
+
+<?
+string enumValues(map element) {
+	list valueList
+	foreach attr <- getAttributeList(element) {
+		valueList = valueList.add(attr:Name.toUpper() + ' ("' + attr:Name + '")')	
+	}
+	join(valueList, ',' + lineFeed() + tab()) + ';'
+}
+?>

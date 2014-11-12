@@ -1,0 +1,252 @@
+<?
+list allPackagesList = getAllSubPackagesList(This)
+allPackagesList.debug('allPackagesList:')
+?><?xml version="1.0" ?>
+<!-- 
+  - UML 1.4 Schema
+  - Copyright 2004-2013 Ludger Solbach
+  -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
+<!--
+  xmlns:XMI="XMI"
+  xmlns:UML="UML"
+  targetNamespace="XMI">
+-->
+  <xs:element name="XMI">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="XMI.header" minOccurs="0" maxOccurs="1" />
+        <xs:element ref="XMI.content" minOccurs="0" maxOccurs="1" />
+      </xs:sequence>
+      <xs:attribute name="xmi.version" type="xs:string" fixed="1.2" />
+      <xs:attribute name="timestamp" type="xs:string" use="optional" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="XMI.header">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="XMI.documentation" />
+        <xs:element ref="XMI.metamodel" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="XMI.content">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="Model"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="XMI.documentation">
+    <xs:complexType mixed="true">
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="XMI.owner" />
+        <xs:element ref="XMI.exporter" />
+        <xs:element ref="XMI.exporterVersion" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="XMI.metamodel">
+    <xs:complexType>
+      <xs:attribute name="xmi.name" type="xs:string"/>
+      <xs:attribute name="xmi.version" type="xs:string" fixed="1.4" />
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="XMI.exporter" type="xs:string"/>  
+  <xs:element name="XMI.exporterVersion" type="xs:string"/>
+  <xs:element name="XMI.owner" type="xs:string"/>
+  <xs:element name="XMI.reference" type="xs:string"/>
+  <!--xs:attribute name="xmi.id" type="xs:string" />
+  <xs:attribute name="xmi.idref" type="xs:string" /-->
+
+<!-- Types -->
+<?types(allPackagesList)?>
+
+<!-- Elements -->
+<?elements(allPackagesList)?>
+
+</xs:schema>
+<?
+string elements(list allPackagesList) {
+	foreach package <- allPackagesList {
+		foreach class | hasStereotype(class, 'primitive') <- getClassList(package) {
+			primitiveElement(class)
+		}
+		foreach class  <- getClassList(package) {
+			concreteElement(class)
+		}
+		foreach class  <- getClassList(package) {
+			associationElement(class)
+		}
+	}
+}
+
+string types(list allPackagesList) {
+	foreach package <- allPackagesList {
+		foreach class | hasStereotype(class, 'enumeration') <- getClassList(package) {
+			enumType(class)
+		}
+	}
+}
+
+string associationElement(map element) {
+	foreach asso | (asso:Name ne '' && asElement(asso:Type)&& !asso:Derived) <- element:AssociationList {
+	map renderedMap
+	?>
+	<xs:element name="<?element:Name?>.<?asso:Name?>">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded"><?
+			childElementRefs(asso:Type, renderedMap)?>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+<?	
+	}
+	foreach attr | (isMany(attr) || (!attr:Derived && asElement(attr:Type)) ) <- element:AttributeList {
+	map renderedMap
+	?>
+	<xs:element name="<?element:Name?>.<?attr:Name?>">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded"><?
+			childElementRefs(attr:Type, renderedMap)?>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+<?	
+	}
+}
+
+string concreteElement(map element) {
+	if(asElement(element) && !element:Abstract) {
+?>
+	<xs:element name="<?element:Name?>">
+		<xs:complexType>
+			<xs:choice minOccurs="0" maxOccurs="unbounded"><?
+			map elementMap
+			parentElementRefs(element, elementMap)?>
+			</xs:choice>
+			<xs:attribute name="xmi.id" type="xs:string"/>
+			<xs:attribute name="xmi.idref" type="xs:string"/><?
+			map attributeMap
+			attributesRefs(element, attributeMap)
+?>
+		</xs:complexType>
+	</xs:element>
+<?
+	}
+}
+
+string attributesRefs(map element, map renderedMap) {
+	/* FIXME remove duplicate attribute refs in output  */
+	map dummy = renderedMap.put(element:Name, element:Name)
+	if(getSuperClassList(element).size() > 0) {
+		foreach superClass <- getSuperClassList(element) {
+			if(!renderedMap[superClass:Name]) {
+				attributesRefs(superClass, renderedMap)
+			}
+		}
+	}
+	attributes(element)
+}
+
+string parentElementRefs(map element, map renderedMap) {
+	/* FIXME remove duplicate element refs in output  */
+	map dummy = renderedMap.put(element:Name, element:Name)
+	if(getSuperClassList(element).size() > 0) {
+		foreach superClass <- getSuperClassList(element) {
+			if(!renderedMap[superClass:Name]) {
+				parentElementRefs(superClass, renderedMap)
+			}
+		}
+	}
+	foreach asso | (asso:Name ne '' && asElement(asso:Type) && !asso:Derived) <- element:AssociationList {?>
+			<xs:element ref="<?element:Name?>.<?asso:Name?>"/><?
+	}
+	foreach attr | (isMany(attr) || (asElement(attr:Type) && !attr:Derived)) <- element:AttributeList {?>
+			<xs:element ref="<?element:Name?>.<?attr:Name?>"/><?
+	}
+}
+
+string childElementRefs(map element, map renderedMap) {
+	map dummy = renderedMap.put(element:Name, element:Name)
+	if(!element:Abstract) {?>
+				<xs:element ref="<?element:Name?>"/><?
+	}
+	if(getSubClassList(element)) {
+		foreach subClass <- getSubClassList(element) {
+			if(!renderedMap[subClass:Name]) {
+				childElementRefs(subClass, renderedMap)
+			}
+		}
+	}
+}
+
+string attributes(map element) {
+	foreach attr <- element:AttributeList {
+		if(attr:Type:Name eq 'String' || attr:Type:Name eq 'Name') {?>
+			<xs:attribute name="<?attr:Name?>" type="xs:string"/><?
+		} else if(attr:Type:Name eq 'boolean' || attr:Type:Name eq 'Boolean') {?>
+			<xs:attribute name="<?attr:Name?>" type="xs:boolean"/><?
+		} else if(hasStereotype(attr:Type, 'enumeration')) {?>
+			<xs:attribute name="<?attr:Name?>" type="<?attr:Type:Name.firstLower()?>"/><?
+		} else {?>
+			<!-- <?attr:Name?> <?attr:Type:Name?> --><?
+		}
+	}
+}
+
+string enumType(map enum) {?>
+	<xs:simpleType name="<?enum:Name.firstLower()?>">
+		<xs:restriction base="xs:NMTOKEN"><?
+	foreach value <- enum:AllAttributeList {?>
+			<xs:enumeration value="<?value:Name?>" /><?
+	}?>
+		</xs:restriction>
+	</xs:simpleType>
+<?
+}
+
+string primitiveElement(map primitive) {?>
+	
+	<xs:element name="<?primitive:Name?>">
+		<xs:complexType>
+			<xs:attribute name="blubb" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	
+<?
+}
+
+string type(map type) {
+	if(type:Name eq 'String' || type:Name eq 'Name') {?>xs:string<?
+	} else if(type:Name eq 'boolean' || ype:Name eq 'Boolean') {?>xs:boolean<?
+	} else if(hasStereotype(type, 'enumeration')) {?><?attr:Type:Name.firstLower()?><?
+	} else {?><!-- <?type:Name?> --><?
+	}
+}
+
+numeric asElement(map type) {
+	if(hasStereotype(type, 'enumeration')
+		|| hasStereotype(type, 'primitive')) {
+		0
+	} else {
+		1
+	}
+}
+
+numeric asAttribute(map attr) {
+	if(!isMany(attr) && (hasStereotype(attr, 'enumeration')
+		|| hasStereotype(attr, 'primitive'))) {
+		1
+	} else {
+		0
+	}
+}
+?>

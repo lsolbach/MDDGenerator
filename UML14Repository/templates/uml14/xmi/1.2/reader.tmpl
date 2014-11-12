@@ -1,0 +1,412 @@
+<?
+/* FIXME change signature */
+list elementList = getElementList(This)
+?>package <?namespace(This)?>;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.DefaultHandler;
+import org.xml.sax.helpers.XMLReaderFactory;
+
+import org.soulspace.modelling.base.*;
+import org.soulspace.modelling.uml14.elements.*;
+import org.soulspace.modelling.uml14.elements.Class;
+import org.soulspace.modelling.uml14.elements.Exception;
+import org.soulspace.modelling.uml14.elements.Object;
+import org.soulspace.modelling.uml14.elements.Package;
+import org.soulspace.modelling.uml14.elements.impl.*;
+import org.soulspace.modelling.uml14.types.*;
+
+@SuppressWarnings("unchecked")
+public class <?name(This)?> extends DefaultHandler {
+
+	private final Uml14RepositoryImpl xmiRepository;
+	private XMLReader xmlReader;
+	private Stack<java.lang.Object> elementStack;
+
+	private boolean profile = false;
+	private StringBuilder sb;
+
+	public <?name(This)?>(Uml14RepositoryImpl xmiRepository) {
+		super();
+		this.xmiRepository = xmiRepository;
+		try {
+			xmlReader = XMLReaderFactory.createXMLReader();
+			xmlReader.setContentHandler(this);
+			xmlReader.setErrorHandler(this);
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public Uml14RepositoryImpl getXmiRepository() {
+		return xmiRepository;
+	}
+
+	public void loadProfile(File file) throws SAXException, IOException {
+		parseXmi(file, true);
+	}
+
+	public void loadProfiles(File[] files) throws SAXException, IOException {
+		for(File file : files) {
+			parseXmi(file, true);
+		}
+	}
+
+	public void loadModel(File file) throws SAXException, IOException {
+		parseXmi(file, false);
+	}
+
+	public void parseXmi(File file, boolean isProfile) throws SAXException, IOException {
+		elementStack = new Stack<java.lang.Object>();
+	    FileReader r = new FileReader(file);
+	    this.profile = isProfile;	
+	    xmlReader.parse(new InputSource(r));
+	    r.close();
+	}
+
+	private void addElement(XmiObject parent, XmiObject element, java.lang.Class<?'<?'?> extends XmiObject> type, String name) {
+		java.lang.Class<?'<?'?> extends XmiObject> clazz = parent.getClass();
+		try {
+			java.lang.reflect.Method method = clazz.getMethod(name, type);
+			method.invoke(parent, element);
+		} catch (java.lang.Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private void addPrimitive(XmiObject parent, java.lang.Object data, java.lang.Class<?'<?'?> extends Object> type, String name) {
+		java.lang.Class<?'<?'?> extends XmiObject> clazz = parent.getClass();
+		try {
+			java.lang.reflect.Method method = clazz.getMethod(name, type);
+			method.invoke(parent, data);
+		} catch (java.lang.Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void characters(char[] ch, int start, int length) throws SAXException {
+		String value = charsToString(ch, start, length);
+		if(value.trim().equals("")) {
+			return;
+		}
+		
+		if(!elementStack.isEmpty()) {
+			java.lang.Object obj = elementStack.peek();
+			if(obj instanceof List) {
+				List<String> elementList = (List<String>) obj;
+				elementList.add(stripTrailingLine(value));
+			}
+		}
+	}
+
+	public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
+		super.ignorableWhitespace(ch, start, length);
+		// Ignore as the method suggests
+	}
+
+	protected String stripTrailingLine(String input) {
+		if(input.endsWith("\r\n")) {
+			return input.substring(0, input.length() - 2);
+		} else if(input.endsWith("\n")) {
+			return input.substring(0, input.length() - 1);
+		} else if(input.endsWith("\r")) {
+			return input.substring(0, input.length() - 1);
+		} else {
+			return input;
+		}
+	}
+
+	protected String charsToString(char[] ch, int start, int length) {
+		StringBuilder sb = new StringBuilder();
+		for(int i = start; i < start + length; i++) {
+			sb.append(ch[i]);
+		}
+		String data = sb.toString();
+		if(data.startsWith("\n") && data.endsWith("\n")) {
+			return data.substring(1, data.length());
+		} else if(data.startsWith("\n")) {
+			return data.substring(1);
+		} else if(data.endsWith("\n")) {
+			return data;
+		} else {
+			return data + "\n";
+		}
+	}	
+
+	public void startElement(String uri, String name, String qName, Attributes attrs) {
+		boolean isHandled = false;
+		String elementName = "";
+		if ("".equals (uri)) {
+	    	elementName = qName;
+		} else {
+	    	elementName = name;
+		}
+<?dispatchStartElement(elementList)?>
+		if(!isHandled && !elementName.startsWith("XMI")) {
+			System.out.println("WARN: Unhandled element: " + elementName);
+		}
+	}
+
+	public void endElement(String uri, String name, String qName) {
+		String elementName;
+		if ("".equals (uri)) {
+	    	elementName = qName;
+		} else {
+	    	elementName = name;
+		}
+<?dispatchEndElement(elementList)?>
+	}
+
+<?handleStartElement(elementList)?>
+<?handleEndElement(elementList)?>
+}
+<?
+/* TODO refactor into lib */
+list getElementList(map model) {
+	list elementList
+	foreach package <- getAllSubPackagesList(model) {
+		/* TODO handle enums? */
+		foreach class | !hasStereotype(class, 'enumeration') <- getClassList(package) {
+			elementList.add(class)
+			foreach asso | asso:Name && !isDerived(asso) <- class:AssociationList {
+				elementList.add(asso)
+			}
+		}
+	}
+	elementList
+}
+
+string methodName(map element) {
+	if(!isMany(element)) {
+		'set' + element:Name.firstUpper()
+	} else {
+		'add' + element:Name.firstUpper()
+	}
+}
+
+string dispatchStartElement(list elementList) {
+	foreach element <- elementList {
+		if(element:ElementType eq 'Class' && !hasStereotype(element, 'primitive')) {
+			if(!isAbstract(element)) {?>
+		if(elementName.equals("<?element:Name?>")) {
+			// Class <?element:Name?>
+			start<?element:Name?>(attrs);
+			isHandled = true;
+		}
+		<?
+			}
+			foreach attr 
+					| !isDerived(attr) && (isMany(attr) || isReferenceAttribute(attr))
+					<- element:AttributeList {?>
+		if(elementName.equals("<?attr:ParentElement:Name?>.<?attr:Name?>")) {
+			// Attribute <?attr:ParentElement:Name?>.<?attr:Name?>
+			start<?attr:ParentElement:Name?>_<?attr:Name.firstUpper()?>(attrs);
+			isHandled = true;
+		}
+		<?
+			}
+		} else if(element:ElementType eq 'AssociationEnd' && !isComposition(element)) {?>
+		if(elementName.equals("<?element:SourceEnd:Type:Name?>.<?element:Name?>")) {
+			// Asso <?element:SourceEnd:Type:Name?>.<?element:Name?>
+			start<?element:SourceEnd:Type:Name?>_<?element:Name.firstUpper()?>(attrs);
+			isHandled = true;
+		}
+		<?
+		}
+	}
+}
+
+string dispatchEndElement(list elementList) {
+	foreach element <- elementList {
+		if(element:ElementType eq 'Class' && !hasStereotype(element, 'primitive')) {
+			if(!isAbstract(element)) {?>
+		if(elementName.equals("<?element:Name?>")) {
+			// Class <?element:Name?>
+			end<?element:Name?>();
+		}
+		<?
+			}
+			foreach attr 
+					| !isDerived(attr) && (isMany(attr) || isReferenceAttribute(attr))
+					<- element:AttributeList {?>
+		if(elementName.equals("<?attr:ParentElement:Name?>.<?attr:Name?>")) {
+			// Attribute <?attr:ParentElement:Name?>.<?attr:Name?>
+			end<?attr:ParentElement:Name?>_<?attr:Name.firstUpper()?>();
+		}
+		<?
+			}
+		} else if(element:ElementType eq 'AssociationEnd' && !isComposition(element)) {?>
+		if(elementName.equals("<?element:SourceEnd:Type:Name?>.<?element:Name?>")) {
+			// Asso <?element:SourceEnd:Type:Name?>.<?element:Name?>
+			end<?element:SourceEnd:Type:Name?>_<?element:Name.firstUpper()?>();
+		}
+		<?
+		}
+	}
+}
+
+string handleStartElement(list elementList) {
+	foreach element <- elementList {
+		if(element:ElementType eq 'Class' && !hasStereotype(element, 'primitive')) {
+			if(!isAbstract(element)) {?>
+	protected void start<?element:Name?>(Attributes attrs) {
+		<?element:Name?> element = new <?element:Name?>Impl();
+		elementStack.push(element);
+		element.setProfileElement(profile);
+		if(attrs.getValue("xmi.id") != null) {
+			element.setXmiId(attrs.getValue("xmi.id"));
+		}
+		if(attrs.getValue("xmi.idref") != null) {
+			element.setXmiIdRef(attrs.getValue("xmi.idref"));
+		}
+		if(attrs.getValue("href") != null) {
+			element.setHRef(attrs.getValue("href"));
+		}
+<?
+				foreach attr
+						| !isDerived(attr) && !isMany(attr) && !isReferenceAttribute(attr)
+				 		<- getAttributeList(element) {
+					attribute(attr)
+				}?>
+	}
+<?
+			}
+			foreach attr 
+					| !isDerived(attr) && (isMany(attr) || isReferenceAttribute(attr))
+					<- element:AttributeList {?>
+	protected void start<?attr:ParentElement:Name.firstUpper()?>_<?attr:Name.firstUpper()?>(Attributes attrs) {
+		List<<?javaType(attr)?>> elementList = new ArrayList<<?javaType(attr)?>>();
+		elementStack.push(elementList);
+	}
+<?
+			}
+		} else if(element:ElementType eq 'Class' && hasStereotype(element, 'primitive')) {?>
+	protected void start<?element:Name?>() {
+		System.out.println("start<?element:Name?>");
+		sb = new StringBuilder();
+	}
+<?
+		} else if(element:ElementType eq 'AssociationEnd' && !isComposition(element)) {?>
+	protected void start<?element:SourceEnd:Type:Name?>_<?element:Name.firstUpper()?>(Attributes attrs) {
+		List<XmiObject> elementList = new ArrayList<XmiObject>();
+		elementStack.push(elementList);
+	}
+<?
+		}
+	}
+}
+
+string handleEndElement(list elementList) {
+	foreach element <- elementList {
+		if(element:ElementType eq 'Class' && !hasStereotype(element, 'primitive')) {
+			if(!isAbstract(element)) {?>
+	protected void end<?element:Name?>() {
+		<?element:Name?> element = (<?element:Name?>) elementStack.pop();
+		if(element.getXmiId() != null) {
+			// don't register references to elements
+			xmiRepository.add<?element:Name?>(element);
+		}
+		
+		if(!elementStack.isEmpty()) {
+			java.lang.Object obj = elementStack.peek();
+			if(obj instanceof XmiObject) {
+				XmiObject parentElement = (XmiObject) obj; 
+				element.setParentElement(parentElement);
+				addElement(parentElement, element, <?element:Name?>.class, "<?methodName(element)?>");
+			} else if(obj instanceof List) {
+				List<XmiObject> elementList = (List<XmiObject>) obj;
+				elementList.add(element);
+			}
+		}
+	}
+<?
+			}
+			foreach attr 
+					| !isDerived(attr) && (isMany(attr) || isReferenceAttribute(attr))
+					<- element:AttributeList {?>
+	protected void end<?attr:ParentElement:Name?>_<?attr:Name.firstUpper()?>() {
+		List<<?javaType(attr)?>> elementList = (List<<?javaType(attr)?>>) elementStack.pop();
+		if(!elementStack.isEmpty() && !elementList.isEmpty()) {
+			<?attr:ParentElement:Name?> parentElement = (<?attr:ParentElement:Name?>) elementStack.peek();
+			for(<?javaType(attr)?> element : elementList) {<?
+					if(javaType(attr) ne 'String') {?>
+				element.setParentElement(parentElement);<?
+					}
+					if(!isMany(attr)) {?>
+				parentElement.set<?attr:Name.firstUpper()?>(element);<?
+					} else {?>
+				parentElement.add<?attr:Name.firstUpper()?>(element);<?
+					}?>
+			}
+		}
+	}
+<?
+			}
+		} else if(element:ElementType eq 'Class' && hasStereotype(element, 'primitive')) {?>
+	protected void end<?element:Name?>() {
+		System.out.println("end<?element:Name?>");
+		if(!elementStack.isEmpty()) {
+			java.lang.Object obj = elementStack.peek();
+			if(obj instanceof XmiObject) {
+				// XmiObject parentElement = (XmiObject) obj;
+				// addPrimitive(parentElement, sb.toString(), <?element:Name?>.class, "<?methodName(element)?>");
+			}
+		}
+	}
+<?
+		} else if(element:ElementType eq 'AssociationEnd' && !isComposition(element)) {?>
+	protected void end<?element:SourceEnd:Type:Name?>_<?element:Name.firstUpper()?>() {
+		List<XmiObject> elementList = (List<XmiObject>) elementStack.pop();
+		if(!elementStack.isEmpty() && !elementList.isEmpty()) {
+			<?element:SourceEnd:Type:Name?> parentElement = (<?element:SourceEnd:Type:Name?>) elementStack.peek();
+			for(XmiObject obj : elementList) {
+				<?element:Type:Name?> element = (<?element:Type:Name?>) obj; 
+				element.setParentElement(parentElement);<?
+			if(!isMany(element)) {?>
+				parentElement.set<?element:Name.firstUpper()?>(element);<?
+			} else {?>
+				parentElement.add<?element:Name.firstUpper()?>(element);<?
+			}
+			if(isNavigable(element:SourceEnd) && !isDerived(element:SourceEnd) && element:SourceEnd:Name) {
+				if(!isMany(element:SourceEnd)) {?>
+				element.set<?element:SourceEnd:Name.firstUpper()?>(parentElement);<?
+				} else {?>
+				element.add<?element:SourceEnd:Name.firstUpper()?>(parentElement);<?
+				}
+			}?>
+			}
+		}
+	}
+<?	
+		}
+	}
+}
+
+string attribute(map attr) {
+?>
+		if(attrs.getValue("<?attr:Name?>") != null) {<?
+				if(attr:Type:Name eq 'Boolean') {?>
+			element.set<?attr:Name.firstUpper()?>(java.lang.Boolean.parseBoolean(attrs.getValue("<?attr:Name?>")));<?
+				} else if(attr:Type:Name eq 'Integer' || attr:Type:Name eq 'UnlimitedInteger') {?>
+			element.set<?attr:Name.firstUpper()?>(java.lang.Integer.parseInt(attrs.getValue("<?attr:Name?>")));<?
+				} else if(hasStereotype(attr:Type, 'enumeration')) {?>
+			element.set<?attr:Name.firstUpper()?>(<?attr:Type:Name?>.valueOf(attrs.getValue("<?attr:Name?>").toUpperCase()));<?
+				} else if(!isReferenceAttribute(attr)) {?>
+			element.set<?attr:Name.firstUpper()?>(attrs.getValue("<?attr:Name?>"));<?
+				}?>
+		}<?
+}
+?>

@@ -1,0 +1,89 @@
+<project name="UML14Repository" default="distribute">
+
+	<property environment="env" />
+	<property file="build.properties" />
+	<property name="global.build.dir" value="${env.GLOBAL_BUILD_HOME}" />
+
+	<!-- import global build files -->
+	<import file="${global.build.dir}/ant/global.properties.xml" />
+	<import file="${global.build.dir}/ant/global.build.xml" />
+
+	<property name="generate.dir" location="${project.work.dir}/generated"/>
+	<property name="backup.dir" location="${project.work.dir}/backup"/>
+
+	<path id="source.path">
+		<pathelement location="${generate.dir}/src" />
+		<path refid="global.source.path" />
+	</path>
+
+	<!--
+	  - project specific targets
+	  -->
+	<target name="generate-local" depends="check-generate-required,generate-model" />
+
+	<!-- generate classes from model -->
+	<target name="check-generate-required">
+		<uptodate property="generateModel.notRequired" targetfile="${generate.dir}/src/org/soulspace/xmi/uml14/XmiRepositoryImpl.java">
+			<srcfiles dir="${basedir}/model" includes="UML14Repository.xmi" />
+		</uptodate>
+	</target>
+
+	<target name="generate-model" unless="generateModel.notRequired">
+		<mkdir dir="${generate.dir}"/>
+		<mkdir dir="${backup.dir}"/>		
+		<unzip src="model/UML14Repository.zargo" dest="model" overwrite="true">
+			<patternset includes="UML14Repository.xmi" />
+		</unzip>
+		<delete>
+			<fileset dir="${backup.dir}" />
+		</delete>
+		<copy todir="${backup.dir}" overwrite="true">
+			<fileset dir="${generate.dir}" />
+		</copy>
+		<delete>
+			<fileset dir="${generate.dir}" />
+		</delete>
+
+		<!--
+		  - Generator
+		  -->
+		<soulmda destdir="${generate.dir}" backupdir="${backup.dir}" templateDirs="templates_old,../MdaStandardTemplateLibrary/templates" modelFile="model/uml1.4.xmi" profiles="profiles/default-uml14.xmi">
+			<classGenerator name="mof/element-interface" imports="lib,model/lib,java/lib,java/interface,base" subdir="src" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.elements" stereotype="NONE" />
+			<classGenerator name="mof/element-class" imports="lib,model/lib,java/lib,java/class,base" subdir="src" prefix="Abstract" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.elements.impl" stereotype="NONE" />
+			<classGenerator name="mof/element-concrete-class" imports="lib,model/lib,java/lib,java/class,base" subdir="src" suffix="Impl" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.elements.impl" stereotype="NONE" />
+			<classGenerator name="mof/enum" imports="lib,model/lib,java/lib,java/class,base" subdir="src" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.types" stereotype="enumeration" />
+			<classGenerator name="mof/primitive" imports="lib,model/lib,java/lib,java/class,base" subdir="src" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.primitives" stereotype="primitive" />
+			<modelGenerator name="mof/repository" imports="lib,model/lib,java/lib,java/class,base" subdir="src" baseName="Uml14RepositoryImpl" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.impl" />
+			<modelGenerator name="xmi/1.2/schema" imports="lib,model/lib" subdir="uml" basename="uml14_xmi12" extension="xsd" />
+			<modelGenerator name="xmi/1.2/reader" imports="lib,model/lib,java/lib,java/class,base" subdir="src" baseName="Xmi12ReaderImpl" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.impl" />
+			<modelGenerator name="xmi/1.2/writer" imports="lib,model/lib,java/lib,java/class,base" subdir="src" baseName="Xmi12WriterImpl" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.impl" />
+		</soulmda>
+<!--
+		TODO use ArgoUMLProfileLibrary
+		<mdsd destdir="${generate.dir}" backupdir="${backup.dir}" templateDirs="lib/generator/templates,templates" modelFile="model/uml1.4.xmi" profiles="profiles/default-uml14.xmi">
+			<classGenerator name="uml14/mof/element-interface" imports="lib,model/lib,java/lib,java/interface,uml14/lib" subdir="src" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.elements" stereotype="NONE" />
+			<classGenerator name="uml14/mof/element-class" imports="lib,model/lib,java/lib,java/class,uml14/lib" subdir="src" prefix="Abstract" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.elements.impl" stereotype="NONE" />
+			<classGenerator name="uml14/mof/element-concrete-class" imports="lib,model/lib,java/lib,java/class,uml14/lib" subdir="src" suffix="Impl" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.elements.impl" stereotype="NONE" />
+			<classGenerator name="uml14/mof/enum" imports="lib,model/lib,java/lib,java/class,uml14/lib" subdir="src" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.types" stereotype="enumeration" />
+			<classGenerator name="uml14/mof/primitive" imports="lib,model/lib,java/lib,java/class,uml14/lib" subdir="src" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.primitives" stereotype="primitive" />
+			<modelGenerator name="uml14/mof/repository" imports="lib,model/lib,java/lib,java/class,uml14/lib" subdir="src" baseName="Uml14RepositoryImpl" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.impl" />
+			<modelGenerator name="uml14/xmi/1.2/schema" imports="lib,model/lib" subdir="uml" basename="uml14_xmi12" extension="xsd" />
+			<modelGenerator name="uml14/xmi/1.2/reader" imports="lib,model/lib,java/lib,java/class,uml14/lib" subdir="src" baseName="Xmi12ReaderImpl" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.impl" />
+			<modelGenerator name="uml14/xmi/1.2/writer" imports="lib,model/lib,java/lib,java/class,uml14/lib" subdir="src" baseName="Xmi12WriterImpl" extension="java" namespaceReplacement="org.soulspace.modelling.uml14.impl" />
+		</mdsd>
+-->
+
+	</target>
+
+	<!--target name="test-local" depends="test-xmiloader"/-->
+
+	<!--target name="test-xmiloader">
+		<java
+			classname="org.soulspace.xmi.util.XMILoader"
+			classpathref="unittest.classpath">
+			<arg value="data/refModels/argouml/state.xmi"/>
+			<arg value="data/refModels/argouml/usecase.xmi"/>
+		</java>
+	</target-->
+
+</project>

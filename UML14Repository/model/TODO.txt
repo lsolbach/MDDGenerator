@@ -1,0 +1,47 @@
+TODOs:
+
+Model:
+Model associationEnd role names witch are missing for reading xmi (e.g. ModelElement.comment)
+Fix ungeneratable constructs (playedRole in LinkObject)
+Add OCL constraints
+
+
+Generation:
+DONE Generate correct cardinalities for associations and attributes
+DONE Generate correct type for Attributes, *KindType for enums and "some" DataTypes (Name),
+	Elements and ElementRefs for other DataTypes (Multiplicity, Expression, ...)
+DONE Generate Marshalling/Unmarshalling without Castor (xstream?), because of the Enumeration problem
+
+
+ArguUML
+-------
+
+Raise Bugs on ArgoUML
+* Dragging Elements with an AssociationClass to a ClassDiagram
+* Dragging of AssociationClasses to a ClassDiagram
+* FIXED TaggedValue "Derived" not visible in ClassDiagram
+* OrderingKind on AssociationEnds not visible in ClassDiagram ({ordered})
+* Constraints on Associations not possible ({xor})
+* (Constraints on Generalisations? Haven't checked)
+
+
+AssociationClass Bugs:
+
+There are some bugs regarding the visualistion of AssociationClasses in ClassDiagrams.
+It is possible to create AssociationClasses in a ClassDiagram and the rendering is ok.
+But it's impossible to get a correct rendering by dragging classes to a new ClassDiagram.
+If you drag the AssociationClass to the diagram it gets rendered as a AssociationClass
+connected to a n-ary Association. And if you drag the Elements connected by the
+AssociationClass to the diagram, the AssociationClass is rendered as a normal Association.
+
+
+Derived not visible in ClassDiagrams
+FIXED Derived Attributes and Associations are not shown with a '/' in front of the name in ClassDiagrams.
+
+
+Ordering is not shown in the ClassDiagram
+If I select 'ordered' on an AssociationEnd, i'd like to see a '{ordered}'-label (maybe configurable) in the ClassDiagram.
+
+
+Constraints on Associations and Generalizations
+I've found no way to express Constraints like {xor} or {distinct} on Associations and Generalizations in ClassDiagrams (and in the model).

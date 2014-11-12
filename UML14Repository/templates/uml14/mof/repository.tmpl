@@ -1,0 +1,80 @@
+<?
+list elementList = getElementList(This)
+?>package <?namespace(This)?>;
+
+import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.soulspace.modelling.base.*;
+import org.soulspace.modelling.uml14.elements.*;
+import org.soulspace.modelling.uml14.elements.Class;
+import org.soulspace.modelling.uml14.elements.Exception;
+import org.soulspace.modelling.uml14.elements.Object;
+import org.soulspace.modelling.uml14.elements.Package;
+
+/**
+ * <?name(This)?> is a repository for Uml objects to be used in generation.
+ */
+public class <?name(This)?> implements UmlRepository {
+
+	private Map<String, XmiObject> xmiIdMap = new HashMap<String, XmiObject>();
+
+	<?properties(elementList)?>
+
+	/**
+	 * Constructor
+	 */
+	public <?name(This)?>() {
+		super();
+	}
+
+	public XmiObject findByXmiId(String xmiId) {
+		return xmiIdMap.get(xmiId);
+	}
+
+	<?accessors(elementList)?>
+}
+
+<?
+string properties(list elementList) {
+	foreach element <- elementList {?>
+	private List<<?element:Name?>> <?element:Name.firstLower()?>List = new ArrayList<<?element:Name?>>();<?
+	}
+}
+
+string accessors(list elementList) {
+	foreach element <- elementList {
+?>
+	public List<<?element:Name?>> get<?element:Name?>List() {
+		return <?element:Name.firstLower()?>List;
+	}
+
+	public void set<?element:Name?>List(List<<?element:Name?>> <?element:Name.firstLower()?>List) {
+		this.<?element:Name.firstLower()?>List = <?element:Name.firstLower()?>List;
+	}
+
+	public void add<?element:Name?>(<?element:Name?> element) {
+		<?element:Name.firstLower()?>List.add(element);
+		xmiIdMap.put(element.getXmiId(), element);
+	}
+
+	public void remove<?element:Name?>(<?element:Name?> element) {
+		<?element:Name.firstLower()?>List.remove(element);
+		xmiIdMap.remove(element.getXmiId());
+	}
+<?
+	}
+}
+
+list getElementList(map model) {
+	list elementList
+	foreach package <- getAllSubPackagesList(model) {
+		foreach element | !isAbstract(element) && !hasStereotypes(element) <- getClassList(package) {
+			elementList.add(element)
+		}	
+	}
+	elementList
+}
+?>

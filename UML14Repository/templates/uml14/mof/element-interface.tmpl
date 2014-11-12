@@ -1,0 +1,55 @@
+/*
+ * Interface <?name(This)?>
+<?generationInfo(' * ')?>
+ */
+<?!-- TODO refactor to interface.tmpl and element-interface.tinc --?>
+package <?namespace(This)?>;
+
+import java.util.*;
+
+import org.soulspace.modelling.base.*;
+import org.soulspace.modelling.uml14.types.*;
+<?imports(This)?>
+<?
+javaDoc(This)
+annotations(This)?>
+<?visibility(This)?> interface <?name(This)?> <?extensions(This)?> {
+	// Accessors
+<?properties(This)?>
+<?associations(This)?>
+	// Operations
+<?operations(This)?>
+}
+
+<?
+string extensions(map element) {
+	string extensions = super(element)
+	if(extensions) {
+		extensions + ', XmiObject'
+	} else {
+		'extends XmiObject'
+	}
+}
+
+string properties(map element) {
+	map attrMap = additionalPropertyMap(element)
+	foreach attr | isAccessibleProperty(attr) <- element:AllAttributeList {
+		attrMap.put(attr:Name, attr)
+	}
+	list keyList = attrMap.keyList()
+	foreach attrKey <- keyList {	
+		property(attrMap[attrKey])
+	}
+}
+
+string associations(map element) {
+	map assoMap
+	foreach asso | isAccessibleAssociation(asso) <- element:AssociationList {
+		assoMap.put(asso:Name, asso)
+	}
+	list keyList = assoMap.keyList()
+	foreach assoKey <- keyList {	
+		association(assoMap[assoKey])
+	}
+}
+?>

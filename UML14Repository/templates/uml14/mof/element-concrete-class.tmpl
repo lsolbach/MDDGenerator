@@ -1,0 +1,83 @@
+/*
+ * Java bean <?name(This)?>
+ * Implementation of interface <?Name?>.
+<? generationInfo(' * ')?>
+ */
+
+package <?namespace(This)?>;
+
+import java.util.*;
+
+import org.soulspace.modelling.base.*;
+import org.soulspace.modelling.uml14.elements.*;
+import org.soulspace.modelling.uml14.types.*;
+<?importJavaOverrides(This)?>
+<?
+javaDoc(This)
+annotations(This)?>
+<?visibility(This)?> class <?name(This)?> extends Abstract<?Name?> {
+
+	// Constructors<?
+constructors(This)
+?>
+
+	// Accessors<?
+propertyAccessors(This)
+associationAccessors(This)
+?>
+
+	// Operations<?
+operations(This)
+?>
+
+	// Object methods<?
+equals(This)
+hashcode(This)
+?>
+}
+<?
+
+string constructors(map element) {
+	defaultConstructor(element)
+}
+
+string propertyAccessors(map element) {
+	foreach attr | isDerived(attr) <- element:AllAttributeList {?>
+	<?visibility(attr)?> synchronized <?javaType(attr)?> get<?attr:Name.firstUpper()?>() {
+		// implement
+		return <?attr:Name?>;
+	}
+<?
+	}
+}
+
+string associationAccessors(map element) {
+	foreach asso | isDerived(asso) <- element:AllAssociationList {
+	
+	}
+}
+
+string operations(map element) {
+	foreach op <- element:AllOperationList {
+	
+	}
+}
+
+string operation(map op) {
+
+}
+
+string equals(map element) {?>
+	public boolean equals(java.lang.Object o) {
+		return super.equals(o);
+	}
+<?
+}
+
+string hashcode(map element) {?>
+	public int hashCode() {
+		return super.hashCode();
+	}
+<?
+}
+?>

@@ -1,0 +1,30 @@
+<?
+string fileComment(map element) {
+?>/*
+ * Interface of element <?name(element)?>
+<?generationInfo(' * ')?>
+ */
+<?
+}
+
+map getImportMap(map element) {
+	map importMap
+	add(importMap, 'java.util.*')
+	add(importMap, 'org.soulspace.modelling.base.*')
+	add(importMap, 'org.soulspace.modelling.uml14.types.*')
+	importMap
+}
+
+list getTypeAnnotationList(map element) {
+	list typeAnnotationList = super(element)
+	typeAnnotationList.add('@SuppressWarnings("unused")')
+	typeAnnotationList
+}
+
+list getExtensionList(map element) {
+	list extensionList = super(element)
+	extensionList.add('XmiObject')
+	extensionList
+}
+
+?>

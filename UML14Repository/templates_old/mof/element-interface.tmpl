@@ -1,0 +1,55 @@
+/*
+ * Interface <?name()?>
+<?generationInfo(' * ')?>
+ */
+
+package <?namespace()?>;
+
+import java.util.*;
+
+import org.soulspace.modelling.base.*;
+import org.soulspace.modelling.uml14.types.*;
+<?imports()?>
+<?
+javaDoc()
+annotations()?>
+<?visibility()?> interface <?name()?> <?extensions()?> {
+	// Accessors
+<?properties()?>
+<?associations()?>
+	// Operations
+<?operations()?>
+}
+
+<?
+string extensions() {
+	string extensions = super()
+	if(extensions) {
+		extensions + ', XmiObject'
+	} else {
+		'extends XmiObject'
+	}
+}
+
+string properties() {
+	map attrMap = additionalPropertyMap()
+	foreach attr | isAccessibleProperty(attr) <- AllAttributes {
+		attrMap.put(attr:Name, attr)
+	}
+	list keyList = attrMap.keyList()
+	foreach attrKey <- keyList {	
+		property(attrMap[attrKey])
+	}
+}
+
+string associations() {
+	map assoMap
+	foreach asso | isAccessibleAssociation(asso) <- Associations {
+		assoMap.put(asso:Name, asso)
+	}
+	list keyList = assoMap.keyList()
+	foreach assoKey <- keyList {	
+		association(assoMap[assoKey])
+	}
+}
+?>

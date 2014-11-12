@@ -1,0 +1,105 @@
+/*
+ * Java bean <?name()?>
+ * Implementation of interface <?Name?>.
+<? generationInfo(' * ')?>
+ */
+
+package <?namespace()?>;
+
+import java.util.*;
+
+import org.soulspace.modelling.base.*;
+import org.soulspace.modelling.uml14.elements.*;
+import org.soulspace.modelling.uml14.types.*;
+<?importJavaOverrides()?>
+<?
+javaDoc()
+annotations()?>
+<?visibility()?> abstract class <?name()?> extends AbstractXmiObject <?implementations()?> {
+
+	// Fields<?
+propertyFields()
+associationFields()
+?>
+
+	// Constructors<?
+constructors()
+?>
+
+	// Accessors<?
+propertyAccessors()
+associationAccessors()
+?>
+
+	// Operations<?
+operations()
+?>
+
+	// Object methods<?
+equals()
+hashcode()
+?>
+}
+<?
+string propertyFields() {
+	map attrMap = additionalPropertyMap()
+	foreach attr | !isDerived(attr) <- AllAttributes {
+		attrMap.put(attr:Name, attr)
+	}
+	list keyList = attrMap.keyList()
+	foreach attrKey <- keyList {	
+		propertyField(attrMap[attrKey])
+	}
+}
+
+string propertyAccessors() {
+	map attrMap = additionalPropertyMap()
+	foreach attr | isAccessibleProperty(attr) <- AllAttributes {
+		attrMap.put(attr:Name, attr)
+	}
+	list keyList = attrMap.keyList()
+	foreach attrKey <- keyList {	
+		propertyAccessor(attrMap[attrKey])
+	}
+}
+
+string associationFields() {
+	map assoMap
+	foreach asso | isAccessibleAssociation(asso) && !isDerived(asso) <- AllAssociations {
+		assoMap.put(asso:Name, asso)
+	}
+	list keyList = assoMap.keyList()
+	foreach assoKey <- keyList {	
+		associationField(assoMap[assoKey])
+	}
+}
+
+string associationAccessors() {
+	map assoMap
+	foreach asso | isAccessibleAssociation(asso) && !isDerived(asso) <- AllAssociations {
+		assoMap.put(asso:Name, asso)
+	}
+	list keyList = assoMap.keyList()
+	foreach assoKey <- keyList {	
+		associationAccessor(assoMap[assoKey])
+	}
+}
+
+string associationSetAnnotations(map asso) {
+	if(isComposition(asso:SourceEnd)) {?>
+	@Composition<?
+	}
+}
+
+string associationAddAnnotations(map asso) {
+	if(isComposition(asso:SourceEnd)) {?>
+	@Composition<?
+	}
+}
+
+string associationRemoveAnnotations(map asso) {
+	if(isComposition(asso:SourceEnd)) {?>
+	@Composition<?
+	}
+}
+?>
