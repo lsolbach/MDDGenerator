@@ -1,0 +1,67 @@
+/*
+ * Java bean <?name()?>
+ * Implementation of interface <?Name?>.
+<? generationInfo(' * ')?>
+ */
+
+package <?namespace()?>;
+
+import java.util.*;
+<?imports()?>
+<?
+javaDoc()
+typeAnnotations()?>
+<?visibility()?> abstract class <?name()?> <?extension()?> <?implementations()?> {
+
+	// Fields<?
+propertyFields()
+associationFields()
+?>
+	
+	// Constructors<?
+constructors()
+?>
+
+	// Accessors<?
+propertyAccessors()
+elementAccessors()
+associationAccessors()
+?>
+
+	// Operations	
+<?
+operations()
+?>
+
+	// Object methods<?
+equals()
+hashcode()
+compareTo(This)
+?>
+}
+<?
+numeric isAccessibleProperty(map attr) {
+	!isDerived(attr)
+}
+
+string extension() {
+}
+
+string elementAccessors() {?>
+	public String getElementType() {
+		return "<?Name?>";
+	}
+	
+	public Element getThis() {
+		return this;
+	}
+<?
+}
+
+string compareTo(map element) {?>
+	public int compareTo(Element e) {
+		return getId().compareTo(e.getId());
+	}
+<?
+}
+?>

@@ -1,0 +1,23 @@
+<?
+list getRepositoryElementList(map model) {
+	list elementList
+	foreach package <- getAllSubPackagesList(model) {
+		foreach element
+				| !isAbstract(element) && !hasStereotypes(element) && isAssignableTo(element, 'Element') 
+				<- getClassList(package) {
+			elementList.add(element)
+		}	
+	}
+	elementList
+}
+
+/* use TreeSet for stable order over multiple generations */
+string associationCollectionImplementation(map asso) {
+	string type = super(asso)
+	if(type eq 'Set' || type eq 'HashSet' || type eq 'SortedSet') {
+		'TreeSet'
+	} else {
+		type
+	}
+}
+?>

@@ -1,0 +1,29 @@
+/*
+ * Interface <?name()?>
+<?generationInfo(' * ')?>
+ */
+
+package <?namespace()?>;
+
+import java.util.*;
+<?imports()?>
+<?
+javaDoc()
+typeAnnotations()?>
+<?visibility()?> interface <?name()?> <?extensions()?> {
+// Accessors
+<?properties()?>
+<?associations()?>
+// Operations
+<?operations()?>
+}
+<?
+string extensions() {
+	string interfaces = super()
+	if(interfaces) {
+		interfaces + ', Comparable<Element>'
+	} else {
+		'extends Comparable<Element>'
+	}
+}
+?>

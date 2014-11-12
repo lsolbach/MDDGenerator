@@ -1,0 +1,10 @@
+<?
+string extensions(map element) {
+	string interfaces = super(element)
+	if(interfaces) {
+		interfaces + ', Comparable<Element>'
+	} else {
+		'extends Comparable<Element>'
+	}
+}
+?>

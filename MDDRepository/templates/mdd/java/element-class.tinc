@@ -1,0 +1,19 @@
+<?
+string abstract(map element) {
+	'abstract'
+}
+
+string extension(map element) {}
+
+string operations(map element) {
+	super(element)
+	compareTo(element)
+}
+
+string compareTo(map element) {?>
+	public int compareTo(Element e) {
+		return getId().compareTo(e.getId());
+	}
+<?
+}
+?>

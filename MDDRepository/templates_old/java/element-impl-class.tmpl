@@ -1,0 +1,64 @@
+/*
+ * Java bean <?name()?>
+ * Implementation of interface <?Name?>.
+<? generationInfo(' * ')?>
+ */
+
+package <?namespace()?>;
+
+import java.util.*;
+<?imports()?>
+<?
+javaDoc()
+typeAnnotations()?>
+<?visibility()?><?abstract()?> class <?name()?> extends Abstract<?Name?> <?implementations()?> {
+
+	// Constructors<?
+constructors()
+?>
+
+	// Accessors<?
+propertyAccessors()
+associationAccessors()
+?>
+
+	// Operations<?
+operations()
+?>
+
+	// Object methods<?
+equals()
+hashcode()
+?>
+}
+<?
+string constructors() {
+	ctorDefault()
+}
+
+string propertyAccessors() {
+	foreach attr | isDerived(attr) <- AllAttributes {?>
+	<?visibility(attr)?> synchronized <?javaType(attr)?> get<?attr:Name.firstUpper()?>() {
+		// implement
+		return <?attr:Name?>;
+	}
+<?
+	}
+}
+
+string associationAccessors() {
+	foreach asso | isDerived(asso) <- AllAssociations {
+	
+	}
+}
+
+string operations() {
+	foreach op <- AllOperations {
+	
+	}
+}
+
+string operation(map op) {
+
+}
+?>
