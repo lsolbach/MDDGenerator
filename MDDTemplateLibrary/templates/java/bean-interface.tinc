@@ -1,0 +1,8 @@
+<?!--
+    - include for java bean interfaces java/bean-interface
+   --?><?
+string operations(map element) {
+	compose(fieldAccessor, filter(isPropertyField, getFieldList(element)), lineFeed())
+	super(element)
+}
+?>

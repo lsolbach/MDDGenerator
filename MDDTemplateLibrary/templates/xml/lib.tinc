@@ -1,0 +1,33 @@
+<?!--
+ * xml/lib
+ * 
+ * Standard include for the generation of xml files.
+ * 
+ * Requires lib, model/lib
+ *
+ * © 2010- Ludger Solbach 
+--?><?
+string declareXml(map element) {
+	declareXml('UTF-8')
+}
+
+string declareXml() {
+	declareXml('UTF-8')
+}
+
+string declareXml(string encoding) {
+?><?beginXmlProcessingInstruction()?>xml version="1.0" encoding="<?encoding?>"<?endXmlProcessingInstruction()?><?
+}
+
+string beginXmlProcessingInstruction() {
+	'<' + '?'
+}
+
+string endXmlProcessingInstruction() {
+	'?' + '>'
+}
+
+string xmlProcessingInstruction(string content) {
+	beginXmlProcessingInstruction() + content + endXmlProcessingInstruction()
+}
+?>

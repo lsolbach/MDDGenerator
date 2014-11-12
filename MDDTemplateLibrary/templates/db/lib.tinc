@@ -1,0 +1,126 @@
+<?!--
+ * db/lib
+ *
+ * Methods for the generation of SQL database scripts and queries
+ * 
+ * Required includes: lib, model/lib
+ * 
+ * ©2010-2012 Ludger Solbach
+ --?><?
+string fileComment(map element) {
+	'-- file comment'
+}
+
+string sqlStatements(map element) {
+	'-- sql statements'
+}
+
+string comment(string text) {
+	'-- ' + text
+}
+
+string dbName(string name) {
+	name.camelCaseToUnderScore()
+}
+
+string dbName(map element) {
+	if(element:Name) {
+		dbName(element:Name)
+	} else {
+		dbName(element:Type:Name)
+	}	
+}
+
+string tableName(map element) {
+	dbName(element)
+}
+
+string columnName(map element, map attr) {
+	dbName(attr)
+}
+
+string columnName(map element, string name) {
+	dbName(name)
+}
+
+string columnName(map attr) {
+	columnName(attr:ParentElement, attr)
+}
+
+string associationColumnName(map element, map asso) {
+	dbName(asso)
+}
+
+string associationColumnName(map asso) {
+	associationColumnName(asso:SourceEnd:Type, asso)
+}
+
+string foreignKeyName(map asso) {
+	associationColumnName(asso) + '_id'
+}
+
+string indexName(map element) {
+  dbName(element:SourceEnd:Type) + '_idx'
+}
+
+string associationTableName(map asso) {
+	dbName(asso)
+}
+
+list attributes(map element) {
+	list attrColumnList
+	foreach attr | !isDerived(attr) <- element:AllAttributeList {
+		attrColumnList.add(attribute(attr))
+	}
+	attrColumnList
+}
+
+string attribute(map attr) {
+	columnName(attr) + ' ' + sqlType(attr) + ' ' + optional(attr)
+}
+
+list associations(map element) {
+	list assoColumnList
+	foreach asso | !isDerived(asso) <- element:AllAssociationList {
+		string column = association(asso)
+		if(column) {
+			assoColumnList.add(column)
+		}
+	}
+	assoColumnList
+}
+
+string foreignKey(map element) {
+ 	foreignKeyName(element) + ' ' + foreignKeyType(element) + ' ' + optional(element)
+}
+
+string foreignKeyType(map element) {
+	sqlType('Integer')
+}
+
+string optional(map element) {
+	if(isOptional(element)) {
+		'null'
+	} else {
+		'not null'
+	}
+}
+
+string sqlType(map element) {
+	if(element:Type:Name eq 'String' || element:Type:Name eq 'string') {
+		sqlType(element:Type:Name)
+	} else if(isBlob(element)) {
+		sqlType('BLOB')
+	} else {
+		sqlType(element:Type:Name)
+	}
+}
+
+string sqlType(string typeName) {
+	typeName
+}
+
+string sqlType(string typeName, numeric length) {
+	sqlType(typeName) + '(' + length + ')'
+}
+?>

@@ -1,0 +1,108 @@
+<?!--
+ * java/bean-class
+ * 
+ * Mixin include for java bean classes
+ * 
+ * Required includes: lib, model/lib, java/lib, java/class
+ * 
+ * © 2010- Ludger Solbach
+ * --?><?
+map getImportMap(map element) {
+	map importMap = super(element)
+	add(importMap, 'java.io.Serializable')
+	importMap
+}
+
+list getImplementationList(map element) {
+	list implementationList = super(element)
+	implementationList.add('Serializable')
+	implementationList
+}
+
+string staticFields(map element) {
+	super(element)?>
+	private static final long serialVersionUID = 1L;
+<?
+}
+
+string memberFields(map element) {
+	compose(memberField, filter(isPropertyField, getFieldList(element)), lineFeed())
+}
+
+string fieldModifiers(map field) {
+	'private'
+	if(isClassifierScope(field)) {
+		' static'
+	}
+}
+
+string operations(map element) {
+	compose(fieldAccessor, filter(isPropertyField, getFieldList(element)), lineFeed())
+	super(element)
+	equals(element)
+	hashcode(element)
+	toString(element)
+}
+
+string equals(map element) {?>
+	/**
+	 * {@inheritDoc}
+	 */
+	public boolean equals(java.lang.Object obj) {
+	  	if(this == obj) return true;
+ 	 	if(!(obj instanceof <?name(element)?>)) return false;
+  	
+	  	<?name(element)?> other = (<?name(element)?>) obj;
+
+	  	if(getClass().getSuperclass() != null && getClass().getSuperclass() != java.lang.Object.class) {
+	  	  if(!super.equals(other)) return false;
+	    }<?
+	foreach attr | isPropertyField(attr) <- getAttributeList(element) {
+		/* TODO Use association fields here, too?*/
+		if(isPrimitive(attr:Type)) {?>
+		if(get<?fieldMethodBaseName(attr)?>() != other.get<?fieldMethodBaseName(attr)?>()) return false;<?
+		} else {?>
+		if(!get<?fieldMethodBaseName(attr)?>().equals(other.get<?fieldMethodBaseName(attr)?>())) return false;<?
+		}
+	}?>
+		return true;
+	}
+<?
+}
+
+string hashcode(map element) {?>
+	/**
+	 * {@inheritDoc}
+	 */
+	public int hashCode() {
+		int result = 17;
+		if(getClass().getSuperclass() != null && getClass().getSuperclass() != java.lang.Object.class) {
+			result = 29 * result + super.hashCode();
+		}<?
+	foreach attr | isPropertyField(attr) <- getAttributeList(element) {
+		/* TODO Use association fields here, too?*/
+		if((javaType(attr) eq 'byte')
+			|| (javaType(attr) eq 'char')
+			|| (javaType(attr) eq 'short')
+			|| (javaType(attr) eq 'int')) {?>
+		result = 29 * result + get<?fieldMethodBaseName(attr)?>();<?
+		} else if(javaType(attr) eq 'long') {?>
+		result = 29 * result + (int) (get<?fieldMethodBaseName(attr)?>() ^ get<?fieldMethodBaseName(attr)?>() >>> 32));<?
+		} else if(javaType(attr) eq 'float') {?>
+		result = 29 * result + Float.floatToIntBits(get<?fieldMethodBaseName(attr)?>());<?
+		} else if(javaType(attr) eq 'double') {?>
+		result = 29 * result + Double.doubleToIntBits(get<?fieldMethodBaseName(attr)?>());<?
+		} else if(javaType(attr) eq 'boolean') {?>
+		result = 29 * result + (get<?fieldMethodBaseName(attr)?>() ? 1 : 0);<? 
+		} else {?>
+  		if(get<?fieldMethodBaseName(attr)?>() != null) {
+			result = 29 * result + get<?fieldMethodBaseName(attr)?>().hashCode();
+		}<?
+  		  }
+  	  }?>
+		return result;
+	}
+<?
+}
+
+?>

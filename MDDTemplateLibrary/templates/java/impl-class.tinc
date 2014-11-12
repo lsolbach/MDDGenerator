@@ -1,0 +1,26 @@
+<?!--
+ * java/impl-class
+ * 
+ * Mixin include for java implementation classes
+ * 
+ * Required includes: lib, model/lib, java/lib, java/class
+ * 
+ * © 2010- Ludger Solbach
+--?><?
+
+string extension(map element) {
+	/* TODO implement correctly with respect to model superclasses */
+	super(element)
+}
+
+string constructorBody(map element, list fieldList) {?>
+		super(<?constructorArguments(fieldList)?>);<?
+}
+
+string memberFields(map element) { }
+
+string operation(map op) {
+	operationMethodDelegateImplementation(op)
+}
+
+?>

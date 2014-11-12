@@ -1,0 +1,14 @@
+<?
+string usecaseDiagram(map element) {
+	
+}
+
+string usecase(map element) {
+	'usecase ' + element:Name
+}
+
+string actor(map element) {
+	'actor ' + element:Name
+}
+
+?>

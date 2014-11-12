@@ -1,0 +1,13 @@
+<?
+string graphName(map element) {
+	element:Name
+}
+
+string nodes(map element) {
+
+}
+
+string edges(map element) {
+
+}
+?>

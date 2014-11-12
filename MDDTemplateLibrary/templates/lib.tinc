@@ -1,0 +1,766 @@
+<?!--
+   - lib
+   -
+   - Standard functions to make life easier
+   - Functional programming style used with no side effects, the functions all return new data structures.
+   - Optimized for correctness, readability and maintainance, not necessarily for performance.
+   -
+   - © 2010- Ludger Solbach
+   --?><?
+
+list cons(string e, list elements) {
+	list result
+	result.add(e)
+	result + elements
+}
+
+list cons(numeric e, list elements) {
+	list result
+	result.add(e)
+	result + elements
+}
+
+list cons(map e, list elements) {
+	list result
+	result.add(e)
+	result + elements
+}
+
+/* appends an element to the list and returns the resulting list as a copy instead of an in place change */
+list append(list elements, string e) {
+	list result
+	result = result + elements
+	result.add(e)
+}
+
+/* appends an element to the list and returns the resulting list as a copy instead of an in place change */
+list append(list elements, numeric e) {
+	list result
+	result = result + elements
+	result.add(e)
+}
+
+/* appends an element to the list and returns the resulting list as a copy instead of an in place change */
+list append(list elements, map e) {
+	list result
+	result = result + elements
+	result.add(e)
+}
+
+/* returns the first element of the list */
+any first(list elements) {
+	if(elements) {
+		elements[0]
+	}
+}
+
+/* returns the last element of the list */
+any last(list elements) {
+	if(elements) {
+		elements[elements.size() - 1]
+	}
+}
+
+/* returns a list with every element of the element list but the first */
+list tail(list elements) {
+	list result
+	if(elements) {
+		numeric s = elements.size()
+		numeric i = 1
+		while(i < s) {
+			result.add(elements[i])
+			i = i + 1
+		}
+	}
+	result
+}
+
+/* returns a list with every element of the element list but the last */
+list head(list elements) {
+	list result
+	if(elements) {
+		numeric s = elements.size()
+		numeric i = 0
+		while(i < s - 1) {
+			result.add(elements[i])
+			i = i + 1
+		}
+	}
+	result
+}
+
+/* merges all elements of the second map with all elements of the first map and returns the resulting map */
+map merge(map map1, map map2) {
+	map resultMap
+	list keyList1 = map1.keyList()
+	list keyList2 = map2.keyList()
+	foreach key <- keyList1 {
+		resultMap.put(key, map1[key])
+	}
+	foreach key <- keyList2 {
+		resultMap.put(key, map2[key])
+	}
+	resultMap
+}
+
+numeric succ(numeric arg) {
+	arg + 1
+}
+
+numeric pred(numeric arg) {
+	arg - 1
+}
+
+/* operator wrappers */
+
+numeric add(numeric op1, numeric op2) {
+	op1 + op2
+}
+
+numeric sub(numeric op1, numeric op2) {
+	op1 - op2
+}
+
+numeric mult(numeric op1, numeric op2) {
+	op1 * op2
+}
+
+numeric div(numeric op1, numeric op2) {
+	op1 / op2
+}
+
+numeric iDiv(numeric op1, numeric op2) {
+	op1 // op2
+}
+
+numeric mod(numeric op1, numeric op2) {
+	op1 % op2
+}
+
+numeric equal(string op1, string op2) {
+	op1 eq op2
+}
+
+numeric equal(numeric op1, numeric op2) {
+	op1 == op2
+}
+
+numeric notEqual(string op1, string op2) {
+	op1 ne op2
+}
+
+numeric notEqual(numeric op1, numeric op2) {
+	op1 != op2
+}
+
+numeric less(string op1, string op2) {
+	op1 lt op2
+}
+
+numeric less(numeric op1, numeric op2) {
+	op1 <= op2
+}
+
+numeric lessEqual(string op1, string op2) {
+	op1 le op2
+}
+
+numeric lessEqual(numeric op1, numeric op2) {
+	op1 <= op2
+}
+
+numeric greater(string op1, string op2) {
+	op1 gt op2
+}
+
+numeric greater(numeric op1, numeric op2) {
+	op1 > op2
+}
+
+numeric greaterEqual(string op1, string op2) {
+	op1 ge op2
+}
+
+numeric greaterEqual(numeric op1, numeric op2) {
+	op1 >= op2
+}
+
+string append(string op1, string op2) {
+	op1 + op2
+}
+
+list append(list op1, list op2) {
+	op1 + op2
+}
+
+map append(map op1, map op2) {
+	op1 + op2
+}
+
+numeric and(numeric op1, numeric op2) {
+	op1 && op2
+}
+
+numeric and(string op1, string op2) {
+	op1 && op2
+}
+
+numeric or(numeric op1, numeric op2) {
+	op1 || op2
+}
+
+numeric or(string op1, string op2) {
+	op1 || op2
+}
+
+numeric not(numeric op1) {
+	!op1
+}
+
+numeric not(string op1) {
+	!op1
+}
+
+
+/* type method wrappers */
+
+/* replaces all occurences of the sequence in the input with the replacement and returns the resulting string */
+string replace(string input, string sequence, string replacement) {
+	input.replace(sequence, replacement)
+}
+
+/* converts the first character of the input to upper case and returns the resulting string */
+string firstUpper(string input) {
+	input.firstUpper()
+}
+
+/* converts the first character of the input to lower case and returns the resulting string */
+string firstLower(string input) {
+	input.firstLower()
+}
+
+/* converts the input to upper case and returns the resulting string */
+string toUpper(string input) {
+	input.toUpper()
+}
+
+/* converts the input to lower case and returns the resulting string */
+string toLower(string input) {
+	input.toLower()
+}
+
+/* returns true if the input starts with the pattern */
+numeric startsWith(string input, string pattern) {
+	input.startsWith(pattern)
+}
+
+/* returns true if the input ends with the pattern */
+numeric endsWith(string input, string pattern) {
+	input.endsWith(pattern)
+}
+
+/* returns true if the input matches the pattern */
+numeric matches(string input, string pattern) {
+	input.matches(pattern)
+}
+
+/* splits the input according to the pattern and returns the resultin list */
+list split(string input, string pattern) {
+	input.split(pattern)
+}
+
+numeric indexOf(string input, string pattern) {
+	input.indexOf(pattern)
+}
+
+string substring(string input, numeric from, numeric to) {
+	input.substring(from, to)
+}
+
+numeric compare(string arg1, string arg2) {
+	arg1.compare(arg2)
+}
+
+numeric compare(method m, string arg1, string arg2) {
+	string tmp = m(arg1)
+	tmp.compare(m(arg2))
+}
+
+list reverse(list elements) {
+	elements.reverse()
+}
+
+numeric size(string input) {
+	input.size()
+}
+
+numeric size(list input) {
+	input.size()
+}
+
+numeric size(map input) {
+	input.size()
+}
+
+numeric isEmpty(string input) {
+	!input.size() > 0
+}
+
+numeric isEmpty(list input) {
+	!input.size() > 0
+}
+
+numeric isEmpty(map input) {
+	!input.size() > 0
+}
+
+any get(list elementList, numeric index) {
+	elementList[index]
+}
+
+any get(map element, string key) {
+	element[key]
+}
+
+/* store the value under the given key */
+map put(map elementMap, string key, string value) {
+	elementMap.put(key, value)
+}
+
+map put(map elementMap, string key, numeric value) {
+	elementMap.put(key, value)
+}
+
+map put(map elementMap, string key, list value) {
+	elementMap.put(key, value)
+}
+
+map put(map elementMap, string key, map value) {
+	elementMap.put(key, value)
+}
+
+/* store the value with value as key (strings only) */
+map add(map elementMap, string value) {
+	elementMap.put(value, value)
+}
+
+map remove(map elementMap, string value) {
+	elementMap.remove(value)
+}
+
+/* returns the list of keys for a map */
+list keyList(map elementMap) {
+	elementMap.keyList()
+}
+
+list valueList(map elementMap) {
+	list resultList
+	foreach key <- elementMap.keyList() {
+		resultList.add(elementMap[key])
+	}
+	resultList
+}
+
+/* returns a new empty list */
+list newList() {
+	list newList
+	newList
+}
+
+/* returns a new empty map */
+map newMap() {
+	map newMap
+	newMap
+}
+
+/* checks if the list contains the value */
+numeric contains(list elementList, string value) {
+	size(filter(cEquals(value), elementList)) > 0
+}
+
+/* checks if the list contains the value */
+numeric contains(list elementList, numeric value) {
+	size(filter(cEquals(value), elementList)) > 0
+}
+
+
+/* returns the type of the element */
+string type(string element) {
+	'string'
+}
+
+/* returns the type of the element */
+string type(numeric element) {
+	'numeric'
+}
+
+/* returns the type of the element */
+string type(list element) {
+	'list'
+}
+
+/* returns the type of the element */
+string type(map element) {
+	'map'
+}
+
+/* returns the type of the element */
+string type(method element) {
+	'method'
+}
+
+/* use only if the string represents a numeric value */
+numeric toNumeric(string value) {
+	value
+}
+
+string asString(numeric value) {
+	value
+}
+
+/* TODO just working, refactor for better performance */
+string toString(numeric value) {
+	string stringValue = asString(value)
+	if(endsWith(stringValue, '.0')) {
+		first(split(stringValue, '.'))
+	} else {
+		stringValue
+	}
+}
+
+/* math functions */
+
+numeric min(numeric arg1, numeric arg2) {
+	numeric result
+	if(arg1 < arg2) {
+		result = arg1
+	} else {
+		result = arg2
+	}
+	result
+}
+
+numeric max(numeric arg1, numeric arg2) {
+	numeric result
+	if(arg1 > arg2) {
+		result = arg1
+	} else {
+		result = arg2
+	}
+	result
+}
+
+
+/* higher order functions */
+
+/* filter a list of elements by a predicate function f */
+list filter(method f, list elements) {
+	list result
+	foreach element | f(element) <- elements {
+		result.add(element)
+	}
+	result
+}
+
+/* filter a map of elements by a predicate function f */
+map filter(method f, map elements) {
+	map result
+	foreach key | f(elements[key]) <- elements.keyList() {
+		result.put(key, elements[key])
+	}
+	result
+}
+
+/* select the first element (if any) of a list filtered by a predicate function f */
+any select(method f, list elements) {
+	list results = filter(f, elements)
+	if(results) {
+		results[0]
+	}
+}
+
+/* map function, applies the function m to every element of the list of elements and returns the resulting list */
+list mapFn(method m, list elementList) {
+	list resultList
+	foreach element <- elementList {
+		resultList.add(m(element))
+	}
+	resultList
+}
+
+/* map function for maps, applies the function m to every value of the map of elements and returns the resulting map */
+map mapMap(method m, map elementMap) {
+	map resultMap
+	foreach key <- elementMap.keyList() {
+		resultMap.put(key, m(elementMap[key]))
+	}
+	resultMap
+}
+
+/* map function for maps, applies the function m to every value of the map of elements and returns the resulting list */
+list mapMapToList(method m, map elementMap) {
+	list resultList
+	foreach key <- elementMap.keyList() {
+		resultList.add(m(elementMap[key]))
+	}
+	resultList
+}
+
+/* map function, applies the function m to every element of the list for which the predicate is true and returns the resulting list */
+list mapFiltered(method m, method f, list elements) {
+	list result
+	foreach element | f(element) <- elements {
+		result.add(m(element))
+	}
+	result
+}
+
+/* applies the list of functions to every element of the list of elements and returns the resulting list */
+/* FIXME return type? */
+string applyMethods(list methods, list elements) {
+	foreach element <- elements {
+		foreach m <- methods {
+			m(element)
+		}
+	}
+}
+
+/* fold/reduce left */
+string foldLeft(method m, list elements) {
+	string result
+	numeric i = 1
+	numeric s = elements.size()
+	if(s > 0) {
+		result = elements[0]
+		while(i < elements.size()) {
+			m(result, elements[i])
+			i = i + 1
+		}
+	}
+	result
+}
+
+/* fold/reduce left */
+numeric foldLeft(method m, list elements, numeric initial) {
+	numeric result = initial
+	foreach e <- elements {
+		result = m(result, e)
+	}
+	result
+}
+
+/* fold/reduce left */
+string foldLeft(method m, list elements, string initial) {
+	string result = initial
+	foreach e <- elements {
+		result = m(result, e)
+	}
+	result
+}
+
+/* fold/reduce left */
+string foldLeft(method m, list elements) {
+	if(elements) {
+		foldLeft(m, head(elements), last(elements))
+	}
+	result
+}
+
+/* fold/reduce right */
+string fold(method m, list elements) {
+	if(elements) {
+		fold(m, tail(elements), first(elements))
+	}
+}
+
+/* fold/reduce right */
+numeric fold(method m, list elements, numeric initial) {
+	if(elements) {
+		m(first(elements), fold(m, tail(elements), initial))
+	} else {
+		initial
+	}
+}
+
+/* fold/reduce right */
+string fold(method m, list elements, string initial) {
+	if(elements) {
+		m(first(elements), fold(m, tail(elements), initial))
+	} else {
+		initial
+	}
+}
+
+list takeWhile(method m, list elements) {
+	list result
+	numeric take = 1
+	foreach e | take <- elements {
+		if(m(e)) {
+			result.add(e)
+		} else {
+			take = 0
+		}
+	}
+	result
+}
+
+list dropWhile(method m, list elements) {
+	list result
+	numeric drop = 1
+	foreach e <- elements {
+		if(m(e) && !drop) {
+			result.add(e)
+		} else {
+			drop = 0
+		}
+	}
+	result
+}
+
+numeric complement(method pred, string s) {
+	!pred(s)
+}
+
+numeric complement(method pred, numeric n) {
+	!pred(n)
+}
+
+numeric complement(method pred, list l) {
+	!pred(l)
+}
+
+numeric complement(method pred, map m) {
+	!pred(m)
+}
+
+string join(string arg1, string arg2, string separator) {
+	string result
+	if(arg1 ne '' && arg2 ne '') {
+		result = arg1 + separator + arg2
+	} else if(arg1 ne '') {
+		result = arg1
+	} else {
+		result = arg2
+	}
+	result
+}
+
+string join(list elements, string separator) {
+	foldLeft(cJoin(separator), elements, '')
+}
+
+string compose(method m, list elements, string separator) {
+	join(mapFn(m, elements), separator)
+}
+
+/* closures / method builders */
+
+method cJoin(string separator) {
+	string s = separator
+	method result = string fn(string a, string b) {
+		join(a, b, s)
+	}
+	result
+}
+
+method cEquals(string s) {
+	string value = s
+	method result = numeric fn(string element) {
+		element eq value
+	}
+	result
+}
+
+method cEquals(numeric n) {
+	numeric value = s
+	method result = numeric fn(numeric element) {
+		element == value
+	}
+	result
+}
+
+method cValue(string keyName) {
+	string key = keyName
+	method result = any fn(map element) {
+		element[key]
+	}
+	result
+}
+
+/* returns a method that returns true for a map, when the map value for the key equals the value */
+method cEqualsMapValue(string key, string value) {
+	string k = key
+	string v = value
+	method result = numeric fn(map element) {
+		element[k] eq v
+	}
+}
+
+method cMapComplement(method predicate) {
+	method m = predicate
+	method result = numeric fn(map element) {
+		!m(element)
+	}
+	result
+}
+
+/* text formatting utilities */
+string times(method m, numeric count) {
+	numeric i = 0
+	while(i < count) {
+		m()
+		i = i + 1
+	}
+}
+
+string tab() {
+	'	'
+}
+
+/* TODO use times? */
+string tabs(numeric tabs) {
+	numeric tabCount = 0
+	while(tabCount < tabs) {
+		tab()
+		tabCount = tabCount + 1;
+	}
+}
+
+string space() {
+	' '
+}
+
+/* TODO use times? */
+string spaces(numeric spaces) {
+	numeric spaceCount = 0
+	while(spaceCount < spaces) {
+		space()
+		spaceCount = spaceCount + 1
+	}
+}
+
+string lineFeed() {?>
+<?
+}
+
+/* TODO use times */
+string lineFeeds(numeric lineFeeds) {
+	numeric lineFeedCount = 0
+	while(lineFeedCount < lineFeeds) {
+		lineFeed()
+		lineFeedCount = lineFeedCount + 1
+	}
+}
+
+string apos() {
+	?>'<?
+}
+
+string boolean(numeric value) {
+	if(value) {
+		'true'
+	} else {
+		'false'
+	}
+}
+?>

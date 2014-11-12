@@ -1,0 +1,113 @@
+<?!--
+ * xml/schema
+ *
+ * Standard include for XML Schema files
+ * 
+ * Requires lib, model/lib
+ *
+ * © 2010- Ludger Solbach
+--?><?
+string contentXml(map element) {?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:<?schemaNamespacePrefix(element)?>="<?schemaNamespace(element)?>"
+	elementFormDefault="qualified"
+	targetNamespace="<?schemaNamespace(element)?>">
+<?schemaContent(element)?>
+</xs:schema><?
+}
+
+string schemaNamespacePrefix(map element) {
+	
+}
+
+string schemaNamespace(map element) {
+
+}
+
+string schemaContent(map element) {
+
+}
+
+string element(map class) {?>
+	<xs:element name="<?class:Name?>"><?
+	if(class:AttributeList || class:AssociationList) {?>
+		<xs:complexType>
+			<xs:sequence><?
+		foreach attr <- class:AttributeList {
+			elementRef(attr)
+		}
+		foreach asso | isNavigable(asso) && !isDerived(asso) <- class:AssociationList {
+			elementRef(asso)
+		}?>
+			</xs:sequence>
+		</xs:complexType><?
+	}?>
+	</xs:element>
+<?
+}
+
+string complexType(map class) {?>
+	<xs:complexType name="<?class:Name?>">
+		<xs:all><?
+	foreach attr <- class:AllAttributeList {
+		elementRef(attr)
+	}?>
+		</xs:all>
+	</xs:complexType>
+<?
+}
+
+string simpleType(map element) {?>
+	<xs:simpleType name="<?element:Name?>"><?
+	if(isEnumeration(element)) {
+	}?>
+	</xs:simpleType>
+<?
+}
+
+string enumerationType(map element) {?>
+		<xs:restriction base='xs:NMTOKEN'><?
+	foreach literal <- element:EnumerationLiteralList {?>
+			<xs:enumeration value='<?literal:Name?>'/><?
+	}?>
+		</xs:restriction><?
+}
+
+string elementRef(map element) {?>
+			<xs:element name="<?element:Name?>" type="<?typeRef(element)?>" <?multiplicity(element)?>/><?
+}
+
+string typeRef(map element) {
+	if(element:Type:Name eq 'String') {
+  		'xs:string'
+	} else if(element:Type:Name eq 'boolean' || element:Type:Name eq 'Boolean') {
+  		'xs:boolean'
+	} else if(element:Type:Name eq 'int' || element:Type:Name eq 'Integer') {
+		'xs:integer'
+	} else if(element:Type:Name eq 'long' || element:Type:Name eq 'Long') {
+		'xs:long'
+	} else if(element:Type:Name eq 'short' || element:Type:Name eq 'Short') {
+		'xs:short'
+	} else if(element:Type:Name eq 'float' || element:Type:Name eq 'Float') {
+		'xs:float'
+	} else if(element:Type:Name eq 'double' || element:Type:Name eq 'Double') {
+		'xs:double'
+	} else if(element:Type:Name eq 'List') {
+		if(hasTaggedValue(element, 'type')) {
+			taggedValue(element, 'type')
+		}
+		/*TODO What shall we do with untyped lists*/
+	}
+	/* TODO add Date, Time, Timestamp and Set, Map, ... */
+}
+
+
+string multiplicity(map element) {
+	'minOccurs="' + getLowerBound(element) + '" '
+	if(getUpperBound(element) == -1) {
+		'maxOccurs="unbounded"' 		
+	} else {
+		'maxOccurs="' + getUpperBound(element) + '"'
+	}
+}
+?>

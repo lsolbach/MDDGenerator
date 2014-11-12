@@ -1,0 +1,250 @@
+<?!--
+ * html4 library 
+ *
+ * ©2010,2011 Ludger Solbach
+--?><?
+string html(string content) {
+	'<html>' + lineFeed() + content + '</html>'
+}
+
+string html(map element) {
+?><html>
+<?head(element)?>
+<?body(element)?>
+</html><?
+}
+
+string head(map element) {
+	'<head>' + lineFeed()
+	+ headContent(element) + lineFeed()
+	+ '</head>' 
+}
+
+string head(string content) {
+	'<head>' + lineFeed()
+	+ content + lineFeed()
+	+ '</head>' 
+}
+
+string body(map element) {
+	'<body>' + lineFeed()
+	+ bodyContent(element) + lineFeed()
+	+ '</body>'
+}
+
+string body(string content) {
+	'<body>' + lineFeed()
+	+ content + lineFeed()
+	+ '</body>' 
+}
+
+string p(string content) {
+	'<p>' + lineFeed()
+	+ content + lineFeed()
+	+ '</p>' + lineFeed() 
+}
+
+string p(string content, string class) {
+	'<p class="' + class + '">' + lineFeed()
+	+ content + lineFeed()
+	+ '</p>' + lineFeed()
+}
+
+string br() {
+	'<br/>' + lineFeed()
+}
+
+string nbsp() {
+	'&nbsp;'
+}
+
+string a(string href, string content) {
+	'<a href="' + href + '">' + content + '</a>'
+}
+
+string a(string href, string content, string class) {
+	'<a class="' + class + '" href="' + href + '">' + content + '</a>' 
+}
+
+string img(string src) {
+	'<img src="' + src + '"/>'
+}
+
+string img(string src, string alt) {
+	'<img src="' + src + '" alt="' + alt + '"/>'
+}
+
+string h1(string content) {
+	'<h1>' + content + '</h1>' + lineFeed() 
+}
+
+string h1(string content, string class) {
+	'<h1 class="' + class + '">' + content + '</h1>' + lineFeed() 
+}
+
+string h2(string content) {
+	'<h2>' + content + '</h2>' + lineFeed()
+}
+
+string h2(string content, string class) {
+	'<h2 class="' + class + '">' + content + '</h2>' + lineFeed() 
+}
+
+string h3(string content) {
+	'<h3>' + content + '</h3>' + lineFeed()
+}
+
+string h3(string content, string class) {
+	'<h3 class="' + class + '">' + content + '</h3>' + lineFeed()
+}
+
+string h4(string content) {
+	'<h4>' + content + '</h4>' + lineFeed()
+}
+
+string h4(string content, string class) {
+	'<h4 class="' + class + '">' + content + '</h4>' + lineFeed()
+}
+
+string div(string content) {
+	'<div>' + lineFeed() + content + '</div>' + lineFeed()
+}
+
+string div(string content, string class) {
+	'<div class="' + class + '">' + lineFeed() + content + '</div>' + lineFeed()
+}
+
+string table(string content) {
+	'<table>' + lineFeed() + content + '</table>' + lineFeed()
+}
+
+string table(string content, string class) {
+	'<table class="' + class + '">' + lineFeed() + content + '</table>' + lineFeed()
+}
+
+string th(string content) {
+	'<th>' + content + '</th>' + lineFeed()
+}
+
+string th(string content, string class) {
+	'<th class="' + class + '">' + content + '</th>'
+}
+
+string tr(string content) {
+	'<tr>' + content + '</tr>' + lineFeed()
+}
+
+string tr(string content, string class) {
+	'<tr class="' + class + '">' + content + '</tr>'
+}
+
+string td(string content) {
+	'<td>' + content + '</td>'
+}
+
+string td(string content, string class) {
+	'<td class="' + class + '">' + content + '</td>'
+}
+
+string td(string content, string class, string colspan) {
+	'<td class="' + class + '" colspan="' + colspan + '">' + content + '</td>'
+}
+
+string title(string content) {
+	'<title>' + content + '</title>' + lineFeed()
+}
+
+string style(string content) {
+	'<style>' + content + '</style>' + lineFeed()
+}
+
+string span(string content) {
+	'<span>' + content + '</span>' + lineFeed()
+}
+
+string span(string content, string class) {
+	'<span class="' + class + '">' + content + '</span>' + lineFeed()
+}
+
+/* form elements */
+/* TODO add methods for the neccesary parameters */
+string form(map element, string content, string action) {
+	'<form action="' + action + '" method="POST">
+	content
+	'</form>'
+}
+
+string formText(map element) {
+	'<input type="text" name="' + name(element) + '" value="' + attributeValue(element) + '"/>'
+}
+
+string formTextarea(map element) {
+	'<textarea name="' + name(element) + '">' + attributeValue(element) + '</textarea>'
+}
+
+string formPassword(map element) {
+	'<input type="password" name="' + name(element) + '"/>'
+}
+
+string formRadioButton(map element) {
+	'<input type="radio" name="' + name(element) + '" value=""/>'
+}
+
+string formRadioButtons(map element) {
+?><!-- Not implemented yet--><br/><?
+}
+
+string formCheckbox(map element) {
+	'<input type="checkbox" name="' + name(element) + '" value=""/>'
+}
+
+string formCheckboxes(map element) {
+?><!-- Not implemented yet--><br/><?
+}
+
+string formSelect(map element) {
+	'<select name="' + name(element) + '">' + lineFeed()
+	'</select>'
+}
+
+string formFile(map element) {
+	'<input type="file" name="' + name(element) + '"/>'
+}
+
+string formButton(map element, string name, string value) {
+	'<input type="button" name="' + name +  'value="' + value + '"/>'
+}
+
+string formButton(map element, string name, string value, string onClick) {
+	'<input type="button" name="' + name + '" onClick="' + onClick + '" value="' + value + '"/>'
+}
+
+string formImage(map element) {
+	/* TODO useful? */
+	formImage(element, name(element), '')
+}
+
+string formImage(map element, string name, string src) {
+	'<input type="image" name="' + name + '" src="' + src + '"'/>
+}
+
+string formHidden(map element) {
+	formHidden(element, name(element), '')
+}
+
+string formHidden(map element, string name, string value) {
+	'<input type="hidden" name="' + name + '" value="' + value + '"/>'
+}
+
+string formSubmit(map element) {
+	formSubmit(element, "submit", "submit")
+}
+
+string formSubmit(map element, string name, string value) {
+	'<input type="submit" name="' + name + '" value="' + value + '"/>'
+}
+
+string formReset(map element) {
+	'<input type="reset" name="reset" value="reset"/>'
+}
+?>

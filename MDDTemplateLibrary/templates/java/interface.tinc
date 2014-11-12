@@ -1,0 +1,104 @@
+<?!--
+ * java/interface
+ *
+ * base methods for java interface generation
+ *
+ * requires includes lib, model/lib, java/lib
+ *
+ * © 2010 Ludger Solbach
+--?><?
+
+string fileComment(map element) {
+	'/*' + lineFeed()
+	' * Class ' + name(element) + lineFeed()
+	generationInfo(element, ' * ') + lineFeed()
+	' */'
+}
+
+string packageDeclaration(map element) {?>
+package <?namespace(element)?>;<?
+}
+
+string typeModifiers(map element) {
+	visibility(element)
+}
+
+list getExtensionList(map element) {
+	list extensionList
+	foreach superClass <- getSuperClassList(element) {
+		extensionList.add(superClass:Name)
+	}
+	extensionList
+}
+
+string extensions(map element) {
+	list extensionList = getExtensionList(element)
+	if(extensionList) {
+		'extends ' + join(extensionList, ', ')
+	}
+}
+
+string staticFields(map element) {
+
+}
+
+/* BEGIN NEW FIELDS */
+
+string fieldGetMethod(map field) {
+	memberJavaDoc(getFieldGetMethodJavaDocList(field))
+	memberAnnotations(getFieldGetMethodAnnotationList(field))
+?>	<?fieldType(field)?> get<?fieldMethodBaseName(field)?>();
+<?
+}
+
+string fieldQualifiedGetMethod(map field) {
+	memberJavaDoc(getFieldQualifiedGetMethodJavaDocList(field))
+	memberAnnotations(getFieldQualifiedGetMethodAnnotationList(field))
+?>	<?javaType(field)?> get<?field:Name.firstUpper()?>(<?qualifierParameters(field)?>);
+<?
+}
+
+string fieldSetMethod(map field) {
+	memberJavaDoc(getFieldSetMethodJavaDocList(field))
+	memberAnnotations(getFieldSetMethodAnnotationList(field))
+?>	void set<?fieldMethodBaseName(field)?>(<?fieldType(field)?> <?fieldName(field)?>);
+<?
+}
+
+string fieldAddMethod(map field) {
+	memberJavaDoc(getFieldAddMethodJavaDocList(field))
+	memberAnnotations(getFieldAddMethodAnnotationList(field))
+	if(!isQualified(field)) {
+?>	void add<?field:Name.firstUpper()?>(<?javaType(field)?> <?javaName(field)?>);
+<?
+	} else {
+		list qualifierList = getQualifierList(field)
+?>	void add<?field:Name.firstUpper()?>(<?javaType(qualifierList[0])?> <?javaName(qualifierList[0])?>, <?javaType(field)?> <?javaName(field)?>);
+<?
+	}
+}
+
+string fieldRemoveMethod(map field) {
+	memberJavaDoc(getFieldRemoveMethodJavaDocList(field))
+	memberAnnotations(getFieldRemoveMethodAnnotationList(field))
+?>	void remove<?field:Name.firstUpper()?>(<?javaType(field)?> <?javaName(field)?>);
+<?
+}
+
+/* END NEW FIELDS */
+
+string operation(map op) {
+	if(op:Visibility eq 'public') {
+		operationMethodJavaDoc(op)
+		memberAnnotations(getOperationMethodAnnotationList(op))
+		operationMethod(op)
+	}
+}
+
+string operationMethod(map op) {?>
+	<?returnType(op)?> <?op:Name?>(<?operationParameters(op)?>);
+
+<?
+}
+
+?>

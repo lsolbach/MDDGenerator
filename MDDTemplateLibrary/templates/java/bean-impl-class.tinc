@@ -1,0 +1,33 @@
+<?!--
+ * java/bean-impl-class
+ * 
+ * Mixin include for java bean implementation classes.
+ * 
+ * Required includes: lib, model/lib, java/lib, java/class, java/impl-class 
+ * 
+ * © 2013- Ludger Solbach
+--?><?
+
+string staticFields(map element) {
+	super(element)?>
+	private static final long serialVersionUID = 1L;
+<?
+}
+
+string operations(map element) {
+	compose(fieldAccessorDelegateImplementation, filter(isPropertyField, getFieldList(element)), lineFeed())
+	super(element)
+}
+
+string fieldAccessorDelegateImplementations(map field) {?>
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected <?fieldType(field)?> doGet<?fieldMethodBaseName(field)?>() {<?
+		fieldGetMethodDelegateImplementationBody(field)?>
+	}
+<?
+	}
+}
+?>
