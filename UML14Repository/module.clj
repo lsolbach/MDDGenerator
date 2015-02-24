@@ -11,7 +11,7 @@
            ["org.soulspace.baumeister/JavaPlugin"]
            ["org.soulspace.baumeister/JUnitPlugin"]
            ["org.soulspace.baumeister/PackagePlugin"]]
- :dependencies [["junit" "junit" "3.8.1" :dev]
+ :dependencies [["junit/junit, 3.8.1" :dev]
                 ["org.soulspace.modelling/ArgoUMLProfileLibrary, 1.0.0, ArgoUMLProfileLibrary, zip" :generator]
                 ["org.soulspace.modelling/MDDTemplateLibrary, 1.0.0, MDDTemplateLibrary, zip" :generator]]
  :mddgenerator-config-dir "./config"

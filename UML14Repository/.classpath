@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="generated/src"/>
 	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="build/generated/src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/dev/junit.jar"/>
 	<classpathentry kind="src" path="unittest"/>
+	<classpathentry kind="lib" path="build/lib/dev/junit.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
