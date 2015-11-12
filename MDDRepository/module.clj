@@ -6,7 +6,6 @@
  :description "The module MDDRepository contains the model repository of the MDD Generator Framework to facilitate code generation."
  :provider "soulspace.org"
  :plugins ["global"
-           ["org.soulspace.baumeister/DependencyPlugin"]
            ["org.soulspace.baumeister/MDDGeneratorPlugin"]
            ["org.soulspace.baumeister/JavaPlugin"]
            ["org.soulspace.baumeister/JUnitPlugin"]

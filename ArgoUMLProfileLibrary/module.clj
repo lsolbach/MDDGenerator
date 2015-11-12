@@ -7,6 +7,5 @@
  :author "ArgoUML Team, Ludger Solbach"
  :provider "soulspace.org"
  :plugins ["global"
-           ["org.soulspace.baumeister/DependencyPlugin"]
            ["org.soulspace.baumeister/PackagePlugin"]] 
  ]

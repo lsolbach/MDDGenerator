@@ -6,7 +6,6 @@
  :description "The UML14Repository provides a repository for UML 1.4 models and importers/exporters for XMI 1.2 files"
  :provider "soulspace.org"
  :plugins ["global"
-           ["org.soulspace.baumeister/DependencyPlugin"]
            ["org.soulspace.baumeister/MDDGeneratorPlugin"]
            ["org.soulspace.baumeister/JavaPlugin"]
            ["org.soulspace.baumeister/JUnitPlugin"]

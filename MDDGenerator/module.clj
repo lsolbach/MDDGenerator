@@ -8,7 +8,6 @@
  :description "Generator framework for model driven software development. Contains generators and ant tasks."
  :license ["Eclipse Public License 1.0" "http://www.eclipse.org/legal/epl-v10.html"]
  :plugins ["global"
-           ["org.soulspace.baumeister/DependencyPlugin"]
            ["org.soulspace.baumeister/MDDGeneratorPlugin"]
            ["org.soulspace.baumeister/JavaPlugin"]
            ["org.soulspace.baumeister/JUnitPlugin"]

@@ -6,7 +6,6 @@
  :description "A builder for generator models from UML 1.4/XMI 1.2 models"
  :provider "soulspace.org"
  :plugins ["global"
-           ["org.soulspace.baumeister/DependencyPlugin"]
            ["org.soulspace.baumeister/MDDGeneratorPlugin"]
            ["org.soulspace.baumeister/JavaPlugin"]
            ["org.soulspace.baumeister/JUnitPlugin"]
