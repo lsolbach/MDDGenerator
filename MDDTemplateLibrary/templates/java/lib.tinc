@@ -2,7 +2,7 @@
  * java/lib
  * Standard functions for the generation of java code
  * unspecific to any UML profile, design DSL or target language
- * Â©2010-2012 Ludger Solbach
+ * © 2010- Ludger Solbach
 --?><?
 string fileComment(map element) {
 
@@ -192,7 +192,7 @@ string constructorParameters(list fieldList) {
 }
 
 string constructorParameter(map field) {
-	parameterAnnotations(getConstructorParameterAnnotationList(field)) + ' ' + javaType(field) + ' ' + javaName(field)
+	parameterAnnotations(getConstructorParameterAnnotationList(field)) + ' ' + fieldType(field) + ' ' + fieldName(field)
 } 
 
 list getConstructorAnnotationList(map element) {
@@ -206,7 +206,7 @@ list getConstructorParameterAnnotationList(map element) {
 }
 
 string constructorArguments(list fieldList) {
-	join(mapFn(javaName, fieldList), ', ')
+	join(mapFn(fieldName, fieldList), ', ')
 }
 
 string staticInitializer(map element) {
@@ -577,17 +577,10 @@ numeric isPrimitive(map type) {
 	} else {
 		typename = type:Name
 	}
-	typename eq 'boolean'
+	isPrimitive(typename)
 }
-	
-numeric isPrimitive(map type) {
-	string typename
-	if(type:Namespace eq '') {
-		typename = javaTypeForUmlType(type)
-	} else {
-		typename = type:Name
-	}
-	
+
+numeric isPrimitive(string typename) {
 	typename eq 'int'
 		|| typename eq 'long'
 		|| typename eq 'short'
@@ -612,6 +605,7 @@ numeric isCollection(map type) {
 numeric isMap(map type) {
 	type:QualifiedName eq 'java.util.Map'
       || type:QualifiedName eq 'java.util.HashMap'
+      || type:QualifiedName eq 'java.util.SortedMap'
       || type:QualifiedName eq 'java.util.Hashtable'
 }
 ?>

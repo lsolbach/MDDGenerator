@@ -5,7 +5,7 @@
  *
  * Requires includes lib, model/lib, html/html4
  * 
- * Â© 2010- Ludger Solbach
+ * © 2010- Ludger Solbach
 --?><?
 string headContent(map element) {
 	

@@ -5,7 +5,7 @@
  *
  * Requires includes lib, model/lib, java/lib
  * 
- * Â© 2010- Ludger Solbach
+ * © 2010- Ludger Solbach
 --?><?
 
 string fileComment(map element) {
@@ -154,7 +154,7 @@ string constructorSuperCall(map element, list fieldList) {
 }
 
 string constructorFieldInitialisation(map field) {?>
-		this.<?javaName(field)?> = <?javaName(field)?>;<?
+		this.<?fieldName(field)?> = <?fieldName(field)?>;<?
 }
 
 string constructorPostInitialisation(map element, list fieldList) { }
@@ -240,7 +240,7 @@ string fieldModifiers(map field) {
 string fieldInitialisation(map field) {
 	if(isMany(field) || isQualified(field)) {
 		'= new ' + fieldImplementationType(field) + '()'
-	} else {
+	} else if (!isPrimitive(fieldType(field))) {
 		'= null'
 	}
 }

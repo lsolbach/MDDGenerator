@@ -5,7 +5,7 @@
  * 
  * Required includes: lib, model/lib, java/lib, java/class, java/impl-class 
  * 
- * Â© 2013- Ludger Solbach
+ * © 2013- Ludger Solbach
 --?><?
 
 string staticFields(map element) {
@@ -19,15 +19,13 @@ string operations(map element) {
 	super(element)
 }
 
-string fieldAccessorDelegateImplementations(map field) {?>
+string fieldAccessorDelegateImplementation(map field) {?>
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	protected <?fieldType(field)?> doGet<?fieldMethodBaseName(field)?>() {<?
 		fieldGetMethodDelegateImplementationBody(field)?>
 	}
 <?
-	}
 }
 ?>

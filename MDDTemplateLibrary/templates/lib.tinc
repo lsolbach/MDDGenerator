@@ -5,7 +5,7 @@
    - Functional programming style used with no side effects, the functions all return new data structures.
    - Optimized for correctness, readability and maintainance, not necessarily for performance.
    -
-   - Â© 2010- Ludger Solbach
+   - © 2010- Ludger Solbach
    --?><?
 
 list cons(string e, list elements) {

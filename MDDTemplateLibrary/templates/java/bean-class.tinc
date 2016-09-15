@@ -5,7 +5,7 @@
  * 
  * Required includes: lib, model/lib, java/lib, java/class
  * 
- * Â© 2010- Ludger Solbach
+ * © 2010- Ludger Solbach
  * --?><?
 map getImportMap(map element) {
 	map importMap = super(element)

@@ -2,10 +2,9 @@
  :module "MDDTemplateLibrary"
  :project "org.soulspace.modelling"
  :type :data
- :version "1.0.2"
+ :version "1.0.3"
  :description "Templates for model driven software development"
  :author "Ludger Solbach"
  :provider "soulspace.org"
- :plugins ["global"
-           ["org.soulspace.baumeister/PackagePlugin"]] 
+ :plugins [["org.soulspace.baumeister/PackagePlugin"]] 
  ]
