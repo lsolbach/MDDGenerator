@@ -5,9 +5,9 @@ Description
 -----------
 The MDD Generator Framework is the current java implementation of an
 UML based code generator framework based on the Soulspace Template
-Engine.
+Engine. It superseeds the MDA Generator Framework. 
 
-The MDAGenerator repository now contains the modules (eclipse projects)
+The MDDGenerator repository now contains the modules (eclipse projects)
  * ArgoUMLProfileLibrary
  * UML14Repository
  * UML14ModelBuilder
